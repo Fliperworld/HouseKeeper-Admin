@@ -7,7 +7,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+import com.hrsst.housekeeper.R;
+
 
 public class AddCameraSecondActivity extends Activity {
     private Context mContext;

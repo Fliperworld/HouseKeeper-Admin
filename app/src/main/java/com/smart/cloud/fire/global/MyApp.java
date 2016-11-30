@@ -10,13 +10,14 @@ import android.os.Vibrator;
 import android.widget.RemoteViews;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.hrsst.housekeeper.R;
 import com.p2p.core.update.UpdateManager;
 import com.smart.cloud.fire.service.LocationService;
 import com.smart.cloud.fire.ui.ForwardDownActivity;
 import com.smart.cloud.fire.utils.SharedPreferencesManager;
 import com.squareup.leakcanary.LeakCanary;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 /**
  * Created by Administrator on 2016/7/28.

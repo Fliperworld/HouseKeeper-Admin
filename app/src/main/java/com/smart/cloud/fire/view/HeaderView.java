@@ -9,12 +9,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.global.NpcCommon;
 import com.smart.cloud.fire.utils.ImageUtils;
 
 import java.io.File;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 public class HeaderView extends ImageView {
     Bitmap tempBitmap;

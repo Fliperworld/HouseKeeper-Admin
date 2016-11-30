@@ -11,6 +11,7 @@ import android.os.Message;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.hrsst.housekeeper.R;
 import com.mediatek.elian.ElianNative;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.yoosee.UDPHelper;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 public class AddWaitActicity extends Activity {
     private Context mContext;

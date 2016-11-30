@@ -6,7 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.CheckedTextView;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+import com.hrsst.housekeeper.R;
+
 
 /**
  * Created by Administrator on 2016/8/6.

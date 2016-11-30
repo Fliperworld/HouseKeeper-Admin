@@ -8,7 +8,8 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+import com.hrsst.housekeeper.R;
+
 
 /**
  * Created by Administrator on 2016/10/24.

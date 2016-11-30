@@ -1,8 +1,9 @@
 package com.smart.cloud.fire.retrofit;
 
+import com.hrsst.housekeeper.BuildConfig;
+
 import java.util.concurrent.TimeUnit;
 
-import fire.cloud.smart.com.smartcloudfire.BuildConfig;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;

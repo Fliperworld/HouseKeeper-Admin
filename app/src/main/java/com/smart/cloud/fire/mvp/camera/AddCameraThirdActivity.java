@@ -14,12 +14,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 public class AddCameraThirdActivity extends Activity implements View.OnClickListener {
     private Context mContext;

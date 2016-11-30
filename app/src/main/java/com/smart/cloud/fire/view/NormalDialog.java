@@ -22,11 +22,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.utils.TestAuthorityUtil;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 public class NormalDialog {
     Context context;

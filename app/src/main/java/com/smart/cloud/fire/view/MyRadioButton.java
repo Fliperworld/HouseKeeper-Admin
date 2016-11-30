@@ -3,6 +3,7 @@ package com.smart.cloud.fire.view;
 /**
  * Created by Administrator on 2016/8/6.
  */
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -10,7 +11,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.RadioButton;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+import com.hrsst.housekeeper.R;
+
 
 public class MyRadioButton extends RadioButton {
 

@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.adapter.ViewPagerAdapter;
 import com.smart.cloud.fire.base.ui.MvpFragment;
 import com.smart.cloud.fire.global.MyApp;
@@ -28,7 +29,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 import butterknife.OnPageChange;
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 /**
  * Created by Administrator on 2016/9/21.

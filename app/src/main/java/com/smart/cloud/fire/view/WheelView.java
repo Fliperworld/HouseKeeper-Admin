@@ -3,6 +3,7 @@ package com.smart.cloud.fire.view;
 /**
  * Created by Administrator on 2016/8/4.
  */
+
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Canvas;
@@ -16,10 +17,12 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
+import com.hrsst.housekeeper.R;
+
 import java.util.LinkedList;
 import java.util.List;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 
 /**

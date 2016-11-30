@@ -7,7 +7,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+import com.hrsst.housekeeper.R;
+
 
 public class AboutActivity extends Activity{
     private Context mContext;

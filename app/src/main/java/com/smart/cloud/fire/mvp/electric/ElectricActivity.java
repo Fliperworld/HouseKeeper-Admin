@@ -11,6 +11,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.adapter.ElectricActivityAdapterTest;
 import com.smart.cloud.fire.base.ui.MvpActivity;
 import com.smart.cloud.fire.global.ElectricValue;
@@ -23,7 +24,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 /**
  * Created by Administrator on 2016/11/2.

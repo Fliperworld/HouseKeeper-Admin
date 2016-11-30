@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.base.presenter.BasePresenter;
 import com.smart.cloud.fire.global.MainThread;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.HttpError;
@@ -18,7 +19,6 @@ import com.smart.cloud.fire.rxjava.SubscriberCallBack;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import fire.cloud.smart.com.smartcloudfire.R;
 import rx.Observable;
 
 /**

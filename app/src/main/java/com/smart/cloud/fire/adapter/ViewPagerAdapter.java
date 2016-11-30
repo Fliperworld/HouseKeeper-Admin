@@ -8,13 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.Smoke;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 /**
  * Created by Administrator on 2016/10/17.

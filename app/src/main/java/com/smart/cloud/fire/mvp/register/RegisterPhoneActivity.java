@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.hrsst.housekeeper.R;
 import com.jakewharton.rxbinding.view.RxView;
 import com.smart.cloud.fire.base.ui.MvpActivity;
 import com.smart.cloud.fire.mvp.login.LoginActivity;
@@ -20,7 +21,6 @@ import com.smart.cloud.fire.utils.T;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
-import fire.cloud.smart.com.smartcloudfire.R;
 import rx.functions.Action1;
 
 /**

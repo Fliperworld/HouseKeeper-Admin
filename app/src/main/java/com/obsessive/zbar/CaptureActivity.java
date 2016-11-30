@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.utils.TestAuthorityUtil;
 
 import net.sourceforge.zbar.Config;
@@ -29,7 +30,7 @@ import net.sourceforge.zbar.SymbolSet;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 //AppCompatActivity
 public class CaptureActivity extends Activity{

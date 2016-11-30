@@ -3,6 +3,7 @@ package com.smart.cloud.fire.view;
 /**
  * Created by Administrator on 2016/8/4.
  */
+
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
@@ -11,7 +12,8 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+import com.hrsst.housekeeper.R;
+
 
 public class MyInputPassDialog extends Dialog implements OnClickListener {
     private String title;

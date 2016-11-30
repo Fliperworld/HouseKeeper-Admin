@@ -22,6 +22,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hrsst.housekeeper.R;
 import com.igexin.sdk.PushManager;
 import com.p2p.core.P2PHandler;
 import com.p2p.core.update.UpdateManager;
@@ -45,7 +46,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 /**
  * Created by Administrator on 2016/9/21.

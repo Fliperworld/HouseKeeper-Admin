@@ -44,6 +44,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hrsst.housekeeper.R;
 import com.p2p.core.BaseMonitorActivity;
 import com.p2p.core.P2PHandler;
 import com.p2p.core.P2PValue;
@@ -64,7 +65,7 @@ import com.smart.cloud.fire.yoosee.SettingListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 
 public class ApMonitorActivity extends BaseMonitorActivity implements OnClickListener {

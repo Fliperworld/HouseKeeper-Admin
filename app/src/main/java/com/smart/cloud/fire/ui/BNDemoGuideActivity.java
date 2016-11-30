@@ -20,13 +20,14 @@ import com.baidu.navisdk.adapter.BNaviBaseCallbackModel;
 import com.baidu.navisdk.adapter.BaiduNaviCommonModule;
 import com.baidu.navisdk.adapter.NaviModuleFactory;
 import com.baidu.navisdk.adapter.NaviModuleImpl;
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.global.InitBaiduNavi;
 import com.smart.cloud.fire.utils.T;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 /**
  * 诱导界面

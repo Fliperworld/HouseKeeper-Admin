@@ -8,11 +8,13 @@ import android.app.Service;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
+
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.global.MyApp;
 
 import java.util.HashMap;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 public class MusicManger {
     private static MusicManger manager = null;

@@ -3,13 +3,15 @@ package com.smart.cloud.fire.adapter;
 /**
  * Created by Administrator on 2016/8/4.
  */
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+import com.hrsst.housekeeper.R;
+
 
 public class DateNumericAdapter extends AbstractWheelAdapter {
     Context context;

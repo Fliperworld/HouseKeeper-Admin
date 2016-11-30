@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
+import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.base.ui.MvpActivity;
 import com.smart.cloud.fire.global.MyApp;
 import com.smart.cloud.fire.global.TemperatureTime;
@@ -13,7 +14,6 @@ import com.smart.cloud.fire.utils.SharedPreferencesManager;
 import java.util.ArrayList;
 import java.util.List;
 
-import fire.cloud.smart.com.smartcloudfire.R;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;

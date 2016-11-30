@@ -7,6 +7,7 @@ package com.smart.cloud.fire.yoosee;
 import android.content.Intent;
 import android.util.Log;
 
+import com.hrsst.housekeeper.R;
 import com.p2p.core.P2PInterface.IP2P;
 import com.p2p.core.P2PValue;
 import com.smart.cloud.fire.global.ConstantValues;
@@ -14,7 +15,7 @@ import com.smart.cloud.fire.global.MyApp;
 import com.smart.cloud.fire.utils.MusicManger;
 import com.smart.cloud.fire.utils.SharedPreferencesManager;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 public class P2PListener implements IP2P {
 

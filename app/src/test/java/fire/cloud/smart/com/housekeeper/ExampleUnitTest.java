@@ -1,4 +1,4 @@
-package fire.cloud.smart.com.smartcloudfire;
+package fire.cloud.smart.com.housekeeper;
 
 import org.junit.Test;
 

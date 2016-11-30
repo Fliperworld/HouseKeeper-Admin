@@ -18,10 +18,12 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.hrsst.housekeeper.R;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 /**
  * 顶部indicator

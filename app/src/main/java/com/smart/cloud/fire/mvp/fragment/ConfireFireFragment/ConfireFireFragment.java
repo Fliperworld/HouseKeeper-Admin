@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.baidu.location.BDLocation;
+import com.hrsst.housekeeper.R;
 import com.jakewharton.rxbinding.view.RxView;
 import com.obsessive.zbar.CaptureActivity;
 import com.smart.cloud.fire.base.ui.MvpFragment;
@@ -30,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import fire.cloud.smart.com.smartcloudfire.R;
 import rx.functions.Action1;
 
 /**

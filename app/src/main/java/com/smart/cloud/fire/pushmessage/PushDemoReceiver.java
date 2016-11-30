@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
+import com.hrsst.housekeeper.R;
 import com.igexin.sdk.PushConsts;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.global.MyApp;
@@ -28,7 +29,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 import java.util.Random;
 
-import fire.cloud.smart.com.smartcloudfire.R;
+
 
 public class PushDemoReceiver extends BroadcastReceiver {
 

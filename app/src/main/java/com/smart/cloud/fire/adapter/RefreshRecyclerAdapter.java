@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.hrsst.housekeeper.R;
 import com.jakewharton.rxbinding.view.RxView;
 import com.smart.cloud.fire.global.InitBaiduNavi;
 import com.smart.cloud.fire.mvp.fragment.CollectFragment.AlarmMessageModel;
@@ -23,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import fire.cloud.smart.com.smartcloudfire.R;
 import rx.functions.Action1;
 
 public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
