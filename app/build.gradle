@@ -17,9 +17,9 @@ android {
         versionCode 4
         versionName "4.0.0"
         manifestPlaceholders = [
-                GETUI_APP_ID    : "WUieDSVpdYAFJRxVSTpVA3",
-                GETUI_APP_KEY   : "81wzEpKaYp7vEzcFgDEWp2",
-                GETUI_APP_SECRET: "81wzEpKaYp7vEzcFgDEWp2",
+                GETUI_APP_ID    : "DHoOZzYdjI9rszGEcoeD95",
+                GETUI_APP_KEY   : "t9lpILKnapAZeKx6M4quDA",
+                GETUI_APP_SECRET: "NG0Px5mgbh89ScxMcPqaL1",
                 PACKAGE_NAME    : applicationId
         ]
 

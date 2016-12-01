@@ -1,336 +1,159 @@
 package com.smart.cloud.fire.mvp.fragment.ShopInfoFragment;
 
 import android.annotation.TargetApi;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.OrientationHelper;
+import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.hrsst.housekeeper.R;
+import com.smart.cloud.fire.adapter.ShopCameraAdapter;
 import com.smart.cloud.fire.base.ui.MvpFragment;
 import com.smart.cloud.fire.global.Area;
 import com.smart.cloud.fire.global.MyApp;
 import com.smart.cloud.fire.global.ShopType;
 import com.smart.cloud.fire.global.SmokeSummary;
-import com.smart.cloud.fire.mvp.fragment.ShopInfoFragment.AllDevFragment.AllDevFragment;
-import com.smart.cloud.fire.mvp.fragment.ShopInfoFragment.CameraFragment.CameraFragment;
-import com.smart.cloud.fire.mvp.fragment.ShopInfoFragment.Electric.ElectricFragment;
-import com.smart.cloud.fire.mvp.fragment.ShopInfoFragment.OffLineDevFragment.OffLineDevFragment;
+import com.smart.cloud.fire.mvp.fragment.MapFragment.Camera;
 import com.smart.cloud.fire.utils.SharedPreferencesManager;
 import com.smart.cloud.fire.utils.T;
-import com.smart.cloud.fire.utils.Utils;
-import com.smart.cloud.fire.view.TopIndicator;
-import com.smart.cloud.fire.view.XCDropDownListViewMapSearch;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
 /**
  * Created by Administrator on 2016/9/21.
  */
-public class ShopInfoFragment extends MvpFragment<ShopInfoFragmentPresenter> implements ShopInfoFragmentView, TopIndicator.OnTopIndicatorListener {
-    @Bind(R.id.top_indicator)
-    TopIndicator topIndicator;
-    @Bind(R.id.area_condition)
-    XCDropDownListViewMapSearch areaCondition;
-    @Bind(R.id.shop_type_condition)
-    XCDropDownListViewMapSearch shopTypeCondition;
-    @Bind(R.id.lin1)
-    LinearLayout lin1;
+public class ShopInfoFragment extends MvpFragment<ShopInfoFragmentPresenter> implements ShopInfoFragmentView{
+    @Bind(R.id.recycler_view)
+    RecyclerView recyclerView;
+    @Bind(R.id.swipere_fresh_layout)
+    SwipeRefreshLayout swipereFreshLayout;
     @Bind(R.id.mProgressBar)
     ProgressBar mProgressBar;
-    @Bind(R.id.add_fire)
-    ImageView addFire;
-    @Bind(R.id.search_fire)
-    ImageView searchFire;
-    @Bind(R.id.lost_count)
-    TextView lostCount;
-    @Bind(R.id.total_num)
-    TextView totalNum;
-    @Bind(R.id.online_num)
-    TextView onlineNum;
-    @Bind(R.id.offline_num)
-    TextView offlineNum;
-    @Bind(R.id.smoke_total)
-    LinearLayout smokeTotal;
+    private LinearLayoutManager linearLayoutManager;
+    private ShopCameraAdapter shopCameraAdapter;
+    private int lastVisibleItem;
     private Context mContext;
-    private ShopInfoFragmentPresenter mShopInfoFragmentPresenter;
+    private List<Camera.CameraBean> list;
+    private boolean research = false;
+    private String page;
     private String userID;
     private int privilege;
-    private AllDevFragment allDevFragment;
-    private CameraFragment cameraFragment;
-    private OffLineDevFragment offLineDevFragment;
-    private FragmentManager fragmentManager;
-    private ElectricFragment electricFragment;
-    public static final int FRAGMENT_ONE = 0;
-    public static final int FRAGMENT_TWO = 1;
-    public static final int FRAGMENT_THREE = 2;
-    public static final int FRAGMENT_FOUR = 3;
-    private int position;
-    private boolean visibility = false;
-    private ShopType mShopType;
-    private Area mArea;
-    private String areaId = "";
-    private String shopTypeId = "";
+    private ShopInfoFragmentPresenter mShopInfoFragmentPresenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_info, container, false);
+        View view = inflater.inflate(R.layout.fragment_shop_info, null);
         ButterKnife.bind(this, view);
         return view;
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        fragmentManager = getChildFragmentManager();
-        mContext = getActivity();
+        mContext=getActivity();
         userID = SharedPreferencesManager.getInstance().getData(mContext,
                 SharedPreferencesManager.SP_FILE_GWELL,
                 SharedPreferencesManager.KEY_RECENTNAME);
         privilege = MyApp.app.getPrivilege();
-        topIndicator.setOnTopIndicatorListener(this);
-        showFragment(FRAGMENT_ONE);
-        addFire.setVisibility(View.VISIBLE);
-        addFire.setImageResource(R.drawable.search);
-        smokeTotal.setVisibility(View.VISIBLE);
-        mShopInfoFragmentPresenter.getSmokeSummary(userID,privilege+"","");
+        page = "1";
+        list = new ArrayList<>();
+        refreshListView();
+        mvpPresenter.getAllCamera(userID, privilege + "", page,false,false);
     }
 
-    @OnClick({R.id.add_fire, R.id.area_condition, R.id.shop_type_condition, R.id.search_fire})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.add_fire:
-                if (visibility) {
-                    visibility = false;
-                    lin1.setVisibility(View.GONE);
-                    if (areaCondition.ifShow()) {
-                        areaCondition.closePopWindow();
+    private void refreshListView() {
+        //设置刷新时动画的颜色，可以设置4个
+        swipereFreshLayout.setProgressBackgroundColorSchemeResource(android.R.color.white);
+        swipereFreshLayout.setColorSchemeResources(android.R.color.holo_blue_light,
+                android.R.color.holo_red_light, android.R.color.holo_orange_light,
+                android.R.color.holo_green_light);
+        swipereFreshLayout.setProgressViewOffset(false, 0, (int) TypedValue
+                .applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources()
+                        .getDisplayMetrics()));
+        linearLayoutManager=new LinearLayoutManager(mContext);
+        linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+        swipereFreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                page = "1";
+                list.clear();
+                mvpPresenter.getAllCamera(userID, privilege + "", page,true,false);
+            }
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (research) {
+                    if(shopCameraAdapter!=null){
+                        shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.NO_DATA);
                     }
-                    if (shopTypeCondition.ifShow()) {
-                        shopTypeCondition.closePopWindow();
-                    }
-                } else {
-                    visibility = true;
-                    areaCondition.setEditText("");
-                    shopTypeCondition.setEditText("");
-                    areaCondition.setEditTextHint("区域");
-                    shopTypeCondition.setEditTextHint("类型");
-                    lin1.setVisibility(View.VISIBLE);
-                }
-                break;
-            case R.id.area_condition:
-                if (areaCondition.ifShow()) {
-                    areaCondition.closePopWindow();
-                } else {
-                    mvpPresenter.getPlaceTypeId(userID, privilege + "", 2);
-                    areaCondition.setClickable(false);
-                    areaCondition.showLoading();
-                }
-                break;
-            case R.id.shop_type_condition:
-                if (shopTypeCondition.ifShow()) {
-                    shopTypeCondition.closePopWindow();
-                } else {
-                    mvpPresenter.getPlaceTypeId(userID, privilege + "", 1);
-                    shopTypeCondition.setClickable(false);
-                    shopTypeCondition.showLoading();
-                }
-                break;
-            case R.id.search_fire:
-                if (!Utils.isNetworkAvailable(getActivity())) {
                     return;
                 }
-                if (shopTypeCondition.ifShow()) {
-                    shopTypeCondition.closePopWindow();
-                }
-                if (areaCondition.ifShow()) {
-                    areaCondition.closePopWindow();
-                }
-                if ((mShopType != null && mShopType.getPlaceTypeId() != null) || (mArea != null && mArea.getAreaId() != null)) {
-                    lin1.setVisibility(View.GONE);
-                    searchFire.setVisibility(View.GONE);
-                    addFire.setVisibility(View.VISIBLE);
-                    areaCondition.searchClose();
-                    shopTypeCondition.searchClose();
-                    visibility = false;
-                    if (mArea != null && mArea.getAreaId() != null) {
-                        areaId = mArea.getAreaId();
-                    } else {
-                        areaId = "";
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 2 == shopCameraAdapter.getItemCount()) {
+                    if (list != null && list.size() >= 20 && research == false) {
+                        page = Integer.parseInt(page) + 1 + "";
+                        mvpPresenter.getAllCamera(userID, privilege + "", page,true,true);
                     }
-                    if (mShopType != null && mShopType.getPlaceTypeId() != null) {
-                        shopTypeId = mShopType.getPlaceTypeId();
-                    } else {
-                        shopTypeId = "";
-                    }
-                    switch (position) {
-                        case FRAGMENT_ONE:
-                            mvpPresenter.getNeedSmoke(userID, privilege + "", areaId, shopTypeId, allDevFragment);
-                            mvpPresenter.getSmokeSummary(userID,privilege+"",areaId);
-                            break;
-                        case FRAGMENT_TWO:
-                            mvpPresenter.getNeedElectricInfo(userID, privilege + "", areaId, shopTypeId,"",electricFragment);
-                            break;
-                        case FRAGMENT_THREE:
-                            break;
-                        case FRAGMENT_FOUR:
-                            mvpPresenter.getNeedLossSmoke(userID, privilege + "", areaId, shopTypeId, "",false,0,null,offLineDevFragment);
-//                            mvpPresenter.getNeedLossSmoke(userID, privilege + "", areaId, shopTypeId, "", false, offLineDevFragment);
-                            mvpPresenter.getSmokeSummary(userID,privilege+"",areaId);
-                            break;
-                        default:
-                            break;
-                    }
-                    mShopType = null;
-                    mArea = null;
-                } else {
-                    lin1.setVisibility(View.GONE);
-                    return;
+                } else{
+                    shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.NO_DATA);
                 }
-                break;
-            default:
-                break;
-        }
+                mProgressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
+            }
+        });
     }
 
-    public void showFragment(int index) {
-        FragmentTransaction ft = fragmentManager.beginTransaction();
-        hideFragment(ft);
-        //注意这里设置位置
-        position = index;
-        switch (index) {
-            case FRAGMENT_ONE:
-                if (allDevFragment == null) {
-                    allDevFragment = new AllDevFragment();
-                    ft.add(R.id.fragment_content, allDevFragment);
-                } else {
-                    ft.show(allDevFragment);
-                }
-                break;
-            case FRAGMENT_TWO:
-                if (electricFragment == null) {
-                    electricFragment = new ElectricFragment();
-                    ft.add(R.id.fragment_content, electricFragment);
-                } else {
-                    ft.show(electricFragment);
-                }
-                break;
-            case FRAGMENT_THREE:
-                if (cameraFragment == null) {
-                    cameraFragment = new CameraFragment();
-                    ft.add(R.id.fragment_content, cameraFragment);
-                } else {
-                    ft.show(cameraFragment);
-                }
-                break;
-            case FRAGMENT_FOUR:
-                if (offLineDevFragment == null) {
-                    offLineDevFragment = new OffLineDevFragment();
-                    ft.add(R.id.fragment_content, offLineDevFragment);
-                } else {
-                    ft.show(offLineDevFragment);
-                }
-                break;
-        }
-        ft.commit();
-    }
-
-    public void hideFragment(FragmentTransaction ft) {
-        //如果不为空，就先隐藏起来
-        if (allDevFragment != null) {
-            ft.hide(allDevFragment);
-        }
-        if (cameraFragment != null) {
-            ft.hide(cameraFragment);
-        }
-        if (offLineDevFragment != null) {
-            ft.hide(offLineDevFragment);
-        }
-        if (electricFragment != null) {
-            ft.hide(electricFragment);
-        }
-    }
-
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     protected ShopInfoFragmentPresenter createPresenter() {
-        mShopInfoFragmentPresenter = new ShopInfoFragmentPresenter(this, ShopInfoFragment.this);
+        mShopInfoFragmentPresenter = new ShopInfoFragmentPresenter(this);
         return mShopInfoFragmentPresenter;
     }
 
     @Override
     public String getFragmentName() {
-        return "ShopInfoFragment";
+        return "CameraFragment";
     }
 
     @Override
-    public void onIndicatorSelected(int index) {
-        topIndicator.setTabsDisplay(mContext, index);
-        switch (index) {
-            case 0:
-                smokeTotal.setVisibility(View.VISIBLE);
-                mvpPresenter.unSubscribe("allSmoke");
-                break;
-            case 1:
-                smokeTotal.setVisibility(View.GONE);
-                mvpPresenter.unSubscribe("electric");
-                break;
-            case 2:
-                smokeTotal.setVisibility(View.GONE);
-                mvpPresenter.unSubscribe("allCamera");
-                break;
-            case 3:
-                smokeTotal.setVisibility(View.VISIBLE);
-                mvpPresenter.unSubscribe("lostSmoke");
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (allDevFragment != null) {
-            allDevFragment = null;
-        }
-        if (cameraFragment != null) {
-            cameraFragment = null;
-        }
-        if (offLineDevFragment != null) {
-            offLineDevFragment = null;
-        }
-        if (electricFragment != null) {
-            electricFragment = null;
-        }
-    }
-
-    @Override
-    public void getDataSuccess(List<?> smokeList,boolean search) {
+    public void getDataSuccess(List<Camera.CameraBean> cameraBeanList) {
+        list.clear();
+        list.addAll(cameraBeanList);
+        shopCameraAdapter = new ShopCameraAdapter(mContext, list, mShopInfoFragmentPresenter);
+        recyclerView.setAdapter(shopCameraAdapter);
+        swipereFreshLayout.setRefreshing(false);
+        shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.NO_DATA);
     }
 
     @Override
     public void getDataFail(String msg) {
+        swipereFreshLayout.setRefreshing(false);
+        T.showShort(mContext, msg);
+        if(shopCameraAdapter!=null){
+            shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.NO_DATA);
+        }
     }
 
     @Override
@@ -344,116 +167,47 @@ public class ShopInfoFragment extends MvpFragment<ShopInfoFragmentPresenter> imp
     }
 
     @Override
-    public void onLoadingMore(List<?> smokeList) {
+    public void onLoadingMore(List<Camera.CameraBean> cameraBeanList) {
+        list.addAll(cameraBeanList);
+        shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.LOADING_MORE);
+        shopCameraAdapter.addMoreItem(list);
+        shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.PULLUP_LOAD_MORE);
     }
 
     @Override
     public void getAreaType(ArrayList<?> shopTypes, int type) {
-        if (type == 1) {
-            shopTypeCondition.setItemsData((ArrayList<Object>) shopTypes, mShopInfoFragmentPresenter);
-            shopTypeCondition.showPopWindow();
-            shopTypeCondition.setClickable(true);
-            shopTypeCondition.closeLoading();
-        } else {
-            areaCondition.setItemsData((ArrayList<Object>) shopTypes, mShopInfoFragmentPresenter);
-            areaCondition.showPopWindow();
-            areaCondition.setClickable(true);
-            areaCondition.closeLoading();
-        }
-
     }
 
     @Override
     public void getAreaTypeFail(String msg, int type) {
-        T.showShort(mContext, msg);
-        if (type == 1) {
-            shopTypeCondition.setClickable(true);
-            shopTypeCondition.closeLoading();
-        } else {
-            areaCondition.setClickable(true);
-            areaCondition.closeLoading();
-        }
     }
 
     @Override
     public void unSubscribe(String type) {
-        switch (type) {
-            case "allSmoke":
-                mShopInfoFragmentPresenter.getSmokeSummary(userID,privilege+"","");
-                lin1.setVisibility(View.GONE);
-                searchFire.setVisibility(View.GONE);
-                addFire.setVisibility(View.VISIBLE);
-                showFragment(FRAGMENT_ONE);
-                break;
-            case "allCamera":
-                lin1.setVisibility(View.GONE);
-                searchFire.setVisibility(View.GONE);
-                addFire.setVisibility(View.VISIBLE);
-                showFragment(FRAGMENT_THREE);
-                break;
-            case "lostSmoke":
-                mShopInfoFragmentPresenter.getSmokeSummary(userID,privilege+"","");
-                lin1.setVisibility(View.GONE);
-                searchFire.setVisibility(View.GONE);
-                addFire.setVisibility(View.VISIBLE);
-                showFragment(FRAGMENT_FOUR);
-                break;
-            case "electric":
-                lin1.setVisibility(View.GONE);
-                searchFire.setVisibility(View.GONE);
-                addFire.setVisibility(View.VISIBLE);
-                showFragment(FRAGMENT_TWO);
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
     public void getLostCount(String count) {
-        int len = count.length();
-        if (len > 3) {
-            lostCount.setTextSize(10);
-        }
-        lostCount.setText(count);
     }
 
     @Override
     public void getChoiceArea(Area area) {
-        mArea = area;
-        if (mArea != null && mArea.getAreaId() != null) {
-            addFire.setVisibility(View.GONE);
-            searchFire.setVisibility(View.VISIBLE);
-        }
-        if (mArea.getAreaId() == null && mShopType == null) {
-            addFire.setVisibility(View.VISIBLE);
-            searchFire.setVisibility(View.GONE);
-        } else if (mArea.getAreaId() == null && mShopType != null && mShopType.getPlaceTypeId() == null) {
-            addFire.setVisibility(View.VISIBLE);
-            searchFire.setVisibility(View.GONE);
-        }
+
     }
 
     @Override
     public void getChoiceShop(ShopType shopType) {
-        mShopType = shopType;
-        if (mShopType != null && mShopType.getPlaceTypeId() != null) {
-            addFire.setVisibility(View.GONE);
-            searchFire.setVisibility(View.VISIBLE);
-        }
-        if (mShopType.getPlaceTypeId() == null && mArea == null) {
-            addFire.setVisibility(View.VISIBLE);
-            searchFire.setVisibility(View.GONE);
-        } else if (mShopType.getPlaceTypeId() == null && mArea != null && mArea.getAreaId() == null) {
-            addFire.setVisibility(View.VISIBLE);
-            searchFire.setVisibility(View.GONE);
-        }
+
     }
 
     @Override
     public void getSmokeSummary(SmokeSummary smokeSummary) {
-        totalNum.setText(smokeSummary.getAllSmokeNumber()+"");
-        onlineNum.setText(smokeSummary.getOnlineSmokeNumber()+"");
-        offlineNum.setText(smokeSummary.getLossSmokeNumber()+"");
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }

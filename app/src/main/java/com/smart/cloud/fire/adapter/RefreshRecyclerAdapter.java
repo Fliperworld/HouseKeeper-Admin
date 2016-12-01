@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.hrsst.housekeeper.R;
 import com.jakewharton.rxbinding.view.RxView;
+import com.smart.cloud.fire.global.AlarmMsg;
 import com.smart.cloud.fire.global.InitBaiduNavi;
-import com.smart.cloud.fire.mvp.fragment.CollectFragment.AlarmMessageModel;
 import com.smart.cloud.fire.mvp.fragment.CollectFragment.CollectFragmentPresenter;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.Smoke;
 import com.smart.cloud.fire.utils.T;
@@ -36,13 +36,13 @@ public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private static final int TYPE_FOOTER = 1;  //顶部FootView
     private int load_more_status = 0;
     private LayoutInflater mInflater;
-    private List<AlarmMessageModel> messageModelList;
+    private List<AlarmMsg.AlarmBean> messageModelList;
     private Activity mContext;
     private CollectFragmentPresenter collectFragmentPresenter;
     private String userId;
     private String privilege;
 
-    public RefreshRecyclerAdapter(Activity mContext, List<AlarmMessageModel> messageModelList
+    public RefreshRecyclerAdapter(Activity mContext, List<AlarmMsg.AlarmBean> messageModelList
             , CollectFragmentPresenter collectFragmentPresenter, String userId, String privilege) {
         this.mInflater = LayoutInflater.from(mContext);
         this.messageModelList = messageModelList;
@@ -85,75 +85,33 @@ public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            final AlarmMessageModel mNormalAlarmMessage = messageModelList.get(position);
+            final AlarmMsg.AlarmBean mNormalAlarmMessage = messageModelList.get(position);
+            final AlarmMsg.AlarmBean.CameraBean cameraBean = mNormalAlarmMessage.getCamera();
             int alarmType = mNormalAlarmMessage.getAlarmType();
             int ifDeal = mNormalAlarmMessage.getIfDealAlarm();
             ((ItemViewHolder) holder).alarmTimeTv.setText(mNormalAlarmMessage.getAlarmTime());
-            ((ItemViewHolder) holder).smokeMacTv.setText(mNormalAlarmMessage.getName());
-            ((ItemViewHolder) holder).repeaterAddressTv.setText(mNormalAlarmMessage.getAddress());
-            ((ItemViewHolder) holder).repeaterNameTv.setText(mNormalAlarmMessage.getPlaceType());
-            ((ItemViewHolder) holder).repeaterMacTv.setText(mNormalAlarmMessage.getAreaName());
-            ((ItemViewHolder) holder).userSmokeMarkPrincipal.setText(mNormalAlarmMessage.getPrincipal1());
-            ((ItemViewHolder) holder).userSmokeMarkPhoneTv.setText(mNormalAlarmMessage.getPrincipal1Phone());
-            ((ItemViewHolder) holder).userSmokeMarkPrincipalTwo.setText(mNormalAlarmMessage.getPrincipal2());
-            ((ItemViewHolder) holder).userSmokeMarkPhoneTvTwo.setText(mNormalAlarmMessage.getPrincipal2Phone());
+            ((ItemViewHolder) holder).smokeMacTv.setText(cameraBean.getAddrcameraNameess());
+            ((ItemViewHolder) holder).repeaterAddressTv.setText(cameraBean.getCameraAddress());
+            ((ItemViewHolder) holder).userSmokeMarkPrincipal.setText(cameraBean.getPrincipal1());
+            ((ItemViewHolder) holder).userSmokeMarkPhoneTv.setText(cameraBean.getPrincipal1Phone());
+            ((ItemViewHolder) holder).userSmokeMarkPrincipalTwo.setText(cameraBean.getPrincipal2());
+            ((ItemViewHolder) holder).userSmokeMarkPhoneTvTwo.setText(cameraBean.getPrincipal2Phone());
             if (ifDeal == 0) {
                 ((ItemViewHolder) holder).dealAlarmActionTv.setText("取消报警");
                 ((ItemViewHolder) holder).dealAlarmActionTv.setVisibility(View.VISIBLE);
             } else {
                 ((ItemViewHolder) holder).dealAlarmActionTv.setVisibility(View.GONE);
             }
-            int devType= mNormalAlarmMessage.getDeviceType();
-            switch (devType){
-                case 1:
-                    ((ItemViewHolder) holder).smokeMac.setText("烟感:");
-                    if (alarmType == 202) {
-                        ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_huojing);
-                        ((ItemViewHolder) holder).smokeMac.setTextColor(mContext.getResources().getColor(R.color.hj_color_text));
-                        ((ItemViewHolder) holder).smokeMacTv.setTextColor(mContext.getResources().getColor(R.color.hj_color_text));
-                    } else {
-                        ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_ddy);
-                        ((ItemViewHolder) holder).smokeMac.setTextColor(mContext.getResources().getColor(R.color.ddy_color_text));
-                        ((ItemViewHolder) holder).smokeMacTv.setTextColor(mContext.getResources().getColor(R.color.ddy_color_text));
-                    }
-                    break;
-                case 2:
-                    ((ItemViewHolder) holder).smokeMac.setText("燃气探测器:");
-                    ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_huojing);
-                    ((ItemViewHolder) holder).smokeMac.setTextColor(mContext.getResources().getColor(R.color.hj_color_text));
-                    ((ItemViewHolder) holder).smokeMacTv.setTextColor(mContext.getResources().getColor(R.color.hj_color_text));
-                    break;
-                case 5:
-                    ((ItemViewHolder) holder).smokeMac.setText("电气火灾探测器:");
-                    int alarmFamily = mNormalAlarmMessage.getAlarmFamily();
-                    switch (alarmFamily){
-                        case 36:
-                            ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_gz);
-                            break;
-                        case 43:
-                            ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_gy);
-                            break;
-                        case 44:
-                            ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_qy);
-                            break;
-                        case 45:
-                            ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_gl);
-                            break;
-                        case 46:
-                            ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_ld);
-                            break;
-                        case 47:
-                            ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_gw);
-                            break;
-                    }
-                    break;
-            }
+            ((ItemViewHolder) holder).alarmMarkImage.setImageResource(R.drawable.xx_huojing);
+            ((ItemViewHolder) holder).smokeMac.setTextColor(mContext.getResources().getColor(R.color.hj_color_text));
+            ((ItemViewHolder) holder).smokeMacTv.setTextColor(mContext.getResources().getColor(R.color.hj_color_text));
+
             RxView.clicks(((ItemViewHolder) holder).actionNowTv).throttleFirst(2, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
                     Smoke smoke = new Smoke();
-                    smoke.setLatitude(mNormalAlarmMessage.getLatitude());
-                    smoke.setLongitude(mNormalAlarmMessage.getLongitude());
+                    smoke.setLatitude(cameraBean.getLatitude());
+                    smoke.setLongitude(cameraBean.getLongitude());
                     Reference<Activity> reference = new WeakReference(mContext);
                     new InitBaiduNavi(reference.get(), smoke);
                 }
@@ -162,19 +120,19 @@ public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             RxView.clicks(((ItemViewHolder) holder).dealAlarmActionTv).throttleFirst(2, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
-                    collectFragmentPresenter.dealAlarm(userId, mNormalAlarmMessage.getMac(), privilege);
+
                 }
             });
             RxView.clicks(((ItemViewHolder) holder).userSmokeMarkPhoneTv).throttleFirst(2, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
-                    collectFragmentPresenter.telPhoneAction(mContext, mNormalAlarmMessage.getPrincipal1Phone());
+                    collectFragmentPresenter.telPhoneAction(mContext, cameraBean.getPrincipal1Phone());
                 }
             });
             RxView.clicks(((ItemViewHolder) holder).userSmokeMarkPhoneTvTwo).throttleFirst(2, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
-                    collectFragmentPresenter.telPhoneAction(mContext, mNormalAlarmMessage.getPrincipal2Phone());
+                    collectFragmentPresenter.telPhoneAction(mContext, cameraBean.getPrincipal2Phone());
                 }
             });
             holder.itemView.setTag(position);
@@ -270,7 +228,7 @@ public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     //添加数据
-    public void addItem(List<AlarmMessageModel> alarmMessageModelList) {
+    public void addItem(List<AlarmMsg.AlarmBean> alarmMessageModelList) {
         //mTitles.add(position, data);
         //notifyItemInserted(position);
         alarmMessageModelList.addAll(messageModelList);
@@ -279,7 +237,7 @@ public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         notifyDataSetChanged();
     }
 
-    public void addMoreItem(List<AlarmMessageModel> alarmMessageModelList) {
+    public void addMoreItem(List<AlarmMsg.AlarmBean> alarmMessageModelList) {
         messageModelList.addAll(alarmMessageModelList);
         notifyDataSetChanged();
     }

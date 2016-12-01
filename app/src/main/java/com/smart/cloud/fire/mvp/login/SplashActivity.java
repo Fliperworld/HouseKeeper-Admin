@@ -53,7 +53,7 @@ public class SplashActivity extends MvpActivity<LoginPresenter> implements Login
 
     @Override
     public void autoLogin(String userId, String pwd) {
-        mvpPresenter.loginYoosee(userId,pwd,mContext,0);
+        mvpPresenter.loginYooSee(userId,pwd,mContext,0);
     }
 
     @Override

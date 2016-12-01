@@ -24,61 +24,40 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import rx.functions.Action1;
 
-/**
- * Created by Administrator on 2016/9/19.
- */
-public class RegisterPhoneActivity extends MvpActivity<RegisterPresenter> implements RegisterView {
-    @Bind(R.id.register_email_tv)
-    TextView registerEmailTv;
-    private Context mContext;
-    @Bind(R.id.register_user)
-    EditText register_user;
-    @Bind(R.id.register_pwd)
-    EditText register_pwd;
-    @Bind(R.id.register_comfire_pwd)
-    EditText register_comfire_pwd;
-    @Bind(R.id.register_code)
-    EditText register_code;
-    @Bind(R.id.register_get_code)
-    Button register_get_code;
-    @Bind(R.id.register_btn_phone)
-    Button register_btn_phone;
-    @Bind(R.id.register_old_user_tv)
-    TextView register_old_user_tv;
+public class RegisterEmailActivity extends MvpActivity<RegisterPresenter> implements RegisterView {
+
+    @Bind(R.id.register_phone_tv)
+    TextView registerPhoneTv;
+    @Bind(R.id.register_email_user)
+    EditText registerEmailUser;
+    @Bind(R.id.register_email_pwd)
+    EditText registerEmailPwd;
+    @Bind(R.id.register_email_comfire_pwd)
+    EditText registerEmailComfirePwd;
+    @Bind(R.id.register_btn_email)
+    Button registerBtnEmail;
+    @Bind(R.id.register_email_old_user_tv)
+    TextView registerEmailOldUserTv;
     @Bind(R.id.mProgressBar)
     ProgressBar mProgressBar;
-    private String phoneNO;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register_phone);
+        setContentView(R.layout.activity_register_email);
         ButterKnife.bind(this);
         mContext = this;
-        doAction();
+        action();
     }
 
-    private void doAction() {
-        RxView.clicks(register_get_code).throttleFirst(2, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        phoneNO = register_user.getText().toString().trim();
-                        mvpPresenter.getMesageCode(phoneNO);
-                    }
-                });
-        RxView.clicks(register_btn_phone).throttleFirst(2, TimeUnit.SECONDS)
-                .subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        String phoneNO = register_user.getText().toString().trim();
-                        String pwd = register_pwd.getText().toString().trim();
-                        String rePwd = register_comfire_pwd.getText().toString().trim();
-                        String code = register_code.getText().toString().trim();
-                        mvpPresenter.register(phoneNO, pwd, rePwd, code, mContext);
-                    }
-                });
-        RxView.clicks(register_old_user_tv).throttleFirst(2, TimeUnit.SECONDS)
+    @Override
+    protected RegisterPresenter createPresenter() {
+        return new RegisterPresenter(this);
+    }
+
+    private void action() {
+        RxView.clicks(registerEmailOldUserTv).throttleFirst(2, TimeUnit.SECONDS)
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
@@ -89,22 +68,27 @@ public class RegisterPhoneActivity extends MvpActivity<RegisterPresenter> implem
                         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     }
                 });
-        RxView.clicks(registerEmailTv).throttleFirst(2, TimeUnit.SECONDS)
+        RxView.clicks(registerPhoneTv).throttleFirst(2, TimeUnit.SECONDS)
                 .subscribe(new Action1<Void>() {
                     @Override
                     public void call(Void aVoid) {
                         //跳转到邮箱界面
-                        Intent intent1 = new Intent(mContext, RegisterEmailActivity.class);
+                        Intent intent1 = new Intent(mContext, RegisterPhoneActivity.class);
                         startActivity(intent1);
                         finish();
                         overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     }
                 });
-    }
-
-    @Override
-    protected RegisterPresenter createPresenter() {
-        return new RegisterPresenter(this);
+        RxView.clicks(registerBtnEmail).throttleFirst(2, TimeUnit.SECONDS)
+                .subscribe(new Action1<Void>() {
+                    @Override
+                    public void call(Void aVoid) {
+                        String phoneNO = registerEmailUser.getText().toString().trim();
+                        String pwd = registerEmailPwd.getText().toString().trim();
+                        String rePwd = registerEmailComfirePwd.getText().toString().trim();
+                        mvpPresenter.registerEmail(phoneNO, pwd, rePwd,mContext);
+                    }
+                });
     }
 
     @Override
@@ -132,6 +116,7 @@ public class RegisterPhoneActivity extends MvpActivity<RegisterPresenter> implem
 
     @Override
     public void getMesageSuccess() {
-        T.showShort(mContext, "获取验证码成功");
+
     }
+
 }

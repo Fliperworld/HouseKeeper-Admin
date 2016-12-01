@@ -63,7 +63,7 @@
         <!-- 生产模式key-->
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="F0GrSzPf0G6As4uGGRGbSFsIYLqOFmKT" />
+            android:value="MupSGZvVktKNe3oZWpj4mcoS7kOGGtAa" />
 
         <!--
         测试模式key
@@ -85,6 +85,11 @@
 
         <activity
             android:name="com.smart.cloud.fire.mvp.register.RegisterPhoneActivity"
+            android:label="@string/title_activity_register"
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name="com.smart.cloud.fire.mvp.register.RegisterEmailActivity"
             android:label="@string/title_activity_register"
             android:theme="@style/AppTheme" />
 

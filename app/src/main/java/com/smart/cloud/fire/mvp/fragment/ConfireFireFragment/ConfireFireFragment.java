@@ -248,9 +248,9 @@ public class ConfireFireFragment extends MvpFragment<ConfireFireFragmentPresente
         addFireZjq.setEditTextData(smoke.getAreaName());
         areaId=smoke.getAreaId()+"";
         Camera mCamera = smoke.getCamera();
-        if (mCamera != null) {
-            addCameraName.setText(mCamera.getCameraId());
-        }
+//        if (mCamera != null) {
+//            addCameraName.setText(mCamera.getCameraId());
+//        }
         addRepeaterMac.setText(smoke.getRepeater().trim());
     }
 

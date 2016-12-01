@@ -1,11 +1,17 @@
 package com.smart.cloud.fire.retrofit;
 
+import com.smart.cloud.fire.global.AlarmCameraInfo;
+import com.smart.cloud.fire.global.AlarmMsg;
+import com.smart.cloud.fire.global.CameraMap;
 import com.smart.cloud.fire.global.Electric;
 import com.smart.cloud.fire.global.ElectricInfo;
 import com.smart.cloud.fire.global.ElectricValue;
+import com.smart.cloud.fire.global.LoginServer;
+import com.smart.cloud.fire.global.PostResult;
 import com.smart.cloud.fire.global.SmokeSummary;
 import com.smart.cloud.fire.global.TemperatureTime;
 import com.smart.cloud.fire.mvp.fragment.ConfireFireFragment.ConfireFireModel;
+import com.smart.cloud.fire.mvp.fragment.MapFragment.Camera;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.HttpAreaResult;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.HttpError;
 import com.smart.cloud.fire.mvp.login.model.LoginModel;
@@ -103,10 +109,6 @@ public interface ApiStores {
                                           @Query("principal1Phone") String principal1Phone, @Query("principal2") String principal2,
                                           @Query("principal2Phone") String principal2Phone, @Query("areaId") String areaId,
                                           @Query("repeater") String repeater,@Query("camera") String camera,@Query("deviceType") String deviceType);
-    //获取用户报警消息
-    @GET("getAllAlarm")
-    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
-    Observable<HttpError> getAllAlarm(@Query("userId") String userId, @Query("privilege") String privilege,@Query("page") String page);
 
     //条件查询获取用户报警消息
     @GET("getNeedAlarm")
@@ -180,4 +182,36 @@ public interface ApiStores {
     Observable<ElectricInfo<Electric>> getNeedElectricInfo(@Query("userId") String userId, @Query("privilege") String privilege,
                                                     @Query("areaId") String areaId, @Query("placeTypeId") String placeTypeId,
                                                     @Query("page") String page);
+
+    @FormUrlEncoded
+    @POST("register")
+    Observable<PostResult> registerServerIp(@Field("userId") String userId, @Field("userName") String userName
+            , @Field("phone") String phone, @Field("email") String email, @Field("privilege") String pwd);
+
+    //登录本地服务器
+    @GET("login")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
+    Observable<LoginServer> loginServer(@Query("userId") String userId, @Query("phone") String phone, @Query("email") String email);
+
+//    http://192.168.4.111:51091/camera/managerGetAllCamera?userId=13428282520&privilege=3&page=1
+    @GET("managerGetAllCamera")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
+    Observable<CameraMap> managerGetAllCamera(@Query("userId") String userId, @Query("privilege") String privilege, @Query("page") String page);
+
+    //    9 获取摄像头信息
+//    9 get:	  http://192.168.4.111:51091/camera/getOneCamera?cameraId=3121164
+    @GET("getOneCamera")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
+    Observable<AlarmCameraInfo> getOneCamera(@Query("cameraId") String cameraId);
+
+//    11 管理员获取摄像头详细信息
+//    11  get:	  http://192.168.4.111:51091/camera/managerGetAllCameraDetail?userId=13428282520&privilege=3&page=1
+    @GET("managerGetAllCameraDetail")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
+    Observable<Camera> managerGetAllCameraDetail(@Query("userId") String userId,@Query("privilege") String privilege,@Query("page") String page);
+
+    //    http://192.168.4.111:51091/camera/getAllAlarm?userId=13428282520&privilege=1&page=
+    @GET("getAllAlarm")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
+    Observable<AlarmMsg> getAllAlarm(@Query("userId") String userId, @Query("privilege") String privilege, @Query("page") String page);
 }

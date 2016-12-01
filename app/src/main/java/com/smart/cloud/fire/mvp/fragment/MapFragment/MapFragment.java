@@ -18,6 +18,7 @@ import com.baidu.mapapi.overlayutil.MyOverlayManager;
 import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.base.ui.MvpFragment;
 import com.smart.cloud.fire.global.Area;
+import com.smart.cloud.fire.global.CameraMap;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.global.Contact;
 import com.smart.cloud.fire.global.MyApp;
@@ -25,8 +26,6 @@ import com.smart.cloud.fire.global.ShopType;
 import com.smart.cloud.fire.ui.ApMonitorActivity;
 import com.smart.cloud.fire.utils.SharedPreferencesManager;
 import com.smart.cloud.fire.utils.T;
-import com.smart.cloud.fire.view.ShowAlarmDialog;
-import com.smart.cloud.fire.view.ShowSmokeDialog;
 import com.smart.cloud.fire.view.XCDropDownListViewMapSearch;
 
 import java.util.ArrayList;
@@ -136,13 +135,13 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
 
     private MyOverlayManager mMyOverlayManager;
     @Override
-    public void getDataSuccess(List<Smoke> smokeList) {
+    public void getDataSuccess(List<CameraMap.CameraBean> cameraBeanList) {
         mBaiduMap.clear();
         List<BitmapDescriptor> viewList =  initMark();
         if(mMyOverlayManager==null){
             mMyOverlayManager = new MyOverlayManager();
         }
-        mMyOverlayManager.init(mBaiduMap,smokeList, mMapFragmentPresenter,viewList);
+        mMyOverlayManager.init(mBaiduMap,cameraBeanList, mMapFragmentPresenter,viewList);
         mMyOverlayManager.removeFromMap();
         mBaiduMap.setOnMarkerClickListener(mMyOverlayManager);
         mMyOverlayManager.addToMap();
@@ -156,30 +155,15 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
     }
 
     private List<BitmapDescriptor> initMark(){
-        View viewA = LayoutInflater.from(mContext).inflate(
-                R.layout.image_mark, null);
-        View viewB = LayoutInflater.from(mContext).inflate(
-                R.layout.image_mark_alarm, null);
-        View viewRQ = LayoutInflater.from(mContext).inflate(
-                R.layout.image_rq_mark, null);
         View view = LayoutInflater.from(mContext).inflate(
                 R.layout.image_test, null);
         View view2 = LayoutInflater.from(mContext).inflate(
                 R.layout.image_test2, null);
-        BitmapDescriptor bdA = BitmapDescriptorFactory
-                .fromView(viewA);
-        BitmapDescriptor bdC = BitmapDescriptorFactory
-                .fromView(viewB);
-        BitmapDescriptor bdRQ = BitmapDescriptorFactory
-                .fromView(viewRQ);
         BitmapDescriptor cameraImage = BitmapDescriptorFactory
                 .fromView(view);
         BitmapDescriptor cameraImage2 = BitmapDescriptorFactory
                 .fromView(view2);
         List<BitmapDescriptor> listView = new ArrayList<>();
-        listView.add(bdA);
-        listView.add(bdC);
-        listView.add(bdRQ);
         listView.add(cameraImage);
         listView.add(cameraImage2);
         return listView;
@@ -231,16 +215,10 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
     }
 
     @Override
-    public void openCamera(Camera camera) {
-        Contact mContact = new Contact();
-        mContact.contactType = 0;
-        mContact.contactId = camera.getCameraId();
-        mContact.contactPassword = camera.getCameraPwd();
-        mContact.contactName = camera.getCameraName();
-        mContact.apModeState = 1;
+    public void openCamera(Contact contact) {
         Intent monitor = new Intent();
         monitor.setClass(mContext, ApMonitorActivity.class);
-        monitor.putExtra("contact", mContact);
+        monitor.putExtra("contact", contact);
         monitor.putExtra("connectType", ConstantValues.ConnectType.P2PCONNECT);
         monitor.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         mContext.startActivity(monitor);
@@ -278,19 +256,19 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
         }
     }
 
-    @Override
-    public void showSmokeDialog(Smoke smoke) {
-        View view = LayoutInflater.from(mContext).inflate(
-                    R.layout.user_smoke_address_mark, null,false);
-        new ShowSmokeDialog(getActivity(),view,smoke);
-    }
-
-    @Override
-    public void showAlarmDialog(Smoke smoke) {
-        View view = LayoutInflater.from(mContext).inflate(
-                    R.layout.user_do_alarm_msg_dialog, null);
-        new ShowAlarmDialog(getActivity(),view,smoke,mMapFragmentPresenter,userID);
-    }
+//    @Override
+//    public void showSmokeDialog(CameraMap.CameraBean cameraBean) {
+//        View view = LayoutInflater.from(mContext).inflate(
+//                    R.layout.user_smoke_address_mark, null,false);
+//        new ShowSmokeDialog(getActivity(),view,smoke);
+//    }
+//
+//    @Override
+//    public void showAlarmDialog(CameraMap.CameraBean cameraBean) {
+//        View view = LayoutInflater.from(mContext).inflate(
+//                    R.layout.user_do_alarm_msg_dialog, null);
+//        new ShowAlarmDialog(getActivity(),view,smoke,mMapFragmentPresenter,userID);
+//    }
 
     private boolean visibility = false;
 

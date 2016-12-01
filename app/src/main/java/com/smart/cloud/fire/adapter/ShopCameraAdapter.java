@@ -35,13 +35,13 @@ public class ShopCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private int load_more_status = 0;
     private LayoutInflater mInflater;
     private Context mContext;
-    private List<Camera> listCamera;
+    private List<Camera.CameraBean> cameraBeanList;
     private ShopInfoFragmentPresenter mShopInfoFragmentPresenter;
 
-    public ShopCameraAdapter(Context mContext, List<Camera> listCamera, ShopInfoFragmentPresenter mShopInfoFragmentPresenter) {
+    public ShopCameraAdapter(Context mContext, List<Camera.CameraBean> cameraBeanList, ShopInfoFragmentPresenter mShopInfoFragmentPresenter) {
         this.mInflater = LayoutInflater.from(mContext);
         this.mContext = mContext;
-        this.listCamera = listCamera;
+        this.cameraBeanList = cameraBeanList;
         this.mContext = mContext;
         this.mShopInfoFragmentPresenter = mShopInfoFragmentPresenter;
     }
@@ -79,20 +79,20 @@ public class ShopCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ItemViewHolder) {
-            final Camera camera = listCamera.get(position);
-            ((ItemViewHolder) holder).groupTvAddress.setText(camera.getCameraAddress());
-            ((ItemViewHolder) holder).groupTv.setText(camera.getCameraName());
-            ((ItemViewHolder) holder).repeaterNameTv.setText(camera.getPlaceType());
-            ((ItemViewHolder) holder).repeaterMacTv.setText(camera.getAreaName());
-            ((ItemViewHolder) holder).groupPrincipal1.setText(camera.getPrincipal1());
-            ((ItemViewHolder) holder).groupPhone1.setText(camera.getPrincipal1Phone());
-            ((ItemViewHolder) holder).groupPrincipal2.setText(camera.getPrincipal2());
-            ((ItemViewHolder) holder).groupPhone2.setText(camera.getPrincipal2Phone());
+            final Camera.CameraBean cameraBean = cameraBeanList.get(position);
+            ((ItemViewHolder) holder).groupTvAddress.setText(cameraBean.getCameraAddress());
+            ((ItemViewHolder) holder).groupTv.setText(cameraBean.getCameraName());
+//            ((ItemViewHolder) holder).repeaterNameTv.setText(cameraBean.getPlaceType());
+//            ((ItemViewHolder) holder).repeaterMacTv.setText(cameraBean.getAreaName());
+            ((ItemViewHolder) holder).groupPrincipal1.setText(cameraBean.getPrincipal1());
+            ((ItemViewHolder) holder).groupPhone1.setText(cameraBean.getPrincipal1Phone());
+            ((ItemViewHolder) holder).groupPrincipal2.setText(cameraBean.getPrincipal2());
+            ((ItemViewHolder) holder).groupPhone2.setText(cameraBean.getPrincipal2Phone());
             ((ItemViewHolder) holder).groupImage.setImageResource(R.drawable.yg_ygtubiao_sxj);
             ((ItemViewHolder) holder).groupPhone1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String phoneOne = camera.getPrincipal1Phone();
+                    String phoneOne = cameraBean.getPrincipal1Phone();
                     mShopInfoFragmentPresenter.telPhoneAction(mContext, phoneOne);
 
                 }
@@ -100,7 +100,7 @@ public class ShopCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             ((ItemViewHolder) holder).groupPhone2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String phoneTwo = camera.getPrincipal2Phone();
+                    String phoneTwo = cameraBean.getPrincipal2Phone();
                     mShopInfoFragmentPresenter.telPhoneAction(mContext, phoneTwo);
                 }
             });
@@ -109,9 +109,9 @@ public class ShopCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 public void onClick(View v) {
                     Contact mContact = new Contact();
                     mContact.contactType = 0;
-                    mContact.contactId = camera.getCameraId();
-                    mContact.contactPassword = camera.getCameraPwd();
-                    mContact.contactName = camera.getCameraName();
+                    mContact.contactId = cameraBean.getCameraId();
+                    mContact.contactPassword = cameraBean.getCameraPwd();
+                    mContact.contactName = cameraBean.getCameraName();
                     mContact.apModeState = 1;
 
                     Intent monitor = new Intent();
@@ -162,7 +162,7 @@ public class ShopCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return listCamera.size()+1;
+        return cameraBeanList.size()+1;
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素
@@ -208,17 +208,17 @@ public class ShopCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     //添加数据
-    public void addItem(List<Camera> cameraList) {
+    public void addItem(List<Camera.CameraBean> cameraList) {
         //mTitles.add(position, data);
         //notifyItemInserted(position);
-        cameraList.addAll(listCamera);
-        listCamera.removeAll(listCamera);
-        listCamera.addAll(cameraList);
+        cameraList.addAll(cameraBeanList);
+        cameraBeanList.removeAll(cameraBeanList);
+        cameraBeanList.addAll(cameraList);
         notifyDataSetChanged();
     }
 
-    public void addMoreItem(List<Camera> cameraList) {
-        listCamera.addAll(cameraList);
+    public void addMoreItem(List<Camera.CameraBean> cameraList) {
+        cameraBeanList.addAll(cameraList);
         notifyDataSetChanged();
     }
 

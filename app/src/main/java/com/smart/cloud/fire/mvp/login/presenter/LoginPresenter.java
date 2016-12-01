@@ -8,6 +8,7 @@ import com.p2p.core.utils.MyUtils;
 import com.smart.cloud.fire.base.presenter.BasePresenter;
 import com.smart.cloud.fire.global.Account;
 import com.smart.cloud.fire.global.AccountPersist;
+import com.smart.cloud.fire.global.LoginServer;
 import com.smart.cloud.fire.global.MyApp;
 import com.smart.cloud.fire.global.NpcCommon;
 import com.smart.cloud.fire.mvp.login.model.LoginModel;
@@ -21,7 +22,6 @@ import com.smart.cloud.fire.utils.Utils;
 import java.util.Random;
 
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  *
@@ -32,9 +32,9 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         attachView(view);
     }
 
-    public void loginYoosee(final String User, final String Pwd, final Context context, final int type) {
+    public void loginYooSee(final String User, final String Pwd, final Context context, final int type) {
+        final String userType;
         String AppVersion = MyUtils.getBitProcessingVersion();
-        String userid = "+86-"+User;
         MD5 md = new MD5();
         String password = md.getMD5ofStr(Pwd);
         if(type==1){
@@ -42,67 +42,71 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         }
         Random random = new Random();
         int value = random.nextInt(4);
-        twoSubscription(apiStores[value].loginYooSee(userid, password, "1", "3", AppVersion), new Func1<LoginModel,Observable<LoginModel>>() {
+        String userId;
+        if (Utils.isNumeric(User)) {
+            if (User.charAt(0)=='0') {
+                userId = String.valueOf((Integer.parseInt(User)|0x80000000));
+                userType="userId";
+            }else{
+                userId = "+86-"+User;
+                userType="phone";
+            }
+        }else if(Utils.isEmial(User)){
+            userId = User;
+            userType="email";
+        }else{
+            mvpView.getDataFail("用户不存在");
+            return;
+        }
+        Observable<LoginModel> observable = apiStores[value].loginYooSee(userId, password, "1", "3", AppVersion);
+        addSubscription(observable,new SubscriberCallBack<>(new ApiCallback<LoginModel>() {
             @Override
-            public Observable<LoginModel> call(LoginModel loginModel) {
-                if(loginModel.getError_code().equals("0")){
-                    editSharePreference(context,loginModel,User,Pwd);
-                    return apiStores1.login(User);
-                }else {
-                    Observable<LoginModel> observable = Observable.just(loginModel);
-                    return observable;
+            public void onSuccess(LoginModel model) {
+                String errorCode = model.getError_code();
+                if(errorCode.equals("0")){
+                    editSharePreference(context,model,User,Pwd);
+                    switch (userType){
+                        case "userId":
+                            loginServer(User,"","",model);
+                            break;
+                        case "phone":
+                            loginServer("",User,"",model);
+                            break;
+                        case "email":
+                            loginServer("","",User,model);
+                            break;
+                    }
+                }else{
+                    switch (errorCode){
+                        case "2":
+                            T.showShort(context,"用户不存在");
+                            break;
+                        case "3":
+                            T.showShort(context,"密码错误");
+                            break;
+                        case "9":
+                            T.showShort(context,"用户名不能为空");
+                            break;
+                        default:
+                            break;
+                    }
+                    if(type==0){
+                        mvpView.autoLoginFail();
+                    }
                 }
             }
-        },
-        new SubscriberCallBack<>(new ApiCallback<LoginModel>() {
-                    @Override
-                    public void onSuccess(LoginModel model) {
-                        String error_code = model.getError_code();
-                        if(error_code==null){
-                            int errorCode = model.getErrorCode();
-                            switch (errorCode){
-                                case 0:
-                                    MyApp.app.setPrivilege(model.getPrivilege());
-                                    mvpView.getDataSuccess(model);
-                                    break;
-                                default:
-                                    if(type==0){
-                                        mvpView.autoLoginFail();
-                                    }
-                                    T.showShort(context,"您还没有权限，请联系管理员");
-                                    break;
-                            }
-                        }else{
-                            switch (error_code){
-                                case "2":
-                                    T.showShort(context,"用户不存在");
-                                    break;
-                                case "3":
-                                    T.showShort(context,"密码错误");
-                                    break;
-                                case "9":
-                                    T.showShort(context,"用户名不能为空");
-                                    break;
-                                default:
-                                    break;
-                            }
-                            if(type==0){
-                                mvpView.autoLoginFail();
-                            }
-                        }
-                    }
-                    @Override
-                    public void onFailure(int code, String msg) {
-                        mvpView.getDataFail(msg);
-                    }
-                    @Override
-                    public void onCompleted() {
-                        if(type==1){
-                            mvpView.hideLoading();
-                        }
-                    }
-                }));
+
+            @Override
+            public void onFailure(int code, String msg) {
+                mvpView.getDataFail("网络错误，请检查网络");
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        }));
     }
+
 
     private void editSharePreference(Context mContext, LoginModel object, String userId, String userPwd){
         String userID = "0"+String.valueOf((Integer.parseInt(object.getUserID())&0x7fffffff));
@@ -139,11 +143,37 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
     public void autoLogin(Activity activity){
         if(Utils.isNetworkAvailable(activity)){
-            String userId = SharedPreferencesManager.getInstance().getData(activity, SharedPreferencesManager.SP_FILE_GWELL, SharedPreferencesManager.KEY_RECENTNAME);
+            String userId = SharedPreferencesManager.getInstance().getData(activity, SharedPreferencesManager.SP_FILE_GWELL, SharedPreferencesManager.KEY_RECENTPASS_NUMBER);
             String userPwd = SharedPreferencesManager.getInstance().getData(activity, SharedPreferencesManager.SP_FILE_GWELL, SharedPreferencesManager.KEY_RECENTPASS);
             mvpView.autoLogin(userId,userPwd);
         }else {
             mvpView.autoLoginFail();
         }
+    }
+
+    private void loginServer(String userId, String phone, String email, final LoginModel loginModel){
+        Observable<LoginServer> observable = apiStoreServer.loginServer(userId,phone,email);
+        addSubscription(observable,new SubscriberCallBack<>(new ApiCallback<LoginServer>() {
+            @Override
+            public void onSuccess(LoginServer model) {
+                int errorCode = model.getErrorCode();
+                if(errorCode==0){
+                    MyApp.app.setPrivilege(model.getPrivilege());
+                    mvpView.getDataSuccess(loginModel);
+                }else{
+                    mvpView.getDataFail("登录失败，请重新登录");
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String msg) {
+                mvpView.getDataFail("网络错误，请检查网络");
+            }
+
+            @Override
+            public void onCompleted() {
+                mvpView.hideLoading();
+            }
+        }));
     }
 }

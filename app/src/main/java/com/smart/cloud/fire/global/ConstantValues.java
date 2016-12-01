@@ -8,7 +8,7 @@ public class ConstantValues {
     //测试IP:
     public static final String SERVER_IP_NEW ="http://119.29.224.28:51091/fireSystem/";
     //测试IP:
-    public static final String SERVER_IP_NEW_TEST="http://119.29.224.28:51090/fireSystem/";
+    public static final String SERVER_IP_NEW_TEST="http://119.29.224.28:51090/camera/";
     //正式IP:
    //public static final String SERVER_IP_NEW ="http://119.29.155.148:51091/fireSystem/";
 

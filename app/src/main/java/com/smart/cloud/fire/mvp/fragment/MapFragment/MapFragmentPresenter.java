@@ -3,12 +3,14 @@ package com.smart.cloud.fire.mvp.fragment.MapFragment;
 import android.os.Bundle;
 
 import com.smart.cloud.fire.base.presenter.BasePresenter;
+import com.smart.cloud.fire.global.AlarmCameraInfo;
 import com.smart.cloud.fire.global.Area;
+import com.smart.cloud.fire.global.CameraMap;
+import com.smart.cloud.fire.global.Contact;
 import com.smart.cloud.fire.global.ShopType;
 import com.smart.cloud.fire.rxjava.ApiCallback;
 import com.smart.cloud.fire.rxjava.SubscriberCallBack;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,17 +27,15 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
 
     public void getAllSmoke(String userId, String privilege){
         mvpView.showLoading();
-        Observable mObservable = apiStores1.getAllSmoke(userId,privilege,"");
-        Observable Observable2 = apiStores1.getAllCamera(userId,privilege,"");
-        Observable mObservable3 = Observable.merge(Observable2,mObservable);
-        addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<HttpError>() {
+        Observable<CameraMap> mObservable = apiStoreServer.managerGetAllCamera(userId,privilege,"");
+        addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<CameraMap>() {
             @Override
-            public void onSuccess(HttpError model) {
+            public void onSuccess(CameraMap model) {
                 if(model!=null){
                     int errorCode = model.getErrorCode();
                     if(errorCode==0){
-                        List<Smoke> smokes = model.getSmoke();
-                        mvpView.getDataSuccess(smokes);
+                        List<CameraMap.CameraBean> cameraBeen = model.getCamera();
+                        mvpView.getDataSuccess(cameraBeen);
                     }else{
                         mvpView.getDataFail("无数据");
                     }
@@ -107,7 +107,7 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
                     int errorCode = model.getErrorCode();
                     if(errorCode==0){
                         List<Smoke> smokes = model.getSmoke();
-                        mvpView.getDataSuccess(smokes);
+//                        mvpView.getDataSuccess(smokes);
                     }else {
                         mvpView.getAreaTypeFail("无数据");
                     }
@@ -141,7 +141,7 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
                     int errorCode = model.getErrorCode();
                     if(errorCode==0){
                         List<Smoke> smokes = model.getSmoke();
-                        mvpView.getDataSuccess(smokes);
+//                        mvpView.getDataSuccess(smokes);
                     }else{
                         mvpView.getDataFail("无数据");
                     }
@@ -159,20 +159,9 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
     }
 
     public void getClickDev(Bundle bundle){
-        Serializable object = bundle.getSerializable("mNormalSmoke");
-        boolean result = object instanceof Smoke;
-        if (result) {
-            Smoke normalSmoke = (Smoke) object;
-            int states = normalSmoke.getIfDealAlarm();
-            if (states == 1) {//无未处理报警信息，地图图标不闪
-                mvpView.showSmokeDialog(normalSmoke);
-            } else {//有未处理报警信息，地图图标闪动
-                mvpView.showAlarmDialog(normalSmoke);
-            }
-        } else {
-            Camera camera = (Camera) object;
-            mvpView.openCamera(camera);
-        }
+        CameraMap.CameraBean cameraBean = (CameraMap.CameraBean) bundle.getSerializable("mNormalSmoke");
+        getOneCamera(cameraBean.getCameraId());
+
     }
 
     @Override
@@ -183,5 +172,34 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
     @Override
     public void getShop(ShopType shopType) {
         mvpView.getChoiceShop(shopType);
+    }
+
+    private void getOneCamera(final String cameraId){
+        mvpView.showLoading();
+        Observable<AlarmCameraInfo> observable = apiStoreServer.getOneCamera(cameraId);
+        addSubscription(observable,new SubscriberCallBack<>(new ApiCallback<AlarmCameraInfo>() {
+            @Override
+            public void onSuccess(AlarmCameraInfo model) {
+                int errorCode = model.getErrorCode();
+                if(errorCode==0){
+                    Contact contact = new Contact();
+                    AlarmCameraInfo.CameraBean cameraBean = model.getCamera();
+                    contact.contactId = cameraId;
+                    contact.contactPassword = cameraBean.getCameraPwd();
+                    contact.contactName = cameraBean.getCameraName();
+                    mvpView.openCamera(contact);
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String msg) {
+                mvpView.getDataFail("网络不给力，请稍后再试");
+            }
+
+            @Override
+            public void onCompleted() {
+                mvpView.hideLoading();
+            }
+        }));
     }
 }

@@ -17,6 +17,7 @@ public class SharedPreferencesManager {
     public static final String KEY_RECENTPASS = "recentPass";
     public static final String USER_NAME = "userName";
     public static final String CID= "user_cid";
+    public static final String KEY_RECENTNAME_EMAIL = "recentName_email";
 
     public static final String KEY_RECENTNAME_ORDER = "recentName_email";
     public static final String KEY_RECENTPASS_NUMBER = "recentPass_number";

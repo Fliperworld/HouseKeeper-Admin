@@ -1,6 +1,7 @@
 package com.smart.cloud.fire.mvp.fragment.CollectFragment;
 
 import com.smart.cloud.fire.base.presenter.BasePresenter;
+import com.smart.cloud.fire.global.AlarmMsg;
 import com.smart.cloud.fire.global.Area;
 import com.smart.cloud.fire.global.ShopType;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.HttpAreaResult;
@@ -24,25 +25,18 @@ public class CollectFragmentPresenter extends BasePresenter<CollectFragmentView>
     }
 
     //type:1表示获取第一页的报警消息，2表示根据条件查询相应的报警消息
-    public void getAllAlarm(String userId, String privilege, String page, final int type, String startTime, String endTime, String areaId, String placeTypeId){
-        mvpView.showLoading();
-        Observable observable=null;
-        if(type==1){
-            observable = apiStores1.getAllAlarm(userId,privilege,page);
-        }else{
-            observable = apiStores1.getNeedAlarm(userId,privilege,startTime,endTime,areaId,placeTypeId,"");
+    public void getAllAlarm(String userId, String privilege, String page, boolean fresh, final boolean getMore){
+        if(!fresh){
+            mvpView.showLoading();
         }
-        addSubscription(observable,new SubscriberCallBack<>(new ApiCallback<HttpError>() {
+        Observable<AlarmMsg> observable = apiStoreServer.getAllAlarm(userId, privilege,page);
+        addSubscription(observable,new SubscriberCallBack<>(new ApiCallback<AlarmMsg>() {
             @Override
-            public void onSuccess(HttpError model) {
+            public void onSuccess(AlarmMsg model) {
                 int errorCode = model.getErrorCode();
                 if(errorCode==0){
-                    List<AlarmMessageModel> alarmMessageModels = model.getAlarm();
-                    if(type==1){
-                        mvpView.getDataSuccess(alarmMessageModels);
-                    }else{
-                        mvpView.getDataByCondition(alarmMessageModels);
-                    }
+                    List<AlarmMsg.AlarmBean> alarmBeanList = model.getAlarm();
+                    mvpView.getDataSuccess(alarmBeanList,getMore);
                 }else{
                     mvpView.getDataFail("无数据");
                 }
@@ -60,50 +54,50 @@ public class CollectFragmentPresenter extends BasePresenter<CollectFragmentView>
         }));
     }
 
-    public void dealAlarm(String userId, String smokeMac,String privilege){
-        mvpView.showLoading();
-        Observable mObservable = apiStores1.dealAlarm(userId,smokeMac);
-        final Observable Observable2 = apiStores1.getAllAlarm(userId,privilege,"1");
-        twoSubscription(mObservable, new Func1<HttpError,Observable<HttpError>>() {
-            @Override
-            public Observable<HttpError> call(HttpError httpError) {
-                int errorCode = httpError.getErrorCode();
-                if(errorCode==0){
-                    return Observable2;
-                }else{
-                    Observable<HttpError> observable = Observable.just(httpError);
-                    return observable;
-                }
-            }
-        },new SubscriberCallBack<>(new ApiCallback<HttpError>() {
-            @Override
-            public void onSuccess(HttpError model) {
-                List<AlarmMessageModel> list = model.getAlarm();
-                if(list==null){
-                    mvpView.getDataFail("取消失败");
-                }else{
-                    int errorCode = model.getErrorCode();
-                    if(errorCode==0){
-                        List<AlarmMessageModel> alarmMessageModels = model.getAlarm();
-                        mvpView.dealAlarmMsgSuccess(alarmMessageModels);
-                        mvpView.getDataFail("取消成功");
-                    }else{
-                        mvpView.getDataFail("取消失败");
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(int code, String msg) {
-                mvpView.getDataFail("网络错误");
-            }
-
-            @Override
-            public void onCompleted() {
-                mvpView.hideLoading();
-            }
-        }));
-    }
+//    public void dealAlarm(String userId, String smokeMac,String privilege){
+//        mvpView.showLoading();
+//        Observable<> mObservable = apiStores1.dealAlarm(userId,smokeMac);
+//        final Observable<AlarmMsg> Observable2 = apiStores1.getAllAlarm(userId,privilege,"1");
+//        twoSubscription(mObservable, new Func1<AlarmMsg,Observable<AlarmMsg>>() {
+//            @Override
+//            public Observable<AlarmMsg> call(AlarmMsg httpError) {
+//                int errorCode = httpError.getErrorCode();
+//                if(errorCode==0){
+//                    return Observable2;
+//                }else{
+//                    Observable<HttpError> observable = Observable.just(httpError);
+//                    return observable;
+//                }
+//            }
+//        },new SubscriberCallBack<>(new ApiCallback<HttpError>() {
+//            @Override
+//            public void onSuccess(HttpError model) {
+//                List<AlarmMessageModel> list = model.getAlarm();
+//                if(list==null){
+//                    mvpView.getDataFail("取消失败");
+//                }else{
+//                    int errorCode = model.getErrorCode();
+//                    if(errorCode==0){
+//                        List<AlarmMsg.AlarmBean> alarmBeanList = model.getAlarm();
+//                        mvpView.dealAlarmMsgSuccess(alarmBeanList);
+//                        mvpView.getDataFail("取消成功");
+//                    }else{
+//                        mvpView.getDataFail("取消失败");
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int code, String msg) {
+//                mvpView.getDataFail("网络错误");
+//            }
+//
+//            @Override
+//            public void onCompleted() {
+//                mvpView.hideLoading();
+//            }
+//        }));
+//    }
 
     //type:1表示查询商铺类型，2表示查询区域类型
     public void getPlaceTypeId(String userId, String privilege, final int type){

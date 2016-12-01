@@ -103,4 +103,5 @@
         android:layout_marginBottom="20dp"
         android:textColor="@color/lead_regiater"
         />
+    <include layout="@layout/progress_bar"/>
 </RelativeLayout>

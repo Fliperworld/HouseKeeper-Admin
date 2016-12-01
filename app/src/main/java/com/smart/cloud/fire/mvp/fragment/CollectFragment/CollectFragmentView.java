@@ -1,5 +1,6 @@
 package com.smart.cloud.fire.mvp.fragment.CollectFragment;
 
+import com.smart.cloud.fire.global.AlarmMsg;
 import com.smart.cloud.fire.global.Area;
 import com.smart.cloud.fire.global.ShopType;
 
@@ -10,7 +11,7 @@ import java.util.List;
  * Created by Administrator on 2016/9/21.
  */
 public interface CollectFragmentView {
-    void getDataSuccess(List<AlarmMessageModel> alarmMessageModels);
+    void getDataSuccess(List<AlarmMsg.AlarmBean> alarmBeanList,boolean actionType);
 
     void getDataFail(String msg);
 
@@ -18,7 +19,7 @@ public interface CollectFragmentView {
 
     void hideLoading();
 
-    void dealAlarmMsgSuccess(List<AlarmMessageModel> alarmMessageModels);
+    void dealAlarmMsgSuccess(List<AlarmMsg.AlarmBean> alarmBeanList);
 
     void getShopType(ArrayList<Object> shopTypes);
 
@@ -27,8 +28,6 @@ public interface CollectFragmentView {
     void getAreaType(ArrayList<Object> shopTypes);
 
     void getAreaTypeFail(String msg);
-
-    void getDataByCondition(List<AlarmMessageModel> alarmMessageModels);
 
     void getChoiceArea(Area area);
 

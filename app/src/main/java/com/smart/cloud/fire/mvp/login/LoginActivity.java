@@ -61,7 +61,7 @@ public class LoginActivity extends MvpActivity<LoginPresenter> implements LoginV
                     public void call(Void aVoid) {
                         userId = login_user.getText().toString().trim();
                         String pwd = login_pwd.getText().toString().trim();
-                        mvpPresenter.loginYoosee(userId,pwd,mContext,1);
+                        mvpPresenter.loginYooSee(userId,pwd,mContext,1);
                     }
                 });
         RxView.clicks(login_new_register).throttleFirst(2, TimeUnit.SECONDS)

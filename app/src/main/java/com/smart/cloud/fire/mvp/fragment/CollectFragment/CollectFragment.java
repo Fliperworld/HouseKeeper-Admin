@@ -25,6 +25,7 @@ import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.adapter.DateNumericAdapter;
 import com.smart.cloud.fire.adapter.RefreshRecyclerAdapter;
 import com.smart.cloud.fire.base.ui.MvpFragment;
+import com.smart.cloud.fire.global.AlarmMsg;
 import com.smart.cloud.fire.global.Area;
 import com.smart.cloud.fire.global.MyApp;
 import com.smart.cloud.fire.global.ShopType;
@@ -106,7 +107,7 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
     private Context mContext;
     private CollectFragmentPresenter collectFragmentPresenter;
     private boolean research = false;
-    private List<AlarmMessageModel> messageModelList;
+    private List<AlarmMsg.AlarmBean> alarmBeanList;
     boolean isDpShow = false;
     private boolean wheelScrolled = false;
     private int selected_Date;
@@ -134,8 +135,9 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
                 SharedPreferencesManager.SP_FILE_GWELL,
                 SharedPreferencesManager.KEY_RECENTNAME);
         privilege = MyApp.app.getPrivilege();
+        alarmBeanList = new ArrayList<>();
         page = "1";
-        mvpPresenter.getAllAlarm(userID, privilege + "", page, 1, "", "", "", "");
+        mvpPresenter.getAllAlarm(userID, privilege + "", page,false,false);
         init();
     }
 
@@ -157,7 +159,7 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
             public void onRefresh() {
                 research = false;
                 page = "1";
-                mvpPresenter.getAllAlarm(userID, privilege + "", page, 1, "", "", "", "");
+                mvpPresenter.getAllAlarm(userID, privilege + "", page,true,false);
                 mProgressBar.setVisibility(View.GONE);
             }
         });
@@ -180,9 +182,9 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
                     return;
                 }
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapter.getItemCount()) {
-                    if (messageModelList != null && messageModelList.size() >= 20 && research == false) {
+                    if (alarmBeanList != null && alarmBeanList.size() >= 20 && research == false) {
                         page = Integer.parseInt(page) + 1 + "";
-                        mvpPresenter.getAllAlarm(userID, privilege + "", page, 1, "", "", "", "");
+                        mvpPresenter.getAllAlarm(userID, privilege + "", page,true,true);
                         mProgressBar.setVisibility(View.GONE);
                     }else{
                         adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
@@ -263,7 +265,7 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
                         areaId = "";
                     }
                 }
-                mvpPresenter.getAllAlarm(userID, privilege + "", page, 2, startStr, endStr, areaId, placeTypeId);
+//                mvpPresenter.getAllAlarm(userID, privilege + "", page);
                 hideDatePick();
                 mArea = null;
                 mShopType = null;
@@ -480,17 +482,17 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
     }
 
     @Override
-    public void getDataSuccess(List<AlarmMessageModel> alarmMessageModels) {
-        int pageInt = Integer.parseInt(page);
-        if (messageModelList != null && messageModelList.size() >= 20 && pageInt > 1) {
-            messageModelList.addAll(alarmMessageModels);
+    public void getDataSuccess(List<AlarmMsg.AlarmBean> alarmBeen,boolean actionType) {
+
+        if (actionType) {
+            alarmBeanList.addAll(alarmBeen);
             adapter.changeMoreStatus(RefreshRecyclerAdapter.LOADING_MORE);
-            adapter.addMoreItem(messageModelList);
+            adapter.addMoreItem(alarmBeen);
             adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
         } else {
-            messageModelList = new ArrayList<>();
-            messageModelList.addAll(alarmMessageModels);
-            adapter = new RefreshRecyclerAdapter(getActivity(), messageModelList, collectFragmentPresenter, userID, privilege + "");
+            alarmBeanList.clear();
+            alarmBeanList.addAll(alarmBeen);
+            adapter = new RefreshRecyclerAdapter(getActivity(), alarmBeanList, collectFragmentPresenter, userID, privilege + "");
             demoRecycler.setAdapter(adapter);
             demoSwiperefreshlayout.setRefreshing(false);
             adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
@@ -517,12 +519,12 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
     }
 
     @Override
-    public void dealAlarmMsgSuccess(List<AlarmMessageModel> alarmMessageModels) {
-        messageModelList.clear();
-        messageModelList.addAll(alarmMessageModels);
-        adapter = new RefreshRecyclerAdapter(getActivity(), messageModelList, collectFragmentPresenter, userID, privilege + "");
-        demoRecycler.setAdapter(adapter);
-        adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
+    public void dealAlarmMsgSuccess(List<AlarmMsg.AlarmBean> alarmMessageModels) {
+//        messageModelList.clear();
+//        messageModelList.addAll(alarmMessageModels);
+//        adapter = new RefreshRecyclerAdapter(getActivity(), messageModelList, collectFragmentPresenter, userID, privilege + "");
+//        demoRecycler.setAdapter(adapter);
+//        adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
     }
 
     @Override
@@ -553,16 +555,6 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
         T.showShort(mContext, msg);
         areaTypeChoice.setClickable(true);
         areaTypeChoice.closeLoading();
-    }
-
-    @Override
-    public void getDataByCondition(List<AlarmMessageModel> alarmMessageModels) {
-        research = true;
-        messageModelList.clear();
-        messageModelList.addAll(alarmMessageModels);
-        adapter = new RefreshRecyclerAdapter(getActivity(), messageModelList, collectFragmentPresenter, userID, privilege + "");
-        demoRecycler.setAdapter(adapter);
-        adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
     }
 
     @Override
