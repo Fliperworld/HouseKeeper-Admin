@@ -64,7 +64,7 @@ public class AlarmPresenter extends BasePresenter<AlarmView>{
     }
 
     public void disposeAlarm(String userId,String alarmSerialNumber){
-        Observable mObservable = apiStores1.textAlarmAck(userId,alarmSerialNumber);
+        Observable mObservable = apiStoreServer.textAlarmAck(userId,alarmSerialNumber);
         addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<HttpError>() {
             @Override
             public void onSuccess(HttpError model) {

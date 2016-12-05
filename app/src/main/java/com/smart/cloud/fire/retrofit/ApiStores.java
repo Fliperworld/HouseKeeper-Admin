@@ -10,6 +10,7 @@ import com.smart.cloud.fire.global.LoginServer;
 import com.smart.cloud.fire.global.PostResult;
 import com.smart.cloud.fire.global.SmokeSummary;
 import com.smart.cloud.fire.global.TemperatureTime;
+import com.smart.cloud.fire.global.VersionXml;
 import com.smart.cloud.fire.mvp.fragment.ConfireFireFragment.ConfireFireModel;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.Camera;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.HttpAreaResult;
@@ -118,15 +119,6 @@ public interface ApiStores {
             ,@Query("areaId") String areaId,@Query("placeTypeId") String placeTypeId
             ,@Query("page") String page);
 
-    //添加摄像头
-    @GET("addCamera")
-    Observable<HttpError> addCamera(@Query("cameraId") String cameraId, @Query("cameraName") String cameraName,
-                                          @Query("cameraPwd") String cameraPwd, @Query("cameraAddress") String cameraAddress,
-                                          @Query("longitude") String longitude, @Query("latitude") String latitude,
-                                          @Query("principal1") String principal1, @Query("principal1Phone") String principal1Phone,
-                                          @Query("principal2") String principal2, @Query("principal2Phone") String principal2Phone,
-                                          @Query("areaId") String areaId, @Query("placeTypeId") String placeTypeId);
-
     //绑定烟感与摄像头
     @GET("bindCameraSmoke")
     @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
@@ -214,4 +206,18 @@ public interface ApiStores {
     @GET("getAllAlarm")
     @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<AlarmMsg> getAllAlarm(@Query("userId") String userId, @Query("privilege") String privilege, @Query("page") String page);
+
+    @GET("update_new_bees.xml")
+    Observable<VersionXml> checkVersion();
+
+    @FormUrlEncoded
+    @POST("addCamera")
+    Observable<PostResult> addCamera(@Field("cameraId") String cameraId, @Field("cameraName") String cameraName
+            , @Field("cameraPwd") String cameraPwd, @Field("cameraAddress") String cameraAddress, @Field("longitude") String longitude
+            ,@Field("latitude") String latitude, @Field("principal1") String principal1, @Field("principal1Phone") String principal1Phone,
+                                     @Field("principal2") String principal2, @Field("principal2Phone") String principal2Phone, @Field("areaId") String areaId,
+                                     @Field("placeTypeId") String placeTypeId);
+    @FormUrlEncoded
+    @POST("bindUserIdCameraId")
+    Observable<PostResult> bindUserIdCameraId(@Field("userId") String userId, @Field("cameraId") String cameraId);
 }

@@ -70,7 +70,7 @@ public class ConfireFireFragmentPresenter extends BasePresenter<ConfireFireFragm
             smokeMac = smokeMac.replace("Q","");
         }
         if(smokeMac!=null&&smokeMac.length()>0){
-            Observable mObservable = apiStores1.getOneSmoke(userId,smokeMac,privilege);
+            Observable mObservable = apiStoreServer.getOneSmoke(userId,smokeMac,privilege);
             addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<ConfireFireModel>() {
                 @Override
                 public void onSuccess(ConfireFireModel model) {
@@ -97,14 +97,14 @@ public class ConfireFireFragmentPresenter extends BasePresenter<ConfireFireFragm
     public void getPlaceTypeId(String userId, String privilege, final int type){
         Observable mObservable = null;
         if(type==1){
-            mObservable= apiStores1.getPlaceTypeId(userId,privilege,"").map(new Func1<HttpError,ArrayList<Object>>() {
+            mObservable= apiStoreServer.getPlaceTypeId(userId,privilege,"").map(new Func1<HttpError,ArrayList<Object>>() {
                 @Override
                 public ArrayList<Object> call(HttpError o) {
                     return o.getPlaceType();
                 }
             });
         }else{
-            mObservable= apiStores1.getAreaId(userId,privilege,"").map(new Func1<HttpAreaResult,ArrayList<Object>>() {
+            mObservable= apiStoreServer.getAreaId(userId,privilege,"").map(new Func1<HttpAreaResult,ArrayList<Object>>() {
                 @Override
                 public ArrayList<Object> call(HttpAreaResult o) {
                     return o.getSmoke();
@@ -164,7 +164,7 @@ public class ConfireFireFragmentPresenter extends BasePresenter<ConfireFireFragm
             deviceType="1";
         }
         mvpView.showLoading();
-        Observable mObservable = apiStores1.addSmoke(userID,smokeName,privilege,smokeMac,address,
+        Observable mObservable = apiStoreServer.addSmoke(userID,smokeName,privilege,smokeMac,address,
                 longitude,latitude,placeAddress,placeTypeId,principal1,principal1Phone,principal2,
                 principal2Phone,areaId,repeater,camera,deviceType);
         addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<ConfireFireModel>() {

@@ -75,7 +75,7 @@ public class CallAlarmFragmentPresenter extends BasePresenter<CallAlarmFragmentV
     }
 
     private void textAlarm( String userId,String privilege, String smokeMac,String info){
-        Observable mObservable = apiStores1.textAlarm(userId,privilege,smokeMac,info);
+        Observable mObservable = apiStoreServer.textAlarm(userId,privilege,smokeMac,info);
         addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<HttpError>() {
             @Override
             public void onSuccess(HttpError model) {
@@ -95,7 +95,7 @@ public class CallAlarmFragmentPresenter extends BasePresenter<CallAlarmFragmentV
     }
 
     public void getAllSmoke(String userId, String privilege){
-        Observable mObservable = apiStores1.getAllSmoke(userId,privilege,"");
+        Observable mObservable = apiStoreServer.getAllSmoke(userId,privilege,"");
         addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<HttpError>() {
             @Override
             public void onSuccess(HttpError model) {

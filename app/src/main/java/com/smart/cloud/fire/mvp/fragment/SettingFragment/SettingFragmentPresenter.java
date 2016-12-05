@@ -2,7 +2,7 @@ package com.smart.cloud.fire.mvp.fragment.SettingFragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,7 +11,7 @@ import android.widget.ProgressBar;
 
 import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.base.presenter.BasePresenter;
-import com.smart.cloud.fire.global.MainThread;
+import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.HttpError;
 import com.smart.cloud.fire.rxjava.ApiCallback;
 import com.smart.cloud.fire.rxjava.SubscriberCallBack;
@@ -38,28 +38,10 @@ public class SettingFragmentPresenter extends BasePresenter<SettingFragmentView>
     }
 
     public void checkUpdate(final Context mContext) {
-        mvpView.showLoading();
-        new MyTast().execute(mContext);
+        Intent intent1 = new Intent();
+        intent1.setAction(ConstantValues.CHECK_VERSION_UPDATE);
+        mContext.sendBroadcast(intent1);
     }
-
-    class MyTast extends AsyncTask<Context, Integer, Integer> {
-
-        @Override
-        protected Integer doInBackground(Context... params) {
-            // TODO Auto-generated method stub\
-            Context context = params[0];
-            long ll = -1;
-            int result = new MainThread(context).checkUpdate(ll);
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(Integer s) {
-            super.onPostExecute(s);
-            mvpView.hideLoading();
-        }
-    }
-
     public void bindDialog(Context mContext) {
         final View view = LayoutInflater.from(mContext).inflate(
                 R.layout.dialog_bind, null);
@@ -86,7 +68,7 @@ public class SettingFragmentPresenter extends BasePresenter<SettingFragmentView>
                     mvpView.bindResult("摄像头ID和烟感ID不能为空");
                 } else {
                     mProgressBar.setVisibility(View.VISIBLE);
-                    Observable mObservable = apiStores1.bindCameraSmoke(cameraId, smokeId);
+                    Observable mObservable = apiStoreServer.bindCameraSmoke(cameraId, smokeId);
                     addSubscription(mObservable, new SubscriberCallBack<>(new ApiCallback<HttpError>() {
                         @Override
                         public void onSuccess(HttpError model) {

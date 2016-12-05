@@ -103,14 +103,14 @@ public class CollectFragmentPresenter extends BasePresenter<CollectFragmentView>
     public void getPlaceTypeId(String userId, String privilege, final int type){
         Observable mObservable = null;
         if(type==1){
-            mObservable= apiStores1.getPlaceTypeId(userId,privilege,"").map(new Func1<HttpError,ArrayList<Object>>() {
+            mObservable= apiStoreServer.getPlaceTypeId(userId,privilege,"").map(new Func1<HttpError,ArrayList<Object>>() {
                 @Override
                 public ArrayList<Object> call(HttpError o) {
                     return o.getPlaceType();
                 }
             });
         }else{
-            mObservable= apiStores1.getAreaId(userId,privilege,"").map(new Func1<HttpAreaResult,ArrayList<Object>>() {
+            mObservable= apiStoreServer.getAreaId(userId,privilege,"").map(new Func1<HttpAreaResult,ArrayList<Object>>() {
                 @Override
                 public ArrayList<Object> call(HttpAreaResult o) {
                     return o.getSmoke();

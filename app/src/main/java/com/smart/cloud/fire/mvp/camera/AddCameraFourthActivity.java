@@ -1,13 +1,12 @@
 package com.smart.cloud.fire.mvp.camera;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.baidu.location.BDLocation;
 import com.hrsst.housekeeper.R;
@@ -18,7 +17,6 @@ import com.smart.cloud.fire.global.MyApp;
 import com.smart.cloud.fire.global.ShopType;
 import com.smart.cloud.fire.utils.SharedPreferencesManager;
 import com.smart.cloud.fire.utils.T;
-import com.smart.cloud.fire.utils.Utils;
 import com.smart.cloud.fire.view.XCDropDownListView;
 
 import java.util.ArrayList;
@@ -33,32 +31,17 @@ import rx.functions.Action1;
  * Created by Administrator on 2016/9/27.
  */
 public class AddCameraFourthActivity extends MvpActivity<AddCameraFourthPresenter> implements AddCameraFourthView {
-    @Bind(R.id.camera_id)
-    TextView cameraId;
+
     @Bind(R.id.add_repeater_mac)
     EditText addRepeaterMac;
-    @Bind(R.id.scan_repeater_ma)
-    ImageView scanRepeaterMa;
-    @Bind(R.id.camera_name)
-    TextView cameraName;
     @Bind(R.id.add_fire_mac)
     EditText addFireMac;
-    @Bind(R.id.scan_er_wei_ma)
-    ImageView scanErWeiMa;
-    @Bind(R.id.camera_pwd)
-    TextView cameraPwd;
-    @Bind(R.id.add_fire_name)
-    EditText addFireName;
     @Bind(R.id.add_fire_lat)
     EditText addFireLat;
     @Bind(R.id.add_fire_lon)
     EditText addFireLon;
     @Bind(R.id.add_fire_address)
     EditText addFireAddress;
-    @Bind(R.id.add_fire_zjq)
-    XCDropDownListView addFireZjq;
-    @Bind(R.id.add_fire_type)
-    XCDropDownListView addFireType;
     @Bind(R.id.add_fire_man)
     EditText addFireMan;
     @Bind(R.id.add_fire_man_phone)
@@ -67,12 +50,23 @@ public class AddCameraFourthActivity extends MvpActivity<AddCameraFourthPresente
     EditText addFireManTwo;
     @Bind(R.id.add_fire_man_phone_two)
     EditText addFireManPhoneTwo;
+    @Bind(R.id.add_fire_zjq)
+    XCDropDownListView addFireZjq;
+    @Bind(R.id.add_fire_type)
+    XCDropDownListView addFireType;
     @Bind(R.id.add_fire_dev_btn)
     RelativeLayout addFireDevBtn;
     @Bind(R.id.mProgressBar)
     ProgressBar mProgressBar;
+    @Bind(R.id.add_camera_name)
+    EditText addCameraName;
+    @Bind(R.id.add_camera_relative)
+    RelativeLayout addCameraRelative;
+    private String areaId = "";
+    private String shopTypeId = "";
+    private String userNumber;
+    private String userId;
     private AddCameraFourthPresenter mAddCameraFourthPresenter;
-    private String userID;
     private String contactId;
     private Context mContext;
     private int privilege;
@@ -84,78 +78,71 @@ public class AddCameraFourthActivity extends MvpActivity<AddCameraFourthPresente
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_fire);
         ButterKnife.bind(this);
+        ButterKnife.bind(this);
         mContext = this;
         contactId = getIntent().getExtras().getString("contactId");
-        userID = SharedPreferencesManager.getInstance().getData(mContext,
-                SharedPreferencesManager.SP_FILE_GWELL,
+        userId = SharedPreferencesManager.getInstance().getData(mContext, SharedPreferencesManager.SP_FILE_GWELL,
                 SharedPreferencesManager.KEY_RECENTNAME);
+        addRepeaterMac.setText(contactId);
         privilege = MyApp.app.getPrivilege();
         initView();
+        userNumber = SharedPreferencesManager.getInstance().getData(mContext, SharedPreferencesManager.SP_FILE_GWELL,
+                SharedPreferencesManager.KEY_RECENTPASS_NUMBER);
     }
 
     private void initView() {
-        cameraName.setText("名称");
-        addFireMac.setHint("名称");
-        cameraPwd.setText("密码");
-        addFireName.setHint("密码");
-        cameraId.setText("ID");
-        addRepeaterMac.setHint("ID");
-        addRepeaterMac.setEnabled(false);
-        addRepeaterMac.setText(contactId);
+        addCameraRelative.setVisibility(View.VISIBLE);
         addFireZjq.setEditTextHint("区域");
         addFireType.setEditTextHint("类型");
-        scanErWeiMa.setVisibility(View.GONE);
-        scanRepeaterMa.setVisibility(View.GONE);
         RxView.clicks(addFireDevBtn).throttleFirst(2, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                String placeTypeId = "";
-                String areaId = "";
-                if(mShopType!=null){
-                    placeTypeId = mShopType.getPlaceTypeId();
-                }
-                if(mArea!=null){
-                    areaId = mArea.getAreaId();
-                }
-                String longitude = addFireLon.getText().toString().trim();
-                String latitude = addFireLat.getText().toString().trim();
-                String smokeName = addFireMac.getText().toString().trim();
-                String smokeMac = addFireName.getText().toString().trim();
-                String address = addFireAddress.getText().toString().trim();
-                String principal1 = addFireMan.getText().toString().trim();
-                String principal2 = addFireManTwo.getText().toString().trim();
-                String principal1Phone = addFireManPhone.getText().toString().trim();
-                String principal2Phone = addFireManPhoneTwo.getText().toString().trim();
-                mvpPresenter.addCamera(contactId,smokeName,smokeMac,address,
-                        longitude,latitude,principal1,principal1Phone,principal2,principal2Phone,areaId,placeTypeId);
+                addFire();
             }
         });
     }
 
-    @OnClick({R.id.location_image,R.id.add_fire_zjq,R.id.add_fire_type})
-    public void onClick(View view){
-        switch (view.getId()){
+    private void addFire() {
+        if (mShopType != null) {
+            shopTypeId = mShopType.getPlaceTypeId();
+        }
+        if (mArea != null) {
+            areaId = mArea.getAreaId();
+        }
+        String longitude = addFireLon.getText().toString().trim();
+        String latitude = addFireLat.getText().toString().trim();
+        String smokeMac = addFireMac.getText().toString().trim();
+        String address = addFireAddress.getText().toString().trim();
+        String cameraName = addCameraName.getText().toString().trim();
+        String principal1 = addFireMan.getText().toString().trim();
+        String principal2 = addFireManTwo.getText().toString().trim();
+        String principal1Phone = addFireManPhone.getText().toString().trim();
+        String principal2Phone = addFireManPhoneTwo.getText().toString().trim();
+        mAddCameraFourthPresenter.addCamera(userId,contactId,smokeMac,cameraName,address,longitude,
+                latitude,principal1,principal1Phone,principal2,principal2Phone,
+                areaId,shopTypeId);
+    }
+
+    @OnClick({ R.id.location_image, R.id.add_fire_zjq, R.id.add_fire_type})
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.location_image:
-                if(Utils.isNetworkAvailable(this)){
-                    mvpPresenter.startLocation();
-                }
+                mAddCameraFourthPresenter.startLocation();
                 break;
             case R.id.add_fire_zjq:
-                if(addFireZjq.ifShow()){
+                if (addFireZjq.ifShow()) {
                     addFireZjq.closePopWindow();
-                }else{
-                    if(Utils.isNetworkAvailable(this)){
-                        mvpPresenter.getPlaceTypeId(userID,privilege+"",2);
-                        addFireZjq.setClickable(false);
-                        addFireZjq.showLoading();
-                    }
+                } else {
+                    mAddCameraFourthPresenter.getPlaceTypeId(userNumber, privilege+"", 2);
+                    addFireZjq.setClickable(false);
+                    addFireZjq.showLoading();
                 }
                 break;
             case R.id.add_fire_type:
-                if(addFireType.ifShow()){
+                if (addFireType.ifShow()) {
                     addFireType.closePopWindow();
-                }else{
-                    mvpPresenter.getPlaceTypeId(userID,privilege+"",1);
+                } else {
+                    mAddCameraFourthPresenter.getPlaceTypeId(userNumber, privilege+"" , 1);
                     addFireType.setClickable(false);
                     addFireType.showLoading();
                 }
@@ -173,20 +160,21 @@ public class AddCameraFourthActivity extends MvpActivity<AddCameraFourthPresente
 
     @Override
     protected void onStart() {
-        mvpPresenter.initLocation();
+        mAddCameraFourthPresenter.initLocation();
         super.onStart();
     }
 
     @Override
     protected void onDestroy() {
+        mAddCameraFourthPresenter.stopLocation();
+        super.onDestroy();
         if (addFireZjq.ifShow()) {
             addFireZjq.closePopWindow();
         }
         if (addFireType.ifShow()) {
             addFireType.closePopWindow();
         }
-        mvpPresenter.stopLocation();
-        super.onDestroy();
+        ButterKnife.unbind(this);
     }
 
     @Override
@@ -207,14 +195,17 @@ public class AddCameraFourthActivity extends MvpActivity<AddCameraFourthPresente
     }
 
     @Override
-    public void getDataFail(String msg) {
+    public void addCameraResult(String msg) {
         T.showShort(mContext,msg);
+        Intent intent = new Intent();
+//        intent.setAction(Constants.PUSH_CAMERA_DATA);
+        sendBroadcast(intent);
+        finish();
     }
 
     @Override
-    public void getDataSuccess(String msg) {
+    public void errorMessage(String msg) {
         T.showShort(mContext,msg);
-        finish();
     }
 
     @Override

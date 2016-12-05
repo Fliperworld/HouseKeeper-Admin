@@ -5,7 +5,6 @@
     android:orientation="vertical"
     android:background="#ffffff"
     >
-    <include android:id="@+id/title_include" layout="@layout/title_bar"/>
     <include
         android:id="@+id/search_include"
         android:layout_height="wrap_content"

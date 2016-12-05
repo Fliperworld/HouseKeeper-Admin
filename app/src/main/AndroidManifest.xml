@@ -149,18 +149,6 @@
             android:name="com.smart.cloud.fire.mvp.camera.AddCameraFourthActivity"
             android:windowSoftInputMode="adjustPan"
             android:label="@string/title_activity_add_camera_fourth" />
-        <service
-            android:name="com.smart.cloud.fire.geTuiPush.GeTuiService"
-            android:enabled="true"
-            android:exported="true"></service>
-        <receiver
-            android:name="com.smart.cloud.fire.pushmessage.PushDemoReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.igexin.sdk.action.${GETUI_APP_ID}" />
-            </intent-filter>
-        </receiver>
-
         <activity
             android:name="com.smart.cloud.fire.mvp.Alarm.AlarmActivity"
             android:label="@string/title_activity_bndemo_guide"
@@ -169,26 +157,20 @@
             android:name="com.smart.cloud.fire.mvp.Alarm.UserAlarmActivity"
             android:label="@string/title_activity_bndemo_guide"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name="com.smart.cloud.fire.mvp.LineChart.LineChartActivity"
-            android:label="@string/line_chart_activity"
-            android:theme="@style/AppTheme" />
 
-        <activity
-            android:name="com.smart.cloud.fire.mvp.LineChart.LineChartActivityTest"
-            android:label="@string/line_chart_activity"
-            android:theme="@style/AppTheme" />
-
-        <activity
-            android:name="com.smart.cloud.fire.mvp.electric.ElectricActivity"
-            android:label="@string/line_chart_activity"
-            android:theme="@style/AppTheme" />
         <service
             android:name="com.smart.cloud.fire.service.DaemonService"
             android:process="com.example.maat.daemon"/>
         <service
             android:name="com.smart.cloud.fire.service.RemoteService"
             android:process=":pushservice"/>
+        <service
+            android:name="com.smart.cloud.fire.service.DemoPushService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushservice">
+        </service>
+        <service android:name="com.smart.cloud.fire.service.DemoIntentService"/>
  </application>
 
 </manifest>

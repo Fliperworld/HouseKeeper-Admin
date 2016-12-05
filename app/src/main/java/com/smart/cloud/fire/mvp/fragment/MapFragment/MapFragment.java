@@ -6,7 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
@@ -47,10 +48,6 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
     MapView mMapView;
     @Bind(R.id.lin1)
     LinearLayout lin1;
-    @Bind(R.id.search_fire)
-    ImageView search_fire;
-    @Bind(R.id.add_fire)
-    ImageView add_fire;
     @Bind(R.id.area_condition)
     XCDropDownListViewMapSearch areaCondition;
     @Bind(R.id.shop_type_condition)
@@ -64,6 +61,8 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
     private String areaId = "";
     private String shopTypeId = "";
     private MapFragmentPresenter mMapFragmentPresenter;
+    public boolean isHideAdd = true;
+    private Animation animation_out, animation_in;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,13 +81,13 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
                 SharedPreferencesManager.SP_FILE_GWELL,
                 SharedPreferencesManager.KEY_RECENTNAME);
         privilege = MyApp.app.getPrivilege();
-        if (privilege == 1) {
-            add_fire.setVisibility(View.GONE);
-        } else {
-            add_fire.setVisibility(View.VISIBLE);
-            add_fire.setImageResource(R.drawable.search);
-        }
+//        add_fire.setVisibility(View.VISIBLE);
+//        add_fire.setImageResource(R.drawable.search);
         mvpPresenter.getAllSmoke(userID, privilege + "");
+        animation_out = AnimationUtils.loadAnimation(mContext,
+                R.anim.scale_amplify);
+        animation_in = AnimationUtils.loadAnimation(mContext,
+                R.anim.scale_narrow);
     }
 
     @Override
@@ -106,13 +105,13 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
     public void onDestroyView() {
         mMapView.onDestroy();
         super.onDestroyView();
-        if(shopTypeCondition!=null){
-            if(shopTypeCondition.ifShow()){
+        if (shopTypeCondition != null) {
+            if (shopTypeCondition.ifShow()) {
                 shopTypeCondition.closePopWindow();
             }
         }
-        if(areaCondition!=null){
-            if(areaCondition.ifShow()){
+        if (areaCondition != null) {
+            if (areaCondition.ifShow()) {
                 areaCondition.closePopWindow();
             }
         }
@@ -134,14 +133,15 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
     }
 
     private MyOverlayManager mMyOverlayManager;
+
     @Override
     public void getDataSuccess(List<CameraMap.CameraBean> cameraBeanList) {
         mBaiduMap.clear();
-        List<BitmapDescriptor> viewList =  initMark();
-        if(mMyOverlayManager==null){
+        List<BitmapDescriptor> viewList = initMark();
+        if (mMyOverlayManager == null) {
             mMyOverlayManager = new MyOverlayManager();
         }
-        mMyOverlayManager.init(mBaiduMap,cameraBeanList, mMapFragmentPresenter,viewList);
+        mMyOverlayManager.init(mBaiduMap, cameraBeanList, mMapFragmentPresenter, viewList);
         mMyOverlayManager.removeFromMap();
         mBaiduMap.setOnMarkerClickListener(mMyOverlayManager);
         mMyOverlayManager.addToMap();
@@ -154,7 +154,7 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
         });
     }
 
-    private List<BitmapDescriptor> initMark(){
+    private List<BitmapDescriptor> initMark() {
         View view = LayoutInflater.from(mContext).inflate(
                 R.layout.image_test, null);
         View view2 = LayoutInflater.from(mContext).inflate(
@@ -186,7 +186,7 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
 
     @Override
     public void getShopType(ArrayList<Object> shopTypes) {
-        shopTypeCondition.setItemsData(shopTypes,mMapFragmentPresenter);
+        shopTypeCondition.setItemsData(shopTypes, mMapFragmentPresenter);
         shopTypeCondition.showPopWindow();
         shopTypeCondition.setClickable(true);
         shopTypeCondition.closeLoading();
@@ -201,7 +201,7 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
 
     @Override
     public void getAreaType(ArrayList<Object> shopTypes) {
-        areaCondition.setItemsData(shopTypes,mMapFragmentPresenter);
+        areaCondition.setItemsData(shopTypes, mMapFragmentPresenter);
         areaCondition.showPopWindow();
         areaCondition.setClickable(true);
         areaCondition.closeLoading();
@@ -226,101 +226,15 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
 
     @Override
     public void getChoiceArea(Area area) {
-        mArea = area;
-        if (mArea != null && mArea.getAreaId() != null) {
-            add_fire.setVisibility(View.GONE);
-            search_fire.setVisibility(View.VISIBLE);
-        }
-        if (mArea.getAreaId() == null && mShopType == null) {
-            add_fire.setVisibility(View.VISIBLE);
-            search_fire.setVisibility(View.GONE);
-        } else if (mArea.getAreaId() == null && mShopType != null && mShopType.getPlaceTypeId() == null) {
-            add_fire.setVisibility(View.VISIBLE);
-            search_fire.setVisibility(View.GONE);
-        }
     }
 
     @Override
     public void getChoiceShop(ShopType shopType) {
-        mShopType = shopType;
-        if (mShopType != null && mShopType.getPlaceTypeId() != null) {
-            add_fire.setVisibility(View.GONE);
-            search_fire.setVisibility(View.VISIBLE);
-        }
-        if (mShopType.getPlaceTypeId() == null && mArea == null) {
-            add_fire.setVisibility(View.VISIBLE);
-            search_fire.setVisibility(View.GONE);
-        } else if (mShopType.getPlaceTypeId() == null && mArea != null && mArea.getAreaId() == null) {
-            add_fire.setVisibility(View.VISIBLE);
-            search_fire.setVisibility(View.GONE);
-        }
     }
 
-//    @Override
-//    public void showSmokeDialog(CameraMap.CameraBean cameraBean) {
-//        View view = LayoutInflater.from(mContext).inflate(
-//                    R.layout.user_smoke_address_mark, null,false);
-//        new ShowSmokeDialog(getActivity(),view,smoke);
-//    }
-//
-//    @Override
-//    public void showAlarmDialog(CameraMap.CameraBean cameraBean) {
-//        View view = LayoutInflater.from(mContext).inflate(
-//                    R.layout.user_do_alarm_msg_dialog, null);
-//        new ShowAlarmDialog(getActivity(),view,smoke,mMapFragmentPresenter,userID);
-//    }
-
-    private boolean visibility = false;
-
-    @OnClick({R.id.search_fire, R.id.add_fire, R.id.area_condition, R.id.shop_type_condition})
+    @OnClick({ R.id.area_condition, R.id.shop_type_condition})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.search_fire:
-                if (shopTypeCondition.ifShow()) {
-                    shopTypeCondition.closePopWindow();
-                }
-                if (areaCondition.ifShow()) {
-                    areaCondition.closePopWindow();
-                }
-                if ((mShopType != null && mShopType.getPlaceTypeId() != null) || (mArea != null && mArea.getAreaId() != null)) {
-                    lin1.setVisibility(View.GONE);
-                    search_fire.setVisibility(View.GONE);
-                    add_fire.setVisibility(View.VISIBLE);
-                    areaCondition.searchClose();
-                    shopTypeCondition.searchClose();
-                    visibility = false;
-                    if (mArea != null && mArea.getAreaId() != null) {
-                        areaId = mArea.getAreaId();
-                    } else {
-                        areaId = "";
-                    }
-                    if (mShopType != null && mShopType.getPlaceTypeId() != null) {
-                        shopTypeId = mShopType.getPlaceTypeId();
-                    } else {
-                        shopTypeId = "";
-                    }
-                    mvpPresenter.getNeedSmoke(userID, privilege + "", areaId, shopTypeId);
-                }
-                break;
-            case R.id.add_fire:
-                if (visibility) {
-                    visibility = false;
-                    lin1.setVisibility(View.GONE);
-                    if (areaCondition.ifShow()) {
-                        areaCondition.closePopWindow();
-                    }
-                    if (shopTypeCondition.ifShow()) {
-                        shopTypeCondition.closePopWindow();
-                    }
-                } else {
-                    visibility = true;
-                    areaCondition.setEditText("");
-                    shopTypeCondition.setEditText("");
-                    areaCondition.setEditTextHint("区域");
-                    shopTypeCondition.setEditTextHint("类型");
-                    lin1.setVisibility(View.VISIBLE);
-                }
-                break;
             case R.id.shop_type_condition:
                 if (shopTypeCondition.ifShow()) {
                     shopTypeCondition.closePopWindow();
@@ -343,5 +257,6 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
                 break;
         }
     }
+
 
 }

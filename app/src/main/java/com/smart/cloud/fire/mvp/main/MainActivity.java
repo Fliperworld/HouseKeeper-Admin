@@ -5,47 +5,43 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.webkit.WebView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.hrsst.housekeeper.R;
 import com.igexin.sdk.PushManager;
 import com.p2p.core.P2PHandler;
-import com.p2p.core.update.UpdateManager;
 import com.smart.cloud.fire.base.ui.MvpActivity;
-import com.smart.cloud.fire.geTuiPush.GeTuiService;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.global.MainService;
 import com.smart.cloud.fire.global.MyApp;
+import com.smart.cloud.fire.mvp.camera.AddCameraFirstActivity;
 import com.smart.cloud.fire.mvp.login.SplashActivity;
 import com.smart.cloud.fire.mvp.main.presenter.MainPresenter;
 import com.smart.cloud.fire.mvp.main.view.MainView;
+import com.smart.cloud.fire.service.DemoIntentService;
+import com.smart.cloud.fire.service.DemoPushService;
 import com.smart.cloud.fire.service.RemoteService;
 import com.smart.cloud.fire.utils.SharedPreferencesManager;
 import com.smart.cloud.fire.view.MyRadioButton;
+import com.smart.cloud.fire.view.NormalDialog;
 import com.smart.cloud.fire.yoosee.P2PListener;
 import com.smart.cloud.fire.yoosee.SettingListener;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -55,6 +51,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     @Bind(R.id.call_alarm)
     MyRadioButton callAlarm;
+    @Bind(R.id.title_rela)
+    RelativeLayout titleRela;
+    @Bind(R.id.add_device)
+    ImageView addDevice;
+    @Bind(R.id.layout_add)
+    LinearLayout layoutAdd;
     private Context mContext;
     private AlertDialog dialog_update;
     @Bind(R.id.bottom_group)
@@ -71,6 +73,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
     FrameLayout mainContent;
     @Bind(R.id.otherFrameLayout)
     FrameLayout otherFrameLayout;
+    private Animation animation_out, animation_in;
+    public boolean isHideAdd = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +85,7 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
         initView();
         regFilter();
         startService(new Intent(MainActivity.this, RemoteService.class));
+        mvpPresenter.updateVersion(mContext, true);
     }
 
     private void initView() {
@@ -103,12 +108,12 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 mvpPresenter.replaceFragment(checkedId, otherFrameLayout, mainContent);
             }
         });
-        String userID = SharedPreferencesManager.getInstance().getData(mContext,
-                SharedPreferencesManager.SP_FILE_GWELL,
-                SharedPreferencesManager.KEY_RECENTNAME);
-        Intent setTagIntent = new Intent(MyApp.app,GeTuiService.class);
-        setTagIntent.putExtra("UserNum",userID);
-        MyApp.app.startService(setTagIntent);
+        PushManager.getInstance().initialize(this.getApplicationContext(), DemoPushService.class);
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), DemoIntentService.class);
+        animation_out = AnimationUtils.loadAnimation(mContext,
+                R.anim.scale_amplify);
+        animation_in = AnimationUtils.loadAnimation(mContext,
+                R.anim.scale_narrow);
     }
 
     private void connect() {
@@ -118,9 +123,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
 
     private void regFilter() {
         IntentFilter filter = new IntentFilter();
-        filter.addAction("Constants.Action.ACTION_UPDATE");
-        filter.addAction("Constants.Action.ACTION_UPDATE_NO");
         filter.addAction("APP_EXIT");
+        filter.addAction(ConstantValues.CHECK_VERSION_UPDATE);
         mContext.registerReceiver(mReceiver, filter);
     }
 
@@ -138,143 +142,8 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
                 startActivity(in);
                 finish();
             }
-
-            if (intent.getAction().equals("Constants.Action.ACTION_UPDATE_NO")) {
-                View view = LayoutInflater.from(mContext).inflate(
-                        R.layout.dialog_update, null);
-                TextView title = (TextView) view.findViewById(R.id.title_text);
-                WebView content = (WebView) view
-                        .findViewById(R.id.content_text);
-                TextView button2 = (TextView) view
-                        .findViewById(R.id.button2_text);
-                ImageView minddle_image = (ImageView) view
-                        .findViewById(R.id.minddle_image);
-                RelativeLayout cancel_rela_dialog = (RelativeLayout) view
-                        .findViewById(R.id.cancel_rela_dialog);
-                title.setText("更新消息");
-                content.setBackgroundColor(getResources().getColor(R.color.update_message)); // 设置背景色
-                content.getBackground().setAlpha(255); // 设置填充透明度 范围：0-255
-                content.loadDataWithBaseURL(null, "已是最新版本！", "text/html", "utf-8",
-                        null);
-                minddle_image.setVisibility(View.GONE);
-                cancel_rela_dialog.setVisibility(View.GONE);
-                button2.setText("确定");
-                button2.setTextColor(Color.BLACK);
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                dialog_update = builder.create();
-                dialog_update.show();
-                dialog_update.setContentView(view);
-                button2.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View arg0) {
-                        // TODO Auto-generated method stub
-                        if (null != dialog_update) {
-                            dialog_update.cancel();
-                        }
-                    }
-                });
-            }
-
-            if (intent.getAction().equals("Constants.Action.ACTION_UPDATE")) {
-                if (null != dialog_update && dialog_update.isShowing()) {
-                    return;
-                }
-                View view = LayoutInflater.from(mContext).inflate(
-                        R.layout.dialog_update, null);
-                TextView title = (TextView) view.findViewById(R.id.title_text);
-                WebView content = (WebView) view
-                        .findViewById(R.id.content_text);
-                TextView button1 = (TextView) view
-                        .findViewById(R.id.button1_text);
-                TextView button2 = (TextView) view
-                        .findViewById(R.id.button2_text);
-
-                title.setText("更新");
-                content.setBackgroundColor(Color.WHITE); // 设置背景色
-                content.getBackground().setAlpha(100); // 设置填充透明度 范围：0-255
-                String data = intent.getStringExtra("message");
-                final String downloadPath = intent.getStringExtra("url");
-                content.loadDataWithBaseURL(null, data, "text/html", "utf-8",
-                        null);
-                button1.setText("立即更新");
-                button2.setText("下次再说");
-                button1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (null != dialog_update) {
-                            dialog_update.dismiss();
-                            dialog_update = null;
-                        }
-                        if (UpdateManager.getInstance().getIsDowning()) {
-                            return;
-                        }
-                        MyApp.app.showDownNotification(
-                                UpdateManager.HANDLE_MSG_DOWNING, 0);
-                        new Thread() {
-                            public void run() {
-                                UpdateManager.getInstance().downloadApk(handler,
-                                        ConstantValues.Update.SAVE_PATH,
-                                        ConstantValues.Update.FILE_NAME, downloadPath);
-                            }
-                        }.start();
-                    }
-                });
-                button2.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (null != dialog_update) {
-                            dialog_update.cancel();
-                        }
-                    }
-                });
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                dialog_update = builder.create();
-                dialog_update.show();
-                dialog_update.setContentView(view);
-                FrameLayout.LayoutParams layout = (FrameLayout.LayoutParams) view
-                        .getLayoutParams();
-                layout.width = (int) mContext.getResources().getDimension(
-                        R.dimen.update_dialog_width);
-                view.setLayoutParams(layout);
-                dialog_update.setCanceledOnTouchOutside(false);
-                Window window = dialog_update.getWindow();
-                window.setWindowAnimations(R.style.dialog_normal);
-            }
-        }
-    };
-
-    Handler handler = new Handler() {
-        long last_time;
-
-        @Override
-        public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
-            int value = msg.arg1;
-            switch (msg.what) {
-                case UpdateManager.HANDLE_MSG_DOWNING:
-                    if ((System.currentTimeMillis() - last_time) > 1000) {
-                        MyApp.app.showDownNotification(
-                                UpdateManager.HANDLE_MSG_DOWNING, value);
-                        last_time = System.currentTimeMillis();
-                    }
-                    break;
-                case UpdateManager.HANDLE_MSG_DOWN_SUCCESS:
-                    MyApp.app.hideDownNotification();
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    File file = new File(Environment.getExternalStorageDirectory()
-                            + "/" + ConstantValues.Update.SAVE_PATH + "/"
-                            + ConstantValues.Update.FILE_NAME);
-                    if (!file.exists()) {
-                        return;
-                    }
-                    intent.setDataAndType(Uri.fromFile(file),
-                            ConstantValues.Update.INSTALL_APK);
-                    mContext.startActivity(intent);
-                    break;
-                case UpdateManager.HANDLE_MSG_DOWN_FAULT:
-                    break;
+            if (intent.getAction().equals(ConstantValues.CHECK_VERSION_UPDATE)) {
+                mvpPresenter.updateVersion(mContext, false);
             }
         }
     };
@@ -301,6 +170,64 @@ public class MainActivity extends MvpActivity<MainPresenter> implements MainView
             moveTaskToBack(false);
         }
     }
+
+    @Override
+    public void showUpdateDialog(String message, String urlStr) {
+        new NormalDialog(mContext, message, urlStr).showVersionDialog();
+    }
+
+    @Override
+    public void hideTitle() {
+        titleRela.setVisibility(View.GONE);
+        addDevice.setVisibility(View.GONE);
+        layoutAdd.setVisibility(View.GONE);
+        isHideAdd = true;
+    }
+
+    @Override
+    public void showTitle(boolean ifAdd) {
+        titleRela.setVisibility(View.VISIBLE);
+        if (ifAdd) {
+            addDevice.setVisibility(View.VISIBLE);
+        } else {
+            addDevice.setVisibility(View.GONE);
+            layoutAdd.setVisibility(View.GONE);
+            isHideAdd = true;
+        }
+    }
+
+    @OnClick({R.id.add_device,R.id.radar_add,R.id.manually_add})
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.add_device:
+                Intent intent = new Intent(mContext, AddCameraFirstActivity.class);
+                startActivity(intent);
+                layoutAdd.setVisibility(View.GONE);
+                break;
+            case R.id.radar_add:
+//                Intent intent = new Intent(mContext, AddCameraFirstActivity.class);
+//                startActivity(intent);
+//                layoutAdd.setVisibility(View.GONE);
+                break;
+            case R.id.manually_add:
+                layoutAdd.setVisibility(View.GONE);
+                break;
+        }
+
+    }
+
+    public void hideAdd() {
+        layoutAdd.startAnimation(animation_in);
+        layoutAdd.setVisibility(LinearLayout.GONE);
+        isHideAdd = true;
+    }
+
+    public void showAdd() {
+        layoutAdd.setVisibility(LinearLayout.VISIBLE);
+        layoutAdd.startAnimation(animation_out);
+        isHideAdd = false;
+    }
+
 
     @Override
     protected void onDestroy() {

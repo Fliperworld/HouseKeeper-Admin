@@ -56,14 +56,14 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
     public void getPlaceTypeId(String userId, String privilege, final int type){
         Observable mObservable = null;
         if(type==1){
-            mObservable= apiStores1.getPlaceTypeId(userId,privilege,"").map(new Func1<HttpError,ArrayList<Object>>() {
+            mObservable= apiStoreServer.getPlaceTypeId(userId,privilege,"").map(new Func1<HttpError,ArrayList<Object>>() {
                 @Override
                 public ArrayList<Object> call(HttpError o) {
                     return o.getPlaceType();
                 }
             });
         }else{
-            mObservable= apiStores1.getAreaId(userId,privilege,"").map(new Func1<HttpAreaResult,ArrayList<Object>>() {
+            mObservable= apiStoreServer.getAreaId(userId,privilege,"").map(new Func1<HttpAreaResult,ArrayList<Object>>() {
                 @Override
                 public ArrayList<Object> call(HttpAreaResult o) {
                     return o.getSmoke();
@@ -99,7 +99,7 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
 
     public void getNeedSmoke(String userId, String privilege,String areaId,String placeTypeId){
         mvpView.showLoading();
-        Observable mObservable = apiStores1.getNeedSmoke(userId,privilege,areaId,"",placeTypeId);
+        Observable mObservable = apiStoreServer.getNeedSmoke(userId,privilege,areaId,"",placeTypeId);
         addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<HttpError>() {
             @Override
             public void onSuccess(HttpError model) {
@@ -128,8 +128,8 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
 
     public void dealAlarm(String userId, String smokeMac,String privilege){
         mvpView.showLoading();
-        final Observable mObservable = apiStores1.getAllSmoke(userId,privilege,"");
-        twoSubscription(apiStores1.dealAlarm(userId, smokeMac), new Func1<HttpError,Observable<HttpError>>() {
+        final Observable mObservable = apiStoreServer.getAllSmoke(userId,privilege,"");
+        twoSubscription(apiStoreServer.dealAlarm(userId, smokeMac), new Func1<HttpError,Observable<HttpError>>() {
             @Override
             public Observable<HttpError> call(HttpError httpError) {
                 return mObservable;

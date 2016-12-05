@@ -10,14 +10,11 @@ import com.smart.cloud.fire.yoosee.P2PConnect;
 
 public class MainService extends Service {
     Context context;
-    private MainThread mMainThread;
 
     @Override
     public void onCreate() {
         super.onCreate();
         context=this;
-        mMainThread = new MainThread(context);
-        mMainThread.go();
     }
 
     @Override
@@ -60,7 +57,6 @@ public class MainService extends Service {
         P2PHandler.getInstance().p2pDisconnect();
         Intent ii = new Intent(this,MainService.class);
         this.startService(ii);
-        mMainThread.kill();
         super.onDestroy();
     }
 }
