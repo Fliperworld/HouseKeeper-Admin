@@ -96,7 +96,7 @@ public class MediaPlayer {
 	}
 
 	private static void postEventFromNative(Object mediaplayer_ref, int what,
-			int iDesID, int arg1, int arg2, String msgStr) {
+											int iDesID, int arg1, int arg2, String msgStr) {
 		if (p2pInterface == null || settingInterface == null) {
 			return;
 		}
@@ -137,282 +137,284 @@ public class MediaPlayer {
 		}
 
 		switch (what) {
-		case 1:
-			String threeNumber = "";
-			if (arg2 > 0) {
-				threeNumber = String.valueOf(arg2);
-			} else {
-				threeNumber = "0" + String.valueOf((0 - arg2));
-			}
-			if (arg1 == 1) {
-				// 鍛煎叆
-				p2pInterface.vCalling(false, threeNumber,
-						Integer.parseInt(msgStr));
-			} else {
-				// 鍛煎嚭
-				p2pInterface.vCalling(true, threeNumber,
-						Integer.parseInt(msgStr));
-			}
-			break;
-		case 2:
-			Log.e("leleTestvReject", "iDesID="+iDesID+"reason_code="+reason_code);
-			p2pInterface.vReject(reason_code);
-			break;
-		case 3:
-			p2pInterface.vAccept(arg1, arg2);
-			break;
-		case 4:
-			p2pInterface.vConnectReady();
-			break;
-		case 5:
-			if (mCapture != null) {
-				mCapture.vCaptureResult(arg1);
-			}
-			break;
-		case 6:
-			// remote 绾跨▼ack鍥炶皟
-			if (arg1 < Constants.MsgSection.MSG_ID_SET_REMOTE_DEFENCE
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SET_REMOTE_DEFENCE - 1000)) {
-				settingInterface
-						.ACK_vRetSetRemoteDefence(String.valueOf(iDesID), arg1,
-								getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SET_REMOTE_RECORD
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SET_REMOTE_RECORD - 1000)) {
-				settingInterface.ACK_vRetSetRemoteRecord(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_DEVICE_TIME
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_DEVICE_TIME - 1000)) {
-				settingInterface.ACK_vRetSetDeviceTime(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_DEVICE_TIME
-					&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_DEVICE_TIME - 1000)) {
-				settingInterface.ACK_vRetGetDeviceTime(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_NPC_SETTINGS
-					&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_NPC_SETTINGS - 1000)) {
-				settingInterface.ACK_vRetGetNpcSettings(String.valueOf(iDesID),
-						arg1, getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT - 1000)) {
-				settingInterface.ACK_vRetSetNpcSettingsVideoFormat(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME - 1000)) {
-				settingInterface.ACK_vRetSetNpcSettingsVideoVolume(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_BUZZER
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_BUZZER - 1000)) {
-				settingInterface.ACK_vRetSetNpcSettingsBuzzer(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_MOTION
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_MOTION - 1000)) {
-				settingInterface.ACK_vRetSetNpcSettingsMotion(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE - 1000)) {
-				settingInterface.ACK_vRetSetNpcSettingsRecordType(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME - 1000)) {
-				settingInterface.ACK_vRetSetNpcSettingsRecordTime(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME - 1000)) {
-				settingInterface.ACK_vRetSetNpcSettingsRecordPlanTime(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE - 1000)) {
-				settingInterface.ACK_vRetSetNpcSettingsNetType(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_ALARM_EMAIL
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_ALARM_EMAIL - 1000)) {
-				settingInterface.ACK_vRetSetAlarmEmail(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_ALARM_EMAIL
-					&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_ALARM_EMAIL - 1000)) {
-				settingInterface.ACK_vRetGetAlarmEmail(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_ALARM_BIND_ID
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_ALARM_BIND_ID - 1000)) {
-				settingInterface.ACK_vRetSetAlarmBindId(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_ALARM_BIND_ID
-					&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_ALARM_BIND_ID - 1000)) {
-				settingInterface.ACK_vRetGetAlarmBindId(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_INIT_PASSWORD
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_INIT_PASSWORD - 1000)) {
-				settingInterface.ACK_vRetSetInitPassword(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_DEVICE_PASSWORD
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_DEVICE_PASSWORD - 1000)) {
-				settingInterface.ACK_vRetSetDevicePassword(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_CHECK_DEVICE_PASSWORD
-					&& arg1 >= (Constants.MsgSection.MSG_ID_CHECK_DEVICE_PASSWORD - 1000)) {
-				settingInterface.ACK_vRetCheckDevicePassword(arg1,
-						getConvertAckResult(arg2));
-				Log.e("ACK_vRetCheckDevicePassword", "iDesID=" + iDesID + "---"
-						+ "result=" + getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_DEFENCEAREA
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_DEFENCEAREA - 1000)) {
-				settingInterface.ACK_vRetSetDefenceArea(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_DEFENCEAREA
-					&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_DEFENCEAREA - 1000)) {
-				settingInterface.ACK_vRetGetDefenceArea(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_WIFI
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_WIFI - 1000)) {
-				settingInterface.ACK_vRetSetWifi(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_WIFI_LIST
-					&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_WIFI_LIST - 1000)) {
-				settingInterface.ACK_vRetGetWifiList(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_RECORD_FILE_LIST
-					&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_RECORD_FILE_LIST - 1000)) {
-				settingInterface.ACK_vRetGetRecordFileList(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SEND_MESSAGE
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SEND_MESSAGE - 1000)) {
-				settingInterface.ACK_vRetMessage(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_SEND_CUSTOM_CMD
-					&& arg1 >= (Constants.MsgSection.MSG_ID_SEND_CUSTOM_CMD - 1000)) {
-				settingInterface.ACK_vRetCustomCmd(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_CHECK_DEVICE_UPDATE
-					&& arg1 >= (Constants.MsgSection.MSG_ID_CHECK_DEVICE_UPDATE - 1000)) {
-				settingInterface.ACK_vRetCheckDeviceUpdate(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_CANCEL_DEVICE_UPDATE
-					&& arg1 >= (Constants.MsgSection.MSG_ID_CANCEL_DEVICE_UPDATE - 1000)) {
-				settingInterface.ACK_vRetCancelDeviceUpdate(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_DO_DEVICE_UPDATE
-					&& arg1 >= (Constants.MsgSection.MSG_ID_DO_DEVICE_UPDATE - 1000)) {
-				settingInterface.ACK_vRetDoDeviceUpdate(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_GET_DEFENCE_STATE
-					&& arg1 >= (Constants.MsgSection.MSG_ID_GET_DEFENCE_STATE - 1000)) {
-				settingInterface
-						.ACK_vRetGetDefenceStates(String.valueOf(iDesID), arg1,
-								getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_GET_DEVICE_VERSION
-					&& arg1 >= (Constants.MsgSection.MSG_ID_GET_DEVICE_VERSION - 1000)) {
-				settingInterface.ACK_vRetGetDeviceVersion(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MSG_ID_CLEAR_DEFENCE_GROUP
-					&& arg1 >= (Constants.MsgSection.MSG_ID_CLEAR_DEFENCE_GROUP - 1000)) {
-				settingInterface.ACK_vRetClearDefenceAreaState(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_ID_STTING_PIC_REVERSE
-					&& arg1 >= (Constants.MsgSection.MESG_ID_STTING_PIC_REVERSE - 1000)) {
-				settingInterface.ACK_vRetSetImageReverse(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_ID_STTING_IR_ALARM_EN
-					&& arg1 >= (Constants.MsgSection.MESG_ID_STTING_IR_ALARM_EN - 1000)) {
-				settingInterface.ACK_vRetSetInfraredSwitch(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_IN_EN
-					&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_IN_EN - 1000)) {
-				settingInterface.ACK_vRetSetWiredAlarmInput(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_OUT_EN
-					&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_OUT_EN - 1000)) {
-				settingInterface.ACK_vRetSetWiredAlarmOut(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_SECUPGDEV
-					&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_SECUPGDEV - 1000)) {
-				settingInterface.ACK_vRetSetAutomaticUpgrade(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_GUEST_PASSWD
-					&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_GUEST_PASSWD - 1000)) {
-				settingInterface.ACK_VRetSetVisitorDevicePassword(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_TIMEZONE
-					&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_TIMEZONE - 1000)) {
-				settingInterface.ACK_vRetSetTimeZone(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_GET_SD_CARD_CAPACITY
-					&& arg1 >= (Constants.MsgSection.MESG_GET_SD_CARD_CAPACITY - 1000)) {
-				settingInterface.ACK_vRetGetSDCard(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_SD_CARD_FORMAT
-					&& arg1 >= (Constants.MsgSection.MESG_SD_CARD_FORMAT - 1000)) {
-				settingInterface.ACK_vRetSdFormat(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_GET_DEFENCE_AREA_SWITCH
-					&& arg1 >= (Constants.MsgSection.MESG_GET_DEFENCE_AREA_SWITCH - 1000)) {
-				settingInterface.ACK_vRetGetSensorSwitchs(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_SET_DEFENCE_AREA_SWITCH
-					&& arg1 >= (Constants.MsgSection.MESG_SET_DEFENCE_AREA_SWITCH - 1000)) {
-				settingInterface.ACK_vRetSetSensorSwitchs(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_SET_LAMP
-					&& arg1 >= (Constants.MsgSection.MESG_SET_LAMP - 1000)) {
-				settingInterface.vACK_RecvSetLAMPStatus(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_GET_ALARM_CENTER_PARAMETER
-					&& arg1 >= (Constants.MsgSection.MESG_GET_ALARM_CENTER_PARAMETER - 1000)) {
-				settingInterface.ACK_vRetGetAlarmCenter(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_SET_ALARM_CENTER_PARAMETER
-					&& arg1 >= (Constants.MsgSection.MESG_SET_ALARM_CENTER_PARAMETER - 1000)) {
-				settingInterface.ACK_vRetSetAlarmCenter(arg1,
-						getConvertAckResult(arg2));
-			} else if (arg1 < Constants.MsgSection.MESG_TYPE_GET_LAN_IPC_LIST
-					&& arg1 >= (Constants.MsgSection.MESG_TYPE_GET_LAN_IPC_LIST - 1000)) {
-				settingInterface.ACK_VRetGetNvrIpcList(arg1,
-						getConvertAckResult(arg2));
-			}
-			// //message ack鍥炶皟
-			// if(arg1>=4000&&arg1<6000){
-			// if(getConvertAckResult(arg2)==Constants.SettingConfig.ACK_SUCCESS){
-			// Log.e("my","msg success");
-			// if(MainActivity.msgHeap.get(arg1+"")!=null){
-			// Intent i = new Intent();
-			// i.setAction(Constants.Action.SUCCESS_MSG);
-			// i.putExtra("msgId", arg1);
-			// MyApp.app.sendBroadcast(i);
-			// }
-			// }else
-			// if(getConvertAckResult(arg2)==Constants.SettingConfig.ACK_NET_ERROR){
-			// Log.e("my","msg fault");
-			// if(MainActivity.msgHeap.get(arg1+"")!=null){
-			// Intent i = new Intent();
-			// i.setAction(Constants.Action.FAULT_MSG);
-			// i.putExtra("msgId", arg1);
-			// MyApp.app.sendBroadcast(i);
-			// }
-			// }
-			// }
-			//
-			// //search playback list ack鍥炶皟
-			// if((arg2==2 || arg2==1)&&arg1>=6000&&arg1<8000){
-			// Log.e("my","search fault");
-			// Intent i = new Intent();
-			// i.putExtra("errorCode", getConvertAckResult(arg2));
-			// i.setAction(Constants.Action.PLAYBACK_SEARCH_FAULT);
-			// MyApp.app.sendBroadcast(i);
-			// }
-			//
+			case 1:
+				String threeNumber = "";
+				if (arg2 > 0) {
+					threeNumber = String.valueOf(arg2);
+				} else {
+					threeNumber = "0" + String.valueOf((0 - arg2));
+				}
+				if (arg1 == 1) {
+					// 鍛煎叆
+					p2pInterface.vCalling(false, threeNumber,
+							Integer.parseInt(msgStr));
+				} else {
+					// 鍛煎嚭
+					p2pInterface.vCalling(true, threeNumber,
+							Integer.parseInt(msgStr));
+				}
+				break;
+			case 2:
+				Log.e("leleTestvReject", "iDesID="+iDesID+"reason_code="+reason_code);
+				p2pInterface.vReject(reason_code);
+				break;
+			case 3:
+				p2pInterface.vAccept(arg1, arg2);
+				break;
+			case 4:
+				p2pInterface.vConnectReady();
+				break;
+			case 5:
+				if (mCapture != null) {
+					mCapture.vCaptureResult(arg1);
+				}
+				break;
+			case 6:
+				// remote 绾跨▼ack鍥炶皟
+				if (arg1 < Constants.MsgSection.MSG_ID_SET_REMOTE_DEFENCE
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SET_REMOTE_DEFENCE - 1000)) {
+					settingInterface
+							.ACK_vRetSetRemoteDefence(String.valueOf(iDesID), arg1,
+									getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SET_REMOTE_RECORD
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SET_REMOTE_RECORD - 1000)) {
+					settingInterface.ACK_vRetSetRemoteRecord(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_DEVICE_TIME
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_DEVICE_TIME - 1000)) {
+					settingInterface.ACK_vRetSetDeviceTime(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_DEVICE_TIME
+						&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_DEVICE_TIME - 1000)) {
+					settingInterface.ACK_vRetGetDeviceTime(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_NPC_SETTINGS
+						&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_NPC_SETTINGS - 1000)) {
+					settingInterface.ACK_vRetGetNpcSettings(String.valueOf(iDesID),
+							arg1, getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT - 1000)) {
+					settingInterface.ACK_vRetSetNpcSettingsVideoFormat(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME - 1000)) {
+					settingInterface.ACK_vRetSetNpcSettingsVideoVolume(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_BUZZER
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_BUZZER - 1000)) {
+					settingInterface.ACK_vRetSetNpcSettingsBuzzer(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_MOTION
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_MOTION - 1000)) {
+					settingInterface.ACK_vRetSetNpcSettingsMotion(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE - 1000)) {
+					settingInterface.ACK_vRetSetNpcSettingsRecordType(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME - 1000)) {
+					settingInterface.ACK_vRetSetNpcSettingsRecordTime(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME - 1000)) {
+					settingInterface.ACK_vRetSetNpcSettingsRecordPlanTime(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE - 1000)) {
+					settingInterface.ACK_vRetSetNpcSettingsNetType(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_ALARM_EMAIL
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_ALARM_EMAIL - 1000)) {
+					settingInterface.ACK_vRetSetAlarmEmail(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_ALARM_EMAIL
+						&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_ALARM_EMAIL - 1000)) {
+					settingInterface.ACK_vRetGetAlarmEmail(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_ALARM_BIND_ID
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_ALARM_BIND_ID - 1000)) {
+					settingInterface.ACK_vRetSetAlarmBindId(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_ALARM_BIND_ID
+						&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_ALARM_BIND_ID - 1000)) {
+					settingInterface.ACK_vRetGetAlarmBindId(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_INIT_PASSWORD
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_INIT_PASSWORD - 1000)) {
+					settingInterface.ACK_vRetSetInitPassword(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_DEVICE_PASSWORD
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_DEVICE_PASSWORD - 1000)) {
+					settingInterface.ACK_vRetSetDevicePassword(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_CHECK_DEVICE_PASSWORD
+						&& arg1 >= (Constants.MsgSection.MSG_ID_CHECK_DEVICE_PASSWORD - 1000)) {
+					settingInterface.ACK_vRetCheckDevicePassword(arg1,
+							getConvertAckResult(arg2),String.valueOf(iDesID));;
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_DEFENCEAREA
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_DEFENCEAREA - 1000)) {
+					settingInterface.ACK_vRetSetDefenceArea(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_DEFENCEAREA
+						&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_DEFENCEAREA - 1000)) {
+					settingInterface.ACK_vRetGetDefenceArea(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SETTING_WIFI
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SETTING_WIFI - 1000)) {
+					settingInterface.ACK_vRetSetWifi(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_WIFI_LIST
+						&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_WIFI_LIST - 1000)) {
+					settingInterface.ACK_vRetGetWifiList(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_GETTING_RECORD_FILE_LIST
+						&& arg1 >= (Constants.MsgSection.MSG_ID_GETTING_RECORD_FILE_LIST - 1000)) {
+					settingInterface.ACK_vRetGetRecordFileList(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SEND_MESSAGE
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SEND_MESSAGE - 1000)) {
+					settingInterface.ACK_vRetMessage(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_SEND_CUSTOM_CMD
+						&& arg1 >= (Constants.MsgSection.MSG_ID_SEND_CUSTOM_CMD - 1000)) {
+					settingInterface.ACK_vRetCustomCmd(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_CHECK_DEVICE_UPDATE
+						&& arg1 >= (Constants.MsgSection.MSG_ID_CHECK_DEVICE_UPDATE - 1000)) {
+					settingInterface.ACK_vRetCheckDeviceUpdate(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_CANCEL_DEVICE_UPDATE
+						&& arg1 >= (Constants.MsgSection.MSG_ID_CANCEL_DEVICE_UPDATE - 1000)) {
+					settingInterface.ACK_vRetCancelDeviceUpdate(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_DO_DEVICE_UPDATE
+						&& arg1 >= (Constants.MsgSection.MSG_ID_DO_DEVICE_UPDATE - 1000)) {
+					settingInterface.ACK_vRetDoDeviceUpdate(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_GET_DEFENCE_STATE
+						&& arg1 >= (Constants.MsgSection.MSG_ID_GET_DEFENCE_STATE - 1000)) {
+					settingInterface
+							.ACK_vRetGetDefenceStates(String.valueOf(iDesID), arg1,
+									getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_GET_DEVICE_VERSION
+						&& arg1 >= (Constants.MsgSection.MSG_ID_GET_DEVICE_VERSION - 1000)) {
+					settingInterface.ACK_vRetGetDeviceVersion(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MSG_ID_CLEAR_DEFENCE_GROUP
+						&& arg1 >= (Constants.MsgSection.MSG_ID_CLEAR_DEFENCE_GROUP - 1000)) {
+					settingInterface.ACK_vRetClearDefenceAreaState(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_ID_STTING_PIC_REVERSE
+						&& arg1 >= (Constants.MsgSection.MESG_ID_STTING_PIC_REVERSE - 1000)) {
+					settingInterface.ACK_vRetSetImageReverse(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_ID_STTING_IR_ALARM_EN
+						&& arg1 >= (Constants.MsgSection.MESG_ID_STTING_IR_ALARM_EN - 1000)) {
+					settingInterface.ACK_vRetSetInfraredSwitch(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_IN_EN
+						&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_IN_EN - 1000)) {
+					settingInterface.ACK_vRetSetWiredAlarmInput(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_OUT_EN
+						&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_OUT_EN - 1000)) {
+					settingInterface.ACK_vRetSetWiredAlarmOut(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_SECUPGDEV
+						&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_SECUPGDEV - 1000)) {
+					settingInterface.ACK_vRetSetAutomaticUpgrade(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_GUEST_PASSWD
+						&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_GUEST_PASSWD - 1000)) {
+					settingInterface.ACK_VRetSetVisitorDevicePassword(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_STTING_ID_TIMEZONE
+						&& arg1 >= (Constants.MsgSection.MESG_STTING_ID_TIMEZONE - 1000)) {
+					settingInterface.ACK_vRetSetTimeZone(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_GET_SD_CARD_CAPACITY
+						&& arg1 >= (Constants.MsgSection.MESG_GET_SD_CARD_CAPACITY - 1000)) {
+					settingInterface.ACK_vRetGetSDCard(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_SD_CARD_FORMAT
+						&& arg1 >= (Constants.MsgSection.MESG_SD_CARD_FORMAT - 1000)) {
+					settingInterface.ACK_vRetSdFormat(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_GET_DEFENCE_AREA_SWITCH
+						&& arg1 >= (Constants.MsgSection.MESG_GET_DEFENCE_AREA_SWITCH - 1000)) {
+					settingInterface.ACK_vRetGetSensorSwitchs(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_SET_DEFENCE_AREA_SWITCH
+						&& arg1 >= (Constants.MsgSection.MESG_SET_DEFENCE_AREA_SWITCH - 1000)) {
+					settingInterface.ACK_vRetSetSensorSwitchs(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_SET_LAMP
+						&& arg1 >= (Constants.MsgSection.MESG_SET_LAMP - 1000)) {
+					settingInterface.vACK_RecvSetLAMPStatus(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_GET_ALARM_CENTER_PARAMETER
+						&& arg1 >= (Constants.MsgSection.MESG_GET_ALARM_CENTER_PARAMETER - 1000)) {
+					settingInterface.ACK_vRetGetAlarmCenter(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_SET_ALARM_CENTER_PARAMETER
+						&& arg1 >= (Constants.MsgSection.MESG_SET_ALARM_CENTER_PARAMETER - 1000)) {
+					settingInterface.ACK_vRetSetAlarmCenter(arg1,
+							getConvertAckResult(arg2));
+				} else if (arg1 < Constants.MsgSection.MESG_TYPE_GET_LAN_IPC_LIST
+						&& arg1 >= (Constants.MsgSection.MESG_TYPE_GET_LAN_IPC_LIST - 1000)) {
+					settingInterface.ACK_VRetGetNvrIpcList(arg1,
+							getConvertAckResult(arg2));
+				}else if(arg1 < Constants.MsgSection.MESG_TYPE_GET_NVRINFO
+						&& arg1 >= (Constants.MsgSection.MESG_TYPE_GET_NVRINFO - 1000)){
+					settingInterface.ACK_VRetGetNvrInfo(arg1,
+							getConvertAckResult(arg2));
+				}
+				// //message ack鍥炶皟
+				// if(arg1>=4000&&arg1<6000){
+				// if(getConvertAckResult(arg2)==Constants.SettingConfig.ACK_SUCCESS){
+				// Log.e("my","msg success");
+				// if(MainActivity.msgHeap.get(arg1+"")!=null){
+				// Intent i = new Intent();
+				// i.setAction(Constants.Action.SUCCESS_MSG);
+				// i.putExtra("msgId", arg1);
+				// MyApp.app.sendBroadcast(i);
+				// }
+				// }else
+				// if(getConvertAckResult(arg2)==Constants.SettingConfig.ACK_NET_ERROR){
+				// Log.e("my","msg fault");
+				// if(MainActivity.msgHeap.get(arg1+"")!=null){
+				// Intent i = new Intent();
+				// i.setAction(Constants.Action.FAULT_MSG);
+				// i.putExtra("msgId", arg1);
+				// MyApp.app.sendBroadcast(i);
+				// }
+				// }
+				// }
+				//
+				// //search playback list ack鍥炶皟
+				// if((arg2==2 || arg2==1)&&arg1>=6000&&arg1<8000){
+				// Log.e("my","search fault");
+				// Intent i = new Intent();
+				// i.putExtra("errorCode", getConvertAckResult(arg2));
+				// i.setAction(Constants.Action.PLAYBACK_SEARCH_FAULT);
+				// MyApp.app.sendBroadcast(i);
+				// }
+				//
 
-			break;
-		case 7:
+				break;
+			case 7:
 
-			break;
-		case 8:
-			p2pInterface.vChangeVideoMask(arg1);
-			break;
-		case 9:
-			p2pInterface.vRetRTSPNotify(arg2, msgStr);
-			break;
-		default:
-			p2pInterface.vRetPostFromeNative(what, iDesID, arg1, arg2, msgStr);
-		    break;
+				break;
+			case 8:
+				p2pInterface.vChangeVideoMask(arg1);
+				break;
+			case 9:
+				p2pInterface.vRetRTSPNotify(arg2, msgStr);
+				break;
+			default:
+				p2pInterface.vRetPostFromeNative(what, iDesID, arg1, arg2, msgStr);
+				break;
 		}
 
 	}
@@ -498,7 +500,7 @@ public class MediaPlayer {
 	}
 
 	private static void getAudioBuffer(byte[] buffer, int buffer_size,
-			int[] iPTS) {
+									   int[] iPTS) {
 		int i;
 		int iTime1;
 
@@ -525,8 +527,8 @@ public class MediaPlayer {
 	}
 
 	public static void RecvAVData(byte[] AudioBuffer, int AudioLen,
-			int AudioFrames, long AudioPTS, byte[] VideoBuffer, int VideoLen,
-			long VideoPTS) {
+								  int AudioFrames, long AudioPTS, byte[] VideoBuffer, int VideoLen,
+								  long VideoPTS) {
 		p2pInterface.vRecvAudioVideoData(AudioBuffer, AudioLen, AudioFrames,
 				AudioPTS, VideoBuffer, VideoLen, VideoPTS);
 	}
@@ -603,7 +605,7 @@ public class MediaPlayer {
 
 	/**
 	 * Checks whether the MediaPlayer is playing.
-	 * 
+	 *
 	 * @return true if currently playing, false otherwise
 	 */
 	public native boolean _isPlaying();
@@ -612,7 +614,7 @@ public class MediaPlayer {
 	 * H264 ENCODER
 	 */
 	public native int _FillVideoRawFrame(byte[] in, int insize, int width,
-			int height, int isYUV);
+										 int height, int isYUV);
 
 	/**
 	 * AMR ENCODER
@@ -628,11 +630,11 @@ public class MediaPlayer {
 	private native final void native_setup(Object mediaplayer_this);
 
 	public native int native_p2p_connect(int uID, int password, int code1,
-			int code2, byte[] szMesg, int[] iCustomerID);
+										 int code2, byte[] szMesg, int[] iCustomerID);
 
 	public native int native_p2p_call(long id, int bMonitor, int password,
-			int iFileIndex, int VideoTrans, byte[] filename, byte[] szMesg,
-			String ipdress,long headerID);
+									  int iFileIndex, int VideoTrans, byte[] filename, byte[] szMesg,
+									  String ipdress,long headerID);
 
 	public native void native_p2p_accpet();
 
@@ -658,7 +660,7 @@ public class MediaPlayer {
 	public static native void onNativeKeyUp(int keycode);
 
 	public static native void onNativeTouch(int touchDevId,
-			int pointerFingerId, int action, float x, float y, float p);
+											int pointerFingerId, int action, float x, float y, float p);
 
 	public static native void onNativeAccel(float x, float y, float z);
 
@@ -739,7 +741,7 @@ public class MediaPlayer {
 	}
 
 	public static Object audioInit(int sampleRate, boolean is16Bit,
-			boolean isStereo, int desiredFrames) {
+								   boolean isStereo, int desiredFrames) {
 		return null;
 	}
 
@@ -825,7 +827,7 @@ public class MediaPlayer {
 				 * new int[] { EGL_CONTEXT_CLIENT_VERSION, majorVersion,
 				 * EGL10.EGL_NONE }; EGLContext ctx = egl.eglCreateContext(dpy,
 				 * config, EGL10.EGL_NO_CONTEXT, contextAttrs);
-				 * 
+				 *
 				 * if (ctx == EGL10.EGL_NO_CONTEXT) { Log.e("SDL",
 				 * "Couldn't create context"); return false; }
 				 * SDLActivity.mEGLContext = ctx;
@@ -883,7 +885,7 @@ public class MediaPlayer {
 
 		/*
 		 * frame++;
-		 * 
+		 *
 		 * if (frame == 25) { frame = 0; Log.e(TAG, "duration time is: " +
 		 * (Calendar.getInstance().getTimeInMillis() - timeStart)); }
 		 */
@@ -962,13 +964,13 @@ public class MediaPlayer {
 	 ************************************************/
 
 	public static native int iSetNPCSettings(int iNPCID, int iPassword,
-			int iMsgID, int iSettingID, int iSettingValue);
+											 int iMsgID, int iSettingID, int iSettingValue);
 
 	public static native int iGetNPCSettings(int iNPCID, int iPassword,
-			int iMsgID);
+											 int iMsgID);
 
 	public static void vRetNPCSettings(int iSrcID, int iCount,
-			int[] iSettingID, int[] iValue, int iResult) {
+									   int[] iSettingID, int[] iValue, int iResult) {
 		if (iResult == 1) {
 			Log.e("my", "鑾峰彇");
 			for (int i = 0; i < iCount; i++) {
@@ -1079,13 +1081,20 @@ public class MediaPlayer {
 					continue;
 				}
 				if (iSettingID[i] == Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_FOCUS_ZOOM) {
-					settingInterface.vRetFocusZoom(iValue[i]);
+					settingInterface.vRetFocusZoom(String.valueOf(iSrcID),iValue[i]);
 					continue;
 				}
-				
+
 				if(iSettingID[i] == Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_CHECK_AP_MODE_SURPPORT){
 					settingInterface.vRetAPModeSurpport(String.valueOf(iSrcID), iValue[i]);
 					continue;
+				}
+				if(iSettingID[i]==Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_DEVICE_TYPE){
+					byte[] type=MyUtils.intToByte4(iValue[i]);
+					int mainType=MyUtils.bytes2ToInt(type, 0);
+					int subType=MyUtils.bytes2ToInt(type, 2);
+					Log.e("leleTestType", "iSrcID="+String.valueOf(iSrcID)+"--"+"MainType="+mainType+"--"+"subType="+subType);
+					settingInterface.vRetDeviceType(String.valueOf(iSrcID), mainType, subType);
 				}
 
 			}
@@ -1140,7 +1149,7 @@ public class MediaPlayer {
 	}
 
 	public static void vRetFriendsStatus(final int iFriendsCount,
-			final int[] iIDArray, final byte[] bStatus, final byte[] bType) {
+										 final int[] iIDArray, final byte[] bStatus, final byte[] bType) {
 		String[] threeNumbers = new String[iFriendsCount];
 		int[] status = new int[iFriendsCount];
 		int[] types = new int[iFriendsCount];
@@ -1159,11 +1168,9 @@ public class MediaPlayer {
 			}
 
 		}
-		
-		if(null!=settingInterface){
-			settingInterface.vRetGetFriendStatus(iFriendsCount, threeNumbers,
-					status, types);
-		}
+
+		settingInterface.vRetGetFriendStatus(iFriendsCount, threeNumbers,
+				status, types);
 	}
 
 	public static void vRetMessage(int srcID, int iLen, byte[] cString) {
@@ -1187,10 +1194,10 @@ public class MediaPlayer {
 	public static native int iGetFriendsStatus(int[] data, int iFriendNS);
 
 	public static native int iSendMesgToFriend(int iDesID, int iMesgID,
-			byte[] data, int datasize);
+											   byte[] data, int datasize);
 
 	public static native int iGetRecFiles(int iNPCID, int iPassword,
-			int iMesgID, int iStartDateTime, int iEndDateTime);
+										  int iMesgID, int iStartDateTime, int iEndDateTime);
 
 	public static void vRetRecordFilesList(int id, int count, byte[] bytes) {
 		String name = new String(bytes);
@@ -1201,7 +1208,7 @@ public class MediaPlayer {
 	}
 
 	public static native int iRecFilePlayingControl(int iCommand, int iParm,
-			byte[] filename);
+													byte[] filename);
 
 	public static native int iLocalVideoControl(int iCommand);
 
@@ -1222,15 +1229,15 @@ public class MediaPlayer {
 	}
 
 	public static native int iSetNPCDateTime(int iNpcID, int iPassword,
-			int iMesgID, int iTime);
+											 int iMesgID, int iTime);
 
 	public static native int iGetNPCDateTime(int iNpcID, int iPassword,
-			int iMesgID);
+											 int iMesgID);
 
 	public static native int iGetNPCEmail(int iNpcID, int iPassword, int iMesgID);
 
 	public static native int iSetNPCEmail(int iNpcID, int iPassword,
-			int iMesgID, byte[] data, int iLen);
+										  int iMesgID, byte[] data, int iLen);
 
 	public static void vRetEmail(int srcID, int iLen, byte[] cString, int result) {
 		byte option = (byte) ((result >> 0) & (0x1));
@@ -1244,23 +1251,23 @@ public class MediaPlayer {
 	}
 
 	public static native int iGetNPCWifiList(int iNpcID, int iPassword,
-			int iMesgID);
+											 int iMesgID);
 
 	/*
 	 * @param data1 Wifi Name
-	 * 
+	 *
 	 * @param data2 Wifi password
 	 */
 	public static native int iSetNPCWifi(int iNpcID, int iPassword,
-			int iMesgID, int iType, byte[] data1, int iLen1, byte[] data2,
-			int iLen2);
+										 int iMesgID, int iType, byte[] data1, int iLen1, byte[] data2,
+										 int iLen2);
 
 	public static native int iGetNPCIpConfig(int iNpcID, int iPassword,
-			int iMesgID, int iType, byte[] data1, int iLen1, byte[] data2,
-			int iLen2);
+											 int iMesgID, int iType, byte[] data1, int iLen1, byte[] data2,
+											 int iLen2);
 
 	public static void vRetNPCWifiList(int srcID, int iCurrentId, int iCount,
-			int[] iType, int[] iStrength, byte[] cString, int iResult) {
+									   int[] iType, int[] iStrength, byte[] cString, int iResult) {
 
 		String strbuffer = "--";
 		for (int j = 0; j < cString.length; j++) {
@@ -1325,13 +1332,13 @@ public class MediaPlayer {
 	}
 
 	public static native int iGetAlarmCodeStatus(int iNpcID, int iPassword,
-			int iMesgID);
+												 int iMesgID);
 
 	public static native int iSetAlarmCodeStatus(int iNpcID, int iPassword,
-			int iMesgID, int iCount, int iType, int[] iGroup, int[] iItem);
+												 int iMesgID, int iCount, int iType, int[] iGroup, int[] iItem);
 
 	public static void vRetAlarmCodeStatus(int srcID, int iCount, int key,
-			byte[] bData, int iResult) {
+										   byte[] bData, int iResult) {
 		if (iResult == 1) {
 			ArrayList<int[]> data = new ArrayList<int[]>();
 			int[] status_key = new int[8];
@@ -1375,13 +1382,13 @@ public class MediaPlayer {
 	}
 
 	public static native int iGetBindAlarmId(int iNpcID, int iPassword,
-			int iMesgID);
+											 int iMesgID);
 
 	public static native int iSetBindAlarmId(int iNpcID, int iPassword,
-			int iMesgID, int iCount, int[] iData);
+											 int iMesgID, int iCount, int[] iData);
 
 	public static void vRetBindAlarmId(int srcID, int iMaxCount, int iCount,
-			int[] iData, int iResult) {
+									   int[] iData, int iResult) {
 		if (iResult == 1) {
 			if (iCount == 1 && iData[0] == 0) {
 				settingInterface.vRetBindAlarmIdResult(srcID, iResult,
@@ -1406,41 +1413,41 @@ public class MediaPlayer {
 	}
 
 	public static native void ChangeScreenSize(int windowWidth,
-			int windowHeight, int isFullScreen);
+											   int windowHeight, int isFullScreen);
 
 	public static native int ZoomView(int x, int y, float fScale);
 
 	public static native int MoveView(int DetaX, int DetaY);
 
 	public static native int iSetInitPassword(int iNpcID, int iPassword,
-			int iMesgID, int iNewPassword, int AppID);
+											  int iMesgID, int iNewPassword, int AppID,int pwdLen,byte[] EntryPwd);
 
 	public static void vRetInitPassword(int iNpcId, int iResult) {
 		settingInterface.vRetSetInitPasswordResult(iResult);
 	}
 
 	public static void vRetAlarm(int iSrcId, int iType,
-			int isSupportExternAlarm, int iGroup, int iItem) {
-//		boolean bool = false;
-//		boolean isSupportDelete = false;
-//		if ((isSupportExternAlarm & 0x1) == 1) {
-//			bool = true;
-//		} else {
-//			bool = false;
-//		}
-//		Log.e("dxsAlarmActivity", "iSrcId-->" + iSrcId + "iType-->" + iType
-//				+ "--isSupportExternAlarm-->" + isSupportExternAlarm);
-//		if (((isSupportExternAlarm >> 2) & (0x1)) == 1) {
-//			isSupportDelete = true;
-//		} else {
-//			isSupportDelete = false;
-//		}
-//		if (iGroup > 8) {
-//			isSupportExternAlarm = 0;
-//		}
-//
-//		p2pInterface.vAllarming(String.valueOf(iSrcId), iType, bool, iGroup,
-//				iItem, isSupportDelete);
+								 int isSupportExternAlarm, int iGroup, int iItem) {
+		boolean bool = false;
+		boolean isSupportDelete = false;
+		if ((isSupportExternAlarm & 0x1) == 1) {
+			bool = true;
+		} else {
+			bool = false;
+		}
+		Log.e("dxsAlarmActivity", "iSrcId-->" + iSrcId + "iType-->" + iType
+				+ "--isSupportExternAlarm-->" + isSupportExternAlarm);
+		if (((isSupportExternAlarm >> 2) & (0x1)) == 1) {
+			isSupportDelete = true;
+		} else {
+			isSupportDelete = false;
+		}
+		if (iGroup > 8) {
+			isSupportExternAlarm = 0;
+		}
+
+		p2pInterface.vAllarming(String.valueOf(iSrcId), iType, bool, iGroup,
+				iItem, isSupportDelete);
 	}
 
 	/* ***********************************************************************
@@ -1460,7 +1467,7 @@ public class MediaPlayer {
 	}
 
 	public static native int iSendCmdToFriend(int iDesID, int iPassword,
-			int iMesgID, byte[] data, int datasize);
+											  int iMesgID, byte[] data, int datasize);
 
 	// 鑷畾涔夊懡浠�
 	public static void vRetCustomCmd(int srcID, int iLen, byte[] cString) {
@@ -1471,10 +1478,10 @@ public class MediaPlayer {
 	public static native int iSetVideoMode(int type);
 
 	public static native void checkDeviceUpdate(int iNpcID, int iPassword,
-			int iMesgID);
+												int iMesgID);
 
 	public static void vRetCheckDeviceUpdate(int iSrcID, int result,
-			int iCurVersion, int iUpgVersion) {
+											 int iCurVersion, int iUpgVersion) {
 		int a = iCurVersion & 0xff;
 		int b = (iCurVersion >> 8) & 0xff;
 		int c = (iCurVersion >> 16) & 0xff;
@@ -1494,7 +1501,7 @@ public class MediaPlayer {
 	}
 
 	public static native void doDeviceUpdate(int iNpcID, int iPassword,
-			int iMesgID);
+											 int iMesgID);
 
 	public static void vRetDoDeviceUpdate(int iSrcID, int result, int value) {
 
@@ -1503,7 +1510,7 @@ public class MediaPlayer {
 	}
 
 	public static native void cancelDeviceUpdate(int iNpcID, int iPassword,
-			int iMesgID);
+												 int iMesgID);
 
 	public static void vRetCancelDeviceUpdate(int iSrcID, int result) {
 
@@ -1513,11 +1520,11 @@ public class MediaPlayer {
 	public static native int iSendCtlCmd(int iCmd, int iOption);
 
 	public static native void getDeviceVersion(int iNpcID, int iPassword,
-			int iMesgID);
+											   int iMesgID);
 
 	public static void vRetGetDeviceVersion(int iSrcID, int result,
-			int iCurVersion, int iUbootVersion, int iKernelVersion,
-			int iRootfsVersion) {
+											int iCurVersion, int iUbootVersion, int iKernelVersion,
+											int iRootfsVersion) {
 		int a = iCurVersion & 0xff;
 		int b = (iCurVersion >> 8) & 0xff;
 		int c = (iCurVersion >> 16) & 0xff;
@@ -1535,14 +1542,14 @@ public class MediaPlayer {
 	}
 
 	public static native int iClearAlarmCodeGroup(int iNpcID, int iPassword,
-			int iMesgID, int iGroup);
+												  int iMesgID, int iGroup);
 
 	public static void vRetClearAlarmCodeGroup(int iSrcID, int result) {
 		settingInterface.vRetClearDefenceAreaState(result);
 	}
 
 	public static native int iExtendedCmd(int iTargetID, int iPassword,
-			int iMesgID, byte[] data, int datasize);
+										  int iMesgID, byte[] data, int datasize);
 
 	public static final int MESG_TYPE_GET_DISK_INFO = 80;
 	public static final int MESG_TYPE_FORMAT_DISK = 81;
@@ -1561,14 +1568,18 @@ public class MediaPlayer {
 
 	public static final int MESG_TYPE_RET_LAN_IPC_LIST = 130;// 返回NVR的ipc列表
 
-	public static final int MESG_CONTROL_CAMERA = 131;
+	public static final int MESG_TYPE_RET_NVR_DEV_INFO = 132;//获取NVR信息
 	public static final int MESG_TYPE_FISHEYE_SETTING = 149;// 鱼眼设置
-	public static final int MESG_TYPE_FISHEYE_MEMBERLIST = 215;// 鱼眼获取列表
+	public static final int MESG_TYPE_FISHEYE_MEMBERLIST = 221;// 鱼眼获取列表
 	public static final int MESG_TYPE_DEVIECE_NOT_SUPPORT_RET = 255;
 	public static final int MESG_TYPE_RET_DEVICE_LANGUAGE = 213;
+	public static final int MESG_TYPE_RET_FOCUS_ZOOM=224;
+	public static final int MESG_GET_DEFENCE_WORK_GROUP=214;//获取定时布防列表
+	public static final int MESG_SET_DEFENCE_WORK_GROUP=215;//设置定时布防列表
+	public static final int MESG_FTP_CONFIG_INFO=227;//FTP获取设置信息返回
 
 	public static void vRetExtenedCmd(int iSrcID, byte[] data, int datasize) {
-		Log.e("vRetExtenedCmd", "vRetExtenedCmd-->" + Arrays.toString(data));
+		Log.e("vRetExtenedCmd", "vRetExtenedCmd-->"+"iSrcID="+iSrcID+"--"+ Arrays.toString(data));
 		int option = 0;
 		if (data[0] < 0) {
 			option = data[0] + 256;
@@ -1702,7 +1713,11 @@ public class MediaPlayer {
 			} else {
 				result = data[1];
 			}
-			settingInterface.vRetSetGPIO(result);
+			if (result==0) {
+				settingInterface.vRetSetGPIO(String.valueOf(iSrcID),result);
+			}else{
+				settingInterface.vRetGetGPIO(String.valueOf(iSrcID), result, data[4]);
+			}
 		} else if (option == MESG_TYPE_RET_DEFENCE_SWITCH_STATE) {
 			if (data[1] == 1) {
 				ArrayList<int[]> sensors = new ArrayList<int[]>();
@@ -1837,7 +1852,8 @@ public class MediaPlayer {
 				settingInterface.vRetSetAlarmCenter(data[1]);
 			}
 		} else if (option == MESG_DELETE_ALARMDEVICEID) {
-			settingInterface.vRetDeleteDeviceAlarmID(data[1]);
+			settingInterface.vRetDeleteDeviceAlarmID(data[1],data[8]);
+			Log.e("leledelete", "id="+iSrcID+"--"+"result="+data[1]+"data[8]="+data[8]);
 		} else if (option == MESG_TYPE_RET_DEVICE_LANGUAGE) {
 			int result = data[1];
 			int languegecount = data[4];
@@ -1883,27 +1899,45 @@ public class MediaPlayer {
 			}
 			Log.e("leleTest", "ipc list="+s_list);
 			settingInterface.vRetGetNvrIpcList(String.valueOf(iSrcID),list,number);
-			
+
+		}else if(option == MESG_TYPE_RET_NVR_DEV_INFO){
+			settingInterface.vRetNVRInfo(iSrcID, data, datasize);
+		}else if(option==MESG_TYPE_RET_FOCUS_ZOOM){
+			if(data[1]==0){
+				int result=data[2];
+				int value=data[3];
+				settingInterface.vRetGetFocusZoom(String.valueOf(iSrcID), result, value);
+			}else if(data[1]==1){
+				int result=data[2];
+				int value=data[3];
+				settingInterface.vRetSetFocusZoom(String.valueOf(iSrcID), result, value);
+			}
+		}else if (option==MESG_GET_DEFENCE_WORK_GROUP) {
+			settingInterface.vRetGetDefenceWorkGroup(String.valueOf(iSrcID), data);
+		}else if (option==MESG_SET_DEFENCE_WORK_GROUP) {
+			settingInterface.vRetSetDefenceWorkGroup(String.valueOf(iSrcID), data);
+		}else if (option==MESG_FTP_CONFIG_INFO) {
+			settingInterface.vRetFTPConfigInfo(String.valueOf(iSrcID), data);
 		}
 	}
 
 	public static native void vSendWiFiCmd(int iType, byte[] SSID,
-			int iSSIDLen, byte[] Password, int iPasswordLen);
+										   int iSSIDLen, byte[] Password, int iPasswordLen);
 
 	public static native void SetSystemMessageIndex(int iSystemMessageType,
-			int iSystemMessageIndex);
+													int iSystemMessageIndex);
 
 	// jni实验
 	public native long des_password();
 
 	/**
-	 * 
+	 *
 	 * @param iSystemMessageType
 	 * @param iSystemMessageIndex
 	 *            商城版有没有新消息标记
 	 */
 	public static void RetNewSystemMessage(int iSystemMessageType,
-			int iSystemMessageIndex) {
+										   int iSystemMessageIndex) {
 		if (iSystemMessageType == Constants.SystemMessgeType.MALL_NEW
 				&& p2pInterface != null) {
 			p2pInterface.vRetNewSystemMessage(iSystemMessageType,
@@ -1915,7 +1949,7 @@ public class MediaPlayer {
 
 	/**
 	 * 监控暂停(需要库支持，不可用)
-	 * 
+	 *
 	 * @param supperdrop
 	 */
 	public static native void SetSupperDrop(boolean supperdrop);
@@ -1924,9 +1958,9 @@ public class MediaPlayer {
 	 * pwd:~##00~以##结束不足8位补齐0
 	 */
 	public static void vRetEmailWithSMTP(int srcID, byte boption,
-			String emailaddress, int port, String server, String user,
-			byte[] pwd, String subject, String content, byte Entry,
-			byte reserve1, int reserve2, int pwdlen) {
+										 String emailaddress, int port, String server, String user,
+										 byte[] pwd, String subject, String content, byte Entry,
+										 byte reserve1, int reserve2, int pwdlen) {
 		Log.e("fang", "------------");
 		String[] SmtpMessage = null;
 		String pwds = null;
@@ -1949,15 +1983,14 @@ public class MediaPlayer {
 	}
 
 	public static native int SetRobortEmailNew(int iNpcID, int iPassword,
-			int iMesgID, byte boption, String emailaddress, int port,
-			String server, String user, byte[] pwd, String subject,
-			String content, byte Entry, byte reserve1, int reserve2, int pwdlen);
+											   int iMesgID, byte boption, String emailaddress, int port,
+											   String server, String user, byte[] pwd, String subject,
+											   String content, byte Entry, byte reserve1, int reserve2, int pwdlen);
 
 	public static void vRetAlarmWithTime(int iSrcId, int iType,
-			int isSupportExternAlarm, int iGroup, int iItem, int capNums,
-			byte[] Times, byte[] alarmCapDirs, byte[] vedioPaths) {
+										 int isSupportExternAlarm, int iGroup, int iItem, int capNums,
+										 byte[] Times, byte[] alarmCapDirs, byte[] vedioPaths,byte[] SensorName,int DeviceType) {
 		String TimeTemp = new String(Times);
-		Log.e("dxsTest", "TimeTemp-->" + TimeTemp);
 		String Time = TimeTemp.replace("-", "");
 		String alarmCapDir = new String(alarmCapDirs);
 		String vedioPath = new String(vedioPaths);
@@ -1965,9 +1998,10 @@ public class MediaPlayer {
 				+ MyUtils.compleInteger(iItem, 2) + Time
 				+ MyUtils.compleInteger(capNums, 2);
 		alarmCapDir = alarmCapDir + filename;
+		String name=new String(SensorName);
 		p2pInterface.vAllarmingWitghTime(String.valueOf(iSrcId), iType,
 				isSupportExternAlarm, iGroup, iItem, capNums, Time,
-				alarmCapDir, vedioPath);
+				alarmCapDir, vedioPath,name,DeviceType);
 	}
 
 	public static native int native_rtsp_call(long id, String rstp);
@@ -1975,12 +2009,12 @@ public class MediaPlayer {
 	public static native int SetScreenShotPath(String path, String name);
 
 	public static native int SendUserData(int cmd, int option, byte[] data,
-			int datalength);
+										  int datalength);
 
 	public static native int EntryPwd(String password);
 
 	public static native int GetAllarmImage(int id, int password,
-			String filename, String LocalName);
+											String filename, String LocalName);
 
 	public static void RetGetAllarmImage(int id, byte[] filename, int errorcode) {
 		String file = new String(filename);
@@ -1994,10 +2028,12 @@ public class MediaPlayer {
 	public static native String RTSPEntry(String pwd);
 
 	public static native String HTTPDecrypt(String userID, String pwd,
-			int backLen);
+											int backLen);
 
 	public static native String HTTPEncrypt(String userID, String pwd,
-			int backLen);
+											int backLen);
 
-	public static native byte[] P2PEntryPassword(int pwd);
+	public static native byte[] P2PEntryPassword(byte[] pwd);
+	public static native int iSetDevicePwd(int iNPCID, int iPassword,
+										   int iMsgID, int iSettingID, int iSettingValue,int pwdLen,byte[] Entrypwd);
 }

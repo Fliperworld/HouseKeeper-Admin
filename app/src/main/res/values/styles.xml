@@ -12,11 +12,20 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="AnimationFade">
+
+        <!-- PopupWindow左右弹出的效果 -->
+        <item name="android:windowEnterAnimation">@anim/popwindow_in_half</item>
+        <item name="android:windowExitAnimation">@anim/popwindow_out_half</item>
+    </style>
     <style name="customBackground" parent="@android:style/Theme.Holo.Light">
         <item name="android:windowBackground">@drawable/startlogo</item>
         <item name="android:windowNoTitle">true</item>
     </style>
-
+    <style name="popdown_up" parent="android:Animation">
+        <item name="@android:windowEnterAnimation">@anim/popwindow_up_anim</item>
+        <item name="@android:windowExitAnimation">@anim/popwindow_down_anim</item>
+    </style>
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

@@ -5,7 +5,9 @@ import com.p2p.core.utils.MyUtils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.FloatMath;
 import android.util.Log;
@@ -16,6 +18,7 @@ import android.view.animation.ScaleAnimation;
 public abstract class BaseP2PView extends SurfaceView {
 	public static String contactId;
 	public static String password;
+	Handler myHandler;
 
 	public BaseP2PView(Context context) {
 		super(context);
@@ -48,7 +51,7 @@ public abstract class BaseP2PView extends SurfaceView {
 	private int start_x, start_y, current_x, current_y;// 触摸位置
 
 	private float beforeLenght, afterLenght;// 两触点距离
-	
+
 	private float mbeforeLenght, mafterLenght;// 两触点距离
 
 	private float scale_temp;// 缩放比例
@@ -57,9 +60,9 @@ public abstract class BaseP2PView extends SurfaceView {
 
 	/**
 	 * 模式 NONE：无 DRAG：拖拽. ZOOM:缩放
-	 * 
+	 *
 	 * @author zhangjia
-	 * 
+	 *
 	 */
 	public enum MODE {
 		NONE, DRAG, ZOOM
@@ -110,7 +113,7 @@ public abstract class BaseP2PView extends SurfaceView {
 
 	@Override
 	protected void onLayout(boolean changed, int left, int top, int right,
-			int bottom) {
+							int bottom) {
 		super.onLayout(changed, left, top, right, bottom);
 		if (start_Top == -1) {
 			start_Top = top;
@@ -132,32 +135,32 @@ public abstract class BaseP2PView extends SurfaceView {
 		try{
 			/** 处理单点、多点触摸 **/
 			switch (event.getAction() & MotionEvent.ACTION_MASK) {
-			case MotionEvent.ACTION_DOWN:
-				onTouchDown(event);
-				break;
-			// 多点触摸
-			case MotionEvent.ACTION_POINTER_DOWN:
-				onPointerDown(event);
-				break;
+				case MotionEvent.ACTION_DOWN:
+					onTouchDown(event);
+					break;
+				// 多点触摸
+				case MotionEvent.ACTION_POINTER_DOWN:
+					onPointerDown(event);
+					break;
 
-			case MotionEvent.ACTION_MOVE:
-				return onTouchMove(event);
-			case MotionEvent.ACTION_UP:
-				mode = MODE.NONE;
-				iTouchUp = 1;
-				break;
+				case MotionEvent.ACTION_MOVE:
+					return onTouchMove(event);
+				case MotionEvent.ACTION_UP:
+					mode = MODE.NONE;
+					iTouchUp = 1;
+					break;
 
-			// 多点松开
-			case MotionEvent.ACTION_POINTER_UP:
-				mode = MODE.NONE;
-				/** 执行缩放还原 **/
-				// if
-				// (this.getWidth()<this.getCurrentWidth(s)&&this.getHeight()<this.getCurrentHeight())
-				// {
-				// this.changeNormalSize();
-				// }
-				onTouchPointerUp(event);
-				break;
+				// 多点松开
+				case MotionEvent.ACTION_POINTER_UP:
+					mode = MODE.NONE;
+					/** 执行缩放还原 **/
+					// if
+					// (this.getWidth()<this.getCurrentWidth(s)&&this.getHeight()<this.getCurrentHeight())
+					// {
+					// this.changeNormalSize();
+					// }
+					onTouchPointerUp(event);
+					break;
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -167,17 +170,37 @@ public abstract class BaseP2PView extends SurfaceView {
 	/**
 	 * 多点松开
 	 */
-    void onTouchPointerUp(MotionEvent event){
-    	mafterLenght= getDistance(event);// 获取两点的距离
-    	float mgapLenght = mafterLenght - mbeforeLenght;// 变化的长度
-    	if(mgapLenght>0){
-    		P2PHandler.getInstance().setZoom(Constants.ZOOM.ZOOM_BIG);
-    	}else{
-    		P2PHandler.getInstance().setZoom(Constants.ZOOM.ZOOM_SMALL);
-    	}
-    	beforeLenght=afterLenght;
-    	
-    }
+	void onTouchPointerUp(MotionEvent event){
+		mafterLenght= getDistance(event);// 获取两点的距离
+		float mgapLenght = mafterLenght - mbeforeLenght;// 变化的长度
+		Log.e("leleprogress", "mgapLenght="+mgapLenght);
+//    	if(mgapLenght>0){
+//    		P2PHandler.getInstance().setZoom(Constants.ZOOM.ZOOM_BIG);
+//    	}else{
+//    		P2PHandler.getInstance().setZoom(Constants.ZOOM.ZOOM_SMALL);
+//    	}
+		int multiple=0;
+		if(mgapLenght<-600){
+			multiple=-4;
+		}else if(mgapLenght<-400){
+			multiple=-3;
+		}else if(mgapLenght<-200){
+			multiple=-2;
+		}else if(mgapLenght<0){
+			multiple=-1;
+		}else if(mgapLenght<200){
+			multiple=1;
+		}else if(mgapLenght<400){
+			multiple=2;
+		}else if(mgapLenght<600){
+			multiple=3;
+		}else{
+			multiple=4;
+		}
+		myHandler.sendEmptyMessage(multiple);
+		beforeLenght=afterLenght;
+
+	}
 	/** 按下 **/
 	void onTouchDown(MotionEvent event) {
 		mode = MODE.DRAG;
@@ -235,9 +258,9 @@ public abstract class BaseP2PView extends SurfaceView {
 				y = getCenterY(event);
 				//this.setScale(scale_temp);
 				beforeLenght = afterLenght;
-                if(P2PView.SUPPORT_ZOOM_FOCUS==false){
-                	this.setVideoScale(x, y, scale_temp);       	
-                }
+				if(P2PView.SUPPORT_ZOOM_FOCUS==false){
+					this.setVideoScale(x, y, scale_temp);
+				}
 			}
 		}
 

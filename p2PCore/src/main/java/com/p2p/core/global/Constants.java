@@ -6,13 +6,13 @@ public class Constants {
 		public static final int ACK_NET_ERROR = 9998;
 		public static final int ACK_SUCCESS = 9997;
 	}
-	
+
 	public static class MsgSection{
-		
-		
+
+
 		public static int MSG_ID_SETTING_DEVICE_TIME = 1000;
 		public static int MSG_ID_GETTING_DEVICE_TIME = 2000;
-		
+
 		public static int MSG_ID_GETTING_NPC_SETTINGS = 3000;
 		public static int MSG_ID_SET_REMOTE_DEFENCE = 4000;
 		public static int MSG_ID_SET_REMOTE_RECORD = 5000;
@@ -24,36 +24,36 @@ public class Constants {
 		public static int MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME = 11000;
 		public static int MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME = 12000;
 		public static int MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE = 13000;
-		
+
 		public static int MSG_ID_SETTING_ALARM_EMAIL = 14000;
 		public static int MSG_ID_GETTING_ALARM_EMAIL = 15000;
-		
+
 		public static int MSG_ID_SETTING_ALARM_BIND_ID = 16000;
 		public static int MSG_ID_GETTING_ALARM_BIND_ID = 17000;
-		
+
 		public static int MSG_ID_SETTING_INIT_PASSWORD = 18000;
 		public static int MSG_ID_SETTING_DEVICE_PASSWORD = 19000;
 		public static int MSG_ID_CHECK_DEVICE_PASSWORD = 20000;
-		
+
 		public static int MSG_ID_SETTING_DEFENCEAREA = 21000;
 		public static int MSG_ID_GETTING_DEFENCEAREA = 22000;
-		
+
 		public static int MSG_ID_SETTING_WIFI = 23000;
 		public static int MSG_ID_GETTING_WIFI_LIST = 24000;
-		
+
 		public static int MSG_ID_GETTING_RECORD_FILE_LIST = 25000;
 		public static int MSG_ID_SEND_MESSAGE = 26000;
 		public static int MSG_ID_SEND_CUSTOM_CMD = 27000;
-		
-		
+
+
 		public static int MSG_ID_CHECK_DEVICE_UPDATE = 28000;
 		public static int MSG_ID_CANCEL_DEVICE_UPDATE = 29000;
 		public static int MSG_ID_DO_DEVICE_UPDATE = 30000;
 		public static int MSG_ID_GET_DEFENCE_STATE = 31000;
 		public static int MSG_ID_GET_DEVICE_VERSION = 32000;
-		
+
 		public static int MSG_ID_CLEAR_DEFENCE_GROUP = 33000;
-		
+
 		public static int MESG_ID_STTING_PIC_REVERSE=34000;
 		public static int MESG_ID_STTING_IR_ALARM_EN=35000;
 		public static int MESG_STTING_ID_EXTLINE_ALARM_IN_EN=36000;
@@ -82,10 +82,14 @@ public class Constants {
 		public static int MESG_SET_LANGUEGE=59000;
 		public static int MESG_SET_LAMP=60000;
 		public static int MESG_GET_LAMP=61000;
-	    public static int SET_USER_DEFINE_MESG=62000;
-	    public static int MESG_TYPE_GET_LAN_IPC_LIST=63000;
-	    public static int MESG_TYPE_SET_AP_MODE_CHANGE=64000;
-	    
+		public static int SET_USER_DEFINE_MESG=62000;
+		public static int MESG_TYPE_GET_LAN_IPC_LIST=63000;
+		public static int MESG_TYPE_SET_AP_MODE_CHANGE=64000;
+		public static int MESG_TYPE_GET_NVRINFO=65000;
+		public static int MESG_TYPE_SET_ZOOM=66000;
+		public static int MESG_TYPE_GET_FOCUS_ZOOM=67000;
+		public static int MESG_TYPE_SET_FOCUS_ZOOM=68000;
+
 		//fisheye jump over the last int 58000,startwith 100000
 		public static int MSG_ID_FISHEYE_SETTING_WORKMODE_DEFULT =101000;
 		public static int MSG_ID_FISHEYE_SETTING_IPC_WORKMODE =102000;
@@ -99,24 +103,30 @@ public class Constants {
 		public static int MSG_ID_FISHEYE_GET_ALL_SENSOR_SWITCH =110000;
 		public static int MSG_ID_FISHEYE_SET_LOW_VOL_TIMEINTERVAL =111000;
 		public static int MSG_ID_FISHEYE_GET_LOW_VOL_TIMEINTERVAL =112000;
-		
-		//第二次添加
-				public static int MSG_ID_FISHEYE_DELETE_ONE_CONTROLER =113000;
-				public static int MSG_ID_FISHEYE_DELETE_ONE_SENSOR =114000;
-				public static int MSG_ID_FISHEYE_CHANGE_CONTROLER_NAME =115000;
-				public static int MSG_ID_FISHEYE_CHANGE_SENSOR_NAME =116000;
-				public static int MSG_ID_FISHEYE_INTO_LEARN_STATE =117000;
-				public static int MSG_ID_FISHEYE_TURN_SENSOR =118000;
-				public static int MSG_ID_FISHEYE_SHARE_TO_MEMBER =119000;
-				public static int MSG_ID_FISHEYE_GOT_SHARE_MESG =120000;
-				public static int MSG_ID_FISHEYE_DEV_RECV_MEMBER_FEEDBACK =121000;
-				public static int MSG_ID_FISHEYE_ADMIN_DELETE_ONE_MEMBER =122000;
-				public static int MSG_ID_FISHEYE_DELETE_DEV =123000;
-				public static int MSG_ID_FISHEYE_GET_MEMBER_LIST =124000;
-				public static int MSG_ID_FISHEYE_SET_SPECIAL_ALARM =125000;
-				public static int MSG_ID_FISHEYE_GET_ALL_SPECIAL_ALARM =126000;
-				public static int MSG_ID_FISHEYE_GET_LAMP_STATE =127000;
-				public static int MSG_ID_FISHEYE_KEEP_CLIENT_STATE =128000;
+
+		//绗簩娆℃坊鍔�
+		public static int MSG_ID_FISHEYE_DELETE_ONE_CONTROLER =113000;
+		public static int MSG_ID_FISHEYE_DELETE_ONE_SENSOR =114000;
+		public static int MSG_ID_FISHEYE_CHANGE_CONTROLER_NAME =115000;
+		public static int MSG_ID_FISHEYE_CHANGE_SENSOR_NAME =116000;
+		public static int MSG_ID_FISHEYE_INTO_LEARN_STATE =117000;
+		public static int MSG_ID_FISHEYE_TURN_SENSOR =118000;
+		public static int MSG_ID_FISHEYE_SHARE_TO_MEMBER =119000;
+		public static int MSG_ID_FISHEYE_GOT_SHARE_MESG =120000;
+		public static int MSG_ID_FISHEYE_DEV_RECV_MEMBER_FEEDBACK =121000;
+		public static int MSG_ID_FISHEYE_ADMIN_DELETE_ONE_MEMBER =122000;
+		public static int MSG_ID_FISHEYE_DELETE_DEV =123000;
+		public static int MSG_ID_FISHEYE_GET_MEMBER_LIST =124000;
+		public static int MSG_ID_FISHEYE_SET_SPECIAL_ALARM =125000;
+		public static int MSG_ID_FISHEYE_GET_ALL_SPECIAL_ALARM =126000;
+		public static int MSG_ID_FISHEYE_GET_LAMP_STATE =127000;
+		public static int MSG_ID_FISHEYE_KEEP_CLIENT_STATE =128000;
+		public static int MESG_ID_TYPE_QRCODE_LEARN_CODE =129000;
+		public static int MESG_GET_GPIO=130000;
+		public static int MESG_GET_DEFENCE_WORK_GROUP=131000;
+		public static int MESG_SET_DEFENCE_WORK_GROUP=132000;
+		public static int MESG_GET_FTP_CONFIG_INFO=133000;
+		public static int MESG_SET_FTP_CONFIG_INFO=134000;
 	}
 	
 	public static class ACK_RET_TYPE{
@@ -125,9 +135,9 @@ public class Constants {
 		public static final int ACK_SUCCESS = 9997;
 		public static final int ACK_INSUFFICIENT_PERMISSIONS=9996;
 	}
-	
+
 	public static class P2P_SETTING{
-		
+
 		public static class SETTING_TYPE{
 			public static final int SETTING_REMOTE_DEFENCE = 0;
 			public static final int SETTING_BUZZER = 1;
@@ -138,12 +148,12 @@ public class Constants {
 			public static final int SETTING_VIDEO_FORMAT = 8;
 			public static final int SETTING_DEVICE_PWD = 9;
 			public static final int SETTING_ALARM_ID = 10;
-			
+
 			public static final int SETTING_RECORD_TIME = 11;
-			
+
 			public static final int SETTING_NET_TYPE = 13;
 			public static final int SETTING_VOLUME = 14;
-			
+
 			public static final int SETTING_ID_SECUPGDEV=16;
 			public static final int SETTING_ID_IR_ALARM_EN=17;
 			public static final int SETTING_ID_EXTLINE_ALARM_IN_EN=18;
@@ -154,12 +164,14 @@ public class Constants {
 			public static final int SETTING_ID_PRERECORD =25;
 			public static final int STTING_ID_GET_AUDIO_DEVICE_TYPE=27;
 			public static final int SETTING_ID_LAMP=34;
-			public static final int SETTING_ID_VISITORPWD=37;//返回访客密码
+			public static final int SETTING_ID_VISITORPWD=37;//杩斿洖璁垮瀵嗙爜
 			public static final int SETTING_ID_FOCUS_ZOOM=38;
-			public static final int SETTING_ID_SET_WIFI_WORK_MODE=39;//切换AP模式工作模式1为切换模式
-			public static final int SETTING_ID_CHECK_AP_MODE_SURPPORT=40;//AP模式支持  2当前模式  1支持  0不支持
+			public static final int SETTING_ID_SET_WIFI_WORK_MODE=39;//鍒囨崲AP妯″紡宸ヤ綔妯″紡1涓哄垏鎹㈡ā寮�
+			public static final int SETTING_ID_CHECK_AP_MODE_SURPPORT=40;//AP妯″紡鏀寔  2褰撳墠妯″紡  1鏀寔  0涓嶆敮鎸�
+			public static final int SETTING_ID_DEVICE_TYPE=41;
+			public static final int SETTING_ID_ZOOM=42;
 		}
-		
+
 		public static final int DEFENCE_AREA_TYPE_LEARN = 0;
 		public static final int DEFENCE_AREA_TYPE_CLEAR = 1;
 	}

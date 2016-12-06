@@ -25,6 +25,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.hrsst.housekeeper.R;
+import com.p2p.core.P2PValue;
 import com.p2p.core.update.UpdateManager;
 import com.smart.cloud.fire.global.AppConfig;
 import com.smart.cloud.fire.global.ConstantValues;
@@ -93,8 +95,13 @@ public class Utils {
         Date date = new Date(time);
         return sdf.format(date);
     }
-
-
+    public static boolean isSmartHomeContatct(int contactType,int subType){
+        if(contactType== P2PValue.DeviceType.IPC&&(subType==P2PValue.subType.IPC_868_SCENE_MODE
+                ||subType==P2PValue.subType.IPC_8||subType==P2PValue.subType.IPC_18||subType==P2PValue.subType.IPC_28)){
+            return true;
+        }
+        return false;
+    }
     public static Bitmap montageBitmap(Bitmap frame, Bitmap src, int x, int y) {
         int w = src.getWidth();
         int h = src.getHeight();
@@ -106,7 +113,71 @@ public class Utils {
         canvas.drawBitmap(sizeFrame, 0, 0, null);
         return newBM;
     }
+    public static String getAlarmType(int type, boolean isSupport, int group,
+                                      int item) {
+        switch (type) {
+            case P2PValue.AlarmType.EXTERNAL_ALARM:
+                StringBuffer buffer = new StringBuffer();
+                if (isSupport) {
+                    buffer.append(getStringByResouceID(R.string.allarm_type1))
+                            .append("   ");
+                    buffer.append("\n");
+                    buffer.append(getStringByResouceID(R.string.area)).append("：")
+                            .append(getDefenceAreaByGroup(MyApp.app, group))
+                            .append("  ")
+                            .append(getStringByResouceID(R.string.channel))
+                            .append("：").append(item + 1);
+                }
+                return buffer.toString();
+            case P2PValue.AlarmType.MOTION_DECT_ALARM:
 
+                return getStringByResouceID(R.string.allarm_type2);
+            case P2PValue.AlarmType.EMERGENCY_ALARM:
+
+                return getStringByResouceID(R.string.allarm_type3);
+
+            case P2PValue.AlarmType.LOW_VOL_ALARM:
+                StringBuffer buffer2 = new StringBuffer();
+                if (isSupport) {
+                    buffer2.append(getStringByResouceID(R.string.low_voltage_alarm))
+                            .append("   ");
+                    buffer2.append("\n");
+                    buffer2.append(getStringByResouceID(R.string.area)).append("：")
+                            .append(getDefenceAreaByGroup(MyApp.app, group))
+                            .append("  ")
+                            .append(getStringByResouceID(R.string.channel))
+                            .append("：").append(item + 1);
+                }
+                return buffer2.toString();
+            case P2PValue.AlarmType.PIR_ALARM:
+
+                return getStringByResouceID(R.string.allarm_type4);
+            case P2PValue.AlarmType.EXT_LINE_ALARM:
+
+                return getStringByResouceID(R.string.allarm_type5);
+            case P2PValue.AlarmType.DEFENCE:
+
+                return getStringByResouceID(R.string.defence);
+            case P2PValue.AlarmType.NO_DEFENCE:
+
+                return getStringByResouceID(R.string.no_defence);
+            case P2PValue.AlarmType.BATTERY_LOW_ALARM:
+
+                return getStringByResouceID(R.string.battery_low_alarm);
+            case P2PValue.AlarmType.ALARM_TYPE_DOORBELL_PUSH:
+
+                return getStringByResouceID(R.string.alarm_type);
+            case P2PValue.AlarmType.RECORD_FAILED_ALARM:
+
+                return getStringByResouceID(R.string.record_failed);
+            case P2PValue.AlarmType.ALARM_TYPE_DOOR_MAGNET:
+
+                return getStringByResouceID(R.string.door_alarm);
+            default:
+
+                return getStringByResouceID(R.string.not_know);
+        }
+    }
     public static boolean isZh(Context context) {
         Locale locale = context.getResources().getConfiguration().locale;
         String language = locale.getLanguage();
@@ -115,7 +186,30 @@ public class Utils {
         else
             return false;
     }
-
+    public static String getDefenceAreaByGroup(Context context, int group) {
+        switch (group) {
+            case 0:
+                return context.getResources().getString(R.string.remote);
+            case 1:
+                return context.getResources().getString(R.string.hall);
+            case 2:
+                return context.getResources().getString(R.string.window);
+            case 3:
+                return context.getResources().getString(R.string.balcony);
+            case 4:
+                return context.getResources().getString(R.string.bedroom);
+            case 5:
+                return context.getResources().getString(R.string.kitchen);
+            case 6:
+                return context.getResources().getString(R.string.courtyard);
+            case 7:
+                return context.getResources().getString(R.string.door_lock);
+            case 8:
+                return context.getResources().getString(R.string.other);
+            default:
+                return "";
+        }
+    }
     public static void upDate(final Context context) {
         new Thread() {
             @Override

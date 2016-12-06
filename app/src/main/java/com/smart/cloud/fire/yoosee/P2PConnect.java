@@ -9,9 +9,14 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.p2p.core.P2PValue;
+import com.p2p.core.utils.MyUtils;
+import com.smart.cloud.fire.data.AlarmRecord;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.global.MyApp;
+import com.smart.cloud.fire.global.NpcCommon;
+import com.smart.cloud.fire.mvp.Alarm.AlarmActivity;
 import com.smart.cloud.fire.utils.MusicManger;
+import com.smart.cloud.fire.utils.SharedPreferencesManager;
 
 public class P2PConnect {
     public P2PConnect(Context context) {
@@ -216,7 +221,7 @@ public class P2PConnect {
 //		}
 //		DataManager.insertAlarmRecord(mContext, alarmRecord);
 //		Intent i = new Intent();
-//		i.setAction(Constants.Action.REFRESH_ALARM_RECORD);
+//		i.setAction(ConstantValues.Action.REFRESH_ALARM_RECORD);
 //		MyApp.app.sendBroadcast(i);
 //		if (null == NpcCommon.mThreeNum || "".equals(NpcCommon.mThreeNum)) {
 //			return;
@@ -258,7 +263,7 @@ public class P2PConnect {
 //			}
 //			// if (isAlarm == true) {
 //			// Intent it = new Intent();
-//			// it.setAction(Constants.Action.CHANGE_ALARM_MESSAGE);
+//			// it.setAction(ConstantValues.Action.CHANGE_ALARM_MESSAGE);
 //			// it.putExtra("alarm_id", id);
 //			// it.putExtra("alarm_type", type);
 //			// it.putExtra("isSupport", isSupport);
@@ -296,7 +301,7 @@ public class P2PConnect {
 //			if (!monitorId.equals(id)) {
 //				// 监控页面弹窗
 //				Intent k = new Intent();
-//				k.setAction(Constants.Action.MONITOR_NEWDEVICEALARMING);
+//				k.setAction(ConstantValues.Action.MONITOR_NEWDEVICEALARMING);
 //				k.putExtra("messagetype", 1);
 //				k.putExtra("alarm_id", String.valueOf(id));
 //				k.putExtra("alarm_type", type);
@@ -315,11 +320,135 @@ public class P2PConnect {
         isAlarming = false;
     }
     public static synchronized void vAllarmingWithPath(String id, int type,
-                                                       int option, int group, int item, int counts,String time,String picture,String video){
+                                                       int option, int group, int item, int counts,String time,String picture,String video,String sensorName,int deviceType){
+        byte[] dType= MyUtils.intToByte4(deviceType);
+        int mainType=MyUtils.bytes2ToInt(dType, 0);
+        int subType=MyUtils.bytes2ToInt(dType, 2);
+        Log.e("vAllarmingWithPath","id="+id+"--"+"type="+type+"--"+"option="+option+"--"+"group="+group+"--"+"item="+item+"sensorName="+sensorName+"--"+"deviceType="+deviceType+"mainType="+mainType+"--"+"subType="+subType);
+        boolean bool = false;
+        boolean isSupportDelete = false;
+        boolean hasPictrue=false;
+        if ((option & 0x1) == 1) {
+            bool = true;
+        } else {
+            bool = false;
+        }
+        if (((option >> 2) & (0x1)) == 1) {
+            isSupportDelete = true;
+        } else {
+            isSupportDelete = false;
+        }
+        if (group > 8) {
+            option = 0;
+        }
+        if(counts<0||counts>100){
+            counts=0;
+        }
+        if(((option>>3)&0x1)==1){
+            hasPictrue=true;
+            Log.i("vAllarmingWithPath", "option="+option);
+            Log.i("vAllarmingWithPath", "counts="+counts+"--"+"time="+time+"--"+"picture="+picture+"--"+"video="+video);
 
+        }else{
+            hasPictrue=false;
+            Log.e("vAllarmingWithPath", "option="+option);
+            Log.e("vAllarmingWithPath", "counts="+counts+"--"+"time="+time+"--"+"picture="+picture+"--"+"video="+video);
+
+        }
+        if (type == P2PValue.AlarmType.RECORD_FAILED_ALARM) {
+            return;
+        }
+        AlarmRecord alarmRecord = new AlarmRecord();
+        alarmRecord.alarmTime = String.valueOf(System.currentTimeMillis());
+        alarmRecord.deviceId = String.valueOf(id);
+        alarmRecord.alarmType = type;
+        alarmRecord.activeUser = NpcCommon.mThreeNum;
+        if ((type == P2PValue.AlarmType.EXTERNAL_ALARM || type == P2PValue.AlarmType.LOW_VOL_ALARM)
+                && bool) {
+            alarmRecord.group = group;
+            alarmRecord.item = item;
+        } else {
+            alarmRecord.group = -1;
+            alarmRecord.item = -1;
+        }
         Intent i = new Intent();
         i.setAction(ConstantValues.Action.REFRESH_ALARM_RECORD);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
+        Log.e("setMonitorId","NpcCommon.mThreeNum="+NpcCommon.mThreeNum+"--"+"current_state="+current_state+"current_call_id="+current_call_id);
+        if (null == NpcCommon.mThreeNum || "".equals(NpcCommon.mThreeNum)) {
+            return;
+        }
+        if (current_state == P2P_STATE_CALLING
+                &&(current_call_id.equals(id))) {
+            return;
+        }
+        if (current_state == P2P_STATE_READY
+                && current_call_id.equals(id)) {
+            return;
+        }
+        Log.e("setMonitorId","IgnoreAlarmTime");
+        if (type != P2PValue.AlarmType.DEFENCE
+                && type != P2PValue.AlarmType.NO_DEFENCE) {
+            long last_time = SharedPreferencesManager.getInstance()
+                    .getIgnoreAlarmTime(mContext);
+            int time_interval = SharedPreferencesManager.getInstance()
+                    .getAlarmTimeInterval(mContext);
+            if ((System.currentTimeMillis() - last_time) < (1000 * time_interval)) {
+                Log.e("setMonitorId","not time");
+                return;
+            }
+        }
+        Log.e("setMonitorId","monitorId="+monitorId);
+        if (!isPlaying) {
+            if (type == P2PValue.AlarmType.ALARM_TYPE_DOORBELL_PUSH) {
+//					Intent it = new Intent();
+//					it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//					it.setClass(P2PConnect.mContext, DoorBellNewActivity.class);
+//					it.putExtra("contactId", String.valueOf(id));
+//				 MyApp.app.startActivity(it);
+                return;
+            }
+            if(isDoorbell==true&&doorbellId.equals(String.valueOf(id))&&type==P2PValue.AlarmType.MOTION_DECT_ALARM){
+                return;
+            }
+            Intent alarm = new Intent();
+            alarm.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            alarm.setClass(mContext, AlarmActivity.class);
+            alarm.putExtra("alarm_id", Integer.parseInt(id));
+            alarm.putExtra("alarm_type", type);
+            alarm.putExtra("isSupport", bool);
+            alarm.putExtra("group", group);
+            alarm.putExtra("item", item);
+            alarm.putExtra("isSupportDelete", isSupportDelete);
+            alarm.putExtra("time", time);
+            alarm.putExtra("imageCounts", counts);
+            alarm.putExtra("picture", picture);
+            alarm.putExtra("hasPictrue",hasPictrue);
+            alarm.putExtra("alarmTime", alarmRecord.alarmTime);
+            alarm.putExtra("sensorName", sensorName);
+            alarm.putExtra("mainType", mainType);
+            alarm.putExtra("subType", subType);
+            alarm.putExtra("cameraId", id);
+             MyApp.app.startActivity(alarm);
+        } else {// 正在监控
+            if (!monitorId.equals(id)) {
+                // 监控页面弹窗
+                Intent k = new Intent();
+                k.setAction(ConstantValues.Action.MONITOR_NEWDEVICEALARMING);
+                k.putExtra("messagetype", 1);
+                k.putExtra("alarm_id", id);
+                k.putExtra("alarm_type", type);
+                k.putExtra("isSupport", bool);
+                k.putExtra("group", group);
+                k.putExtra("item", item);
+                k.putExtra("isSupportDelete", isSupportDelete);
+                k.putExtra("sensorName", sensorName);
+                k.putExtra("mainType", mainType);
+                k.putExtra("subType", subType);
+                k.putExtra("cameraId", id);
+                 MyApp.app.sendBroadcast(k);
+            }
+        }
 
     }
 

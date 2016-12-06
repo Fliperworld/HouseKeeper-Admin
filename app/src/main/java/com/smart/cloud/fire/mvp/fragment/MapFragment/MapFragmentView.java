@@ -1,7 +1,7 @@
 package com.smart.cloud.fire.mvp.fragment.MapFragment;
 
+import com.smart.cloud.fire.data.CameraData;
 import com.smart.cloud.fire.global.Area;
-import com.smart.cloud.fire.global.CameraMap;
 import com.smart.cloud.fire.global.Contact;
 import com.smart.cloud.fire.global.ShopType;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * Created by Administrator on 2016/9/21.
  */
 public interface MapFragmentView {
-    void getDataSuccess(List<CameraMap.CameraBean> cameraBeen);
+    void getDataSuccess(List<CameraData.CameraBean> cameraBeen);
 
     void getDataFail(String msg);
 

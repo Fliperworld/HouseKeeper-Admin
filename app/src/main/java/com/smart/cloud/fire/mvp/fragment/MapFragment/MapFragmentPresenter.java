@@ -3,13 +3,14 @@ package com.smart.cloud.fire.mvp.fragment.MapFragment;
 import android.os.Bundle;
 
 import com.smart.cloud.fire.base.presenter.BasePresenter;
+import com.smart.cloud.fire.data.CameraData;
 import com.smart.cloud.fire.global.AlarmCameraInfo;
 import com.smart.cloud.fire.global.Area;
-import com.smart.cloud.fire.global.CameraMap;
 import com.smart.cloud.fire.global.Contact;
 import com.smart.cloud.fire.global.ShopType;
 import com.smart.cloud.fire.rxjava.ApiCallback;
 import com.smart.cloud.fire.rxjava.SubscriberCallBack;
+import com.smart.cloud.fire.view.NormalDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,20 +22,22 @@ import rx.functions.Func1;
  * Created by Administrator on 2016/9/21.
  */
 public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
-    public MapFragmentPresenter(MapFragmentView view) {
-        attachView(view);
+    private MapFragment mapFragment;
+    public MapFragmentPresenter(MapFragment mapFragment) {
+        this.mapFragment = mapFragment;
+        attachView(mapFragment);
     }
 
-    public void getAllSmoke(String userId, String privilege){
+    public void getAllCamera(String userId, String privilege){
         mvpView.showLoading();
-        Observable<CameraMap> mObservable = apiStoreServer.managerGetAllCamera(userId,privilege,"");
-        addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<CameraMap>() {
+        Observable<CameraData> mObservable = apiStoreServer.managerGetAllCamera(userId,privilege,"");
+        addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<CameraData>() {
             @Override
-            public void onSuccess(CameraMap model) {
+            public void onSuccess(CameraData model) {
                 if(model!=null){
                     int errorCode = model.getErrorCode();
                     if(errorCode==0){
-                        List<CameraMap.CameraBean> cameraBeen = model.getCamera();
+                        List<CameraData.CameraBean> cameraBeen = model.getCamera();
                         mvpView.getDataSuccess(cameraBeen);
                     }else{
                         mvpView.getDataFail("无数据");
@@ -159,9 +162,28 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
     }
 
     public void getClickDev(Bundle bundle){
-        CameraMap.CameraBean cameraBean = (CameraMap.CameraBean) bundle.getSerializable("mNormalSmoke");
-        getOneCamera(cameraBean.getCameraId());
+        final CameraData.CameraBean cameraBean = (CameraData.CameraBean) bundle.getSerializable("mNormalSmoke");
+        NormalDialog normalDialog = new NormalDialog(mapFragment.getActivity());
+        normalDialog.actionCameraDialog(cameraBean);
 
+        normalDialog.setOnButtonCancelListener(new NormalDialog.OnButtonCancelListener() {//取消报警
+            @Override
+            public void onClick() {
+
+            }
+        });
+        normalDialog.setOnButtonOkListener(new NormalDialog.OnButtonOkListener() {//查看视频
+            @Override
+            public void onClick() {
+                getOneCamera(cameraBean.getCameraId());
+            }
+        });
+        normalDialog.setOnButtonDeleteListener(new NormalDialog.OnButtonDeleteListener() {//导航
+            @Override
+            public void onClick() {
+
+            }
+        });
     }
 
     @Override

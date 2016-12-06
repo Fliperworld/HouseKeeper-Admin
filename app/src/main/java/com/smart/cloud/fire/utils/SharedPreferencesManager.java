@@ -80,6 +80,17 @@ public class SharedPreferencesManager {
                 context.MODE_PRIVATE);
         return sf.getInt(NpcCommon.mThreeNum + KEY_C_MUTE_STATE, 1);
     }
+    public long getIgnoreAlarmTime(Context context) {
+        SharedPreferences sf = context.getSharedPreferences(SP_FILE_GWELL,
+                context.MODE_PRIVATE);
+        return sf.getLong(NpcCommon.mThreeNum + IGONORE_ALARM_TIME, 0);
+    }
+
+    public int getAlarmTimeInterval(Context context) {
+        SharedPreferences sf = context.getSharedPreferences(SP_FILE_GWELL,
+                context.MODE_PRIVATE);
+        return sf.getInt(NpcCommon.mThreeNum + ALARM_TIME_INTERVAL, 10);
+    }
 
     public void putData(Context context,String fileName,String key,String value){
         SharedPreferences sf = context.getSharedPreferences(fileName, context.MODE_PRIVATE);
@@ -110,6 +121,14 @@ public class SharedPreferencesManager {
         SharedPreferences sf = context.getSharedPreferences(SP_FILE_GWELL,
                 context.MODE_PRIVATE);
         return sf.getInt(NpcCommon.mThreeNum + KEY_C_SYS_BELL, -1);
+    }
+
+    public void putIsSendemailToSelf(Context context, boolean bool) {
+        SharedPreferences sf = context.getSharedPreferences(SP_FILE_GWELL,
+                context.MODE_PRIVATE);
+        Editor editor = sf.edit();
+        editor.putBoolean(IS_EMAIL_SENDSELF, bool);
+        editor.commit();
     }
 
     public void putRecentLoginType(Context context,int type){
@@ -146,6 +165,20 @@ public class SharedPreferencesManager {
     public boolean getIsShowNotify(Context context){
         SharedPreferences sf = context.getSharedPreferences(FILE_NAME, context.MODE_PRIVATE);
         return sf.getBoolean(IS_SHOW_NOTIFY,true);
+    }
+    public static final String FOCUS_ZOOM_TIME="focus_zoom_time";
+    public void putFocusZoomTime(Context context, long time) {
+        SharedPreferences sf = context.getSharedPreferences(SP_FILE_GWELL,
+                context.MODE_PRIVATE);
+        Editor editor = sf.edit();
+        editor.putLong(FOCUS_ZOOM_TIME, time);
+        editor.commit();
+    }
+
+    public long getFocusZoomTime(Context context) {
+        SharedPreferences sf = context.getSharedPreferences(SP_FILE_GWELL,
+                context.MODE_PRIVATE);
+        return sf.getLong(FOCUS_ZOOM_TIME, 0);
     }
 }
 

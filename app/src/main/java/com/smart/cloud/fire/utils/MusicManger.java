@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
+import android.util.Log;
 
 import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.global.MyApp;
@@ -71,6 +72,24 @@ public class MusicManger {
         }
     }
 
+    public void playMsgMusic() {
+        try {
+            final MediaPlayer msgPlayer = MediaPlayer.create( MyApp.app,
+                    R.raw.message);
+            // msgPlayer.prepare();
+            msgPlayer.start();
+            msgPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                @Override
+                public void onCompletion(MediaPlayer arg0) {
+                    // TODO Auto-generated method stub
+                    msgPlayer.release();
+                }
+            });
+        } catch (Exception e) {
+            Log.e("my", "msg music error!");
+        }
+    }
 
     public void playAlarmMusic(Context context){
         if(null!=player){

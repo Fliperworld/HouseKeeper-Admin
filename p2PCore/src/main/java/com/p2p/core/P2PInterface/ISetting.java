@@ -43,7 +43,7 @@ public interface ISetting {
 
 	public void ACK_vRetSetDevicePassword(int msgId, int result);
 
-	public void ACK_vRetCheckDevicePassword(int msgId, int result);
+	public void ACK_vRetCheckDevicePassword(int msgId, int result,String deviceId);
 
 	public void ACK_vRetSetWifi(int msgId, int result);
 
@@ -98,12 +98,13 @@ public interface ISetting {
 	public void ACK_vRetGetSensorSwitchs(int msgId, int state);
 
 	public void ACK_vRetSetSensorSwitchs(int msgId, int state);
-	
+
 	public void ACK_vRetGetAlarmCenter(int msgId,int state);
-	
+
 	public void ACK_vRetSetAlarmCenter(int msgId,int state);
-	
+
 	public void ACK_VRetGetNvrIpcList(int msgId,int state);
+	public void ACK_VRetGetNvrInfo(int msgId,int state);
 
 	// 设置结果回调
 	public void vRetGetRemoteDefenceResult(String contactId, int state);
@@ -171,23 +172,23 @@ public interface ISetting {
 	public void vRetAlarmEmailResult(int result, String email);
 
 	public void vRetAlarmEmailResultWithSMTP(int result, String email,
-			int smtpport, byte Entry,String[] SmptMessage,byte reserve);
+											 int smtpport, byte Entry,String[] SmptMessage,byte reserve);
 
 	public void vRetWifiResult(int result, int currentId, int count,
-			int[] types, int[] strengths, String[] names);
+							   int[] types, int[] strengths, String[] names);
 
 	public void vRetDefenceAreaResult(int result, ArrayList<int[]> data,
-			int group, int item);
+									  int group, int item);
 
 	public void vRetBindAlarmIdResult(int srcID, int result, int maxCount,
-			String[] data);
+									  String[] data);
 
 	public void vRetSetInitPasswordResult(int result);
 
 	public void vRetSetDevicePasswordResult(int result);
 
 	public void vRetGetFriendStatus(int count, String[] contactIds,
-			int[] status, int[] types);
+									int[] status, int[] types);
 
 	public void vRetGetRecordFiles(String[] names);
 
@@ -198,10 +199,10 @@ public interface ISetting {
 	public void vRetCustomCmd(int contactId,int len, byte[] cmd);
 
 	public void vRetGetDeviceVersion(int result, String cur_version,
-			int iUbootVersion, int iKernelVersion, int iRootfsVersion);
+									 int iUbootVersion, int iKernelVersion, int iRootfsVersion);
 
 	public void vRetCheckDeviceUpdate(String contactId,int result, String cur_version,
-			String upg_version);
+									  String upg_version);
 
 	public void vRetDoDeviceUpdate(String contactId,int result, int value);
 
@@ -252,25 +253,37 @@ public interface ISetting {
 	public void vRetAlarmPresetMotorPos(byte[] result);
 
 	public void vRetIpConfig(byte[] result);
-	
+
 	public void vRetGetAlarmCenter(int result,int state,String ipdress,int port,String userId);
-	
+
 	public void vRetSetAlarmCenter(int result);
-	
+
 	public void vRetDeviceNotSupportAlarmCenter();
 
 	public void vRetNPCVistorPwd(int pwd);
-	
-	public void vRetDeleteDeviceAlarmID(int result);
-	
+
+	public void vRetDeleteDeviceAlarmID(int result,int result1);
+
 	public void vRetDeviceLanguege(int result,int languegecount,int curlanguege,int[] langueges);
-	
-	public void vRetFocusZoom(int result);
+
+	public void vRetFocusZoom(String deviceId,int result);
 	public void vRetGetAllarmImage(int id,String filename,int errorCode);
 	public void vRetFishEyeData(int iSrcID, byte[] data, int datasize);
 	public void vRetGetNvrIpcList(String contactId,String[]date,int number);
-	
+
 	public void vRetSetWifiMode(String id,int result);
 	public void vRetAPModeSurpport(String id,int result);
-	
+	public void vRetDeviceType(String id,int mainType,int subType);
+	public void vRetNVRInfo(int iSrcID, byte[] data, int datasize);
+	public void vRetGetFocusZoom(String deviceId,int result,int value);
+	public void vRetSetFocusZoom(String deviceId,int result,int value);
+
+	public void vRetSetGPIO(String contactid, int result);
+	public void vRetGetGPIO(String contactid,int result,int bValueNs);
+
+	public void vRetGetDefenceWorkGroup(String contactid,byte[] data);
+	public void vRetSetDefenceWorkGroup(String contactid,byte[] data);
+
+	public void vRetFTPConfigInfo(String contactid,byte[] data);
+
 }

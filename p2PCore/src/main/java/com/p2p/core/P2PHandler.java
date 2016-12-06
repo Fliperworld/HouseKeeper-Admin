@@ -23,7 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * P2P交互帮助类 在此类中包装需要与设备通信的数据，通过JNI传给设备
+ * P2P浜や簰甯姪绫� 鍦ㄦ绫讳腑鍖呰闇�瑕佷笌璁惧閫氫俊鐨勬暟鎹紝閫氳繃JNI浼犵粰璁惧
  */
 public class P2PHandler {
 	String TAG = "SDK";
@@ -100,9 +100,21 @@ public class P2PHandler {
 	private static int MESG_SET_LANGUEGE = Constants.MsgSection.MESG_SET_LANGUEGE;
 	private static int MESG_TYPE_GET_LAN_IPC_LIST = Constants.MsgSection.MESG_TYPE_GET_LAN_IPC_LIST;
 	private static int MESG_TYPE_SET_AP_MODE_CHANGE = Constants.MsgSection.MESG_TYPE_SET_AP_MODE_CHANGE;
+	private static int MESG_TYPE_GET_NVRINFO = Constants.MsgSection.MESG_TYPE_GET_NVRINFO;
+	private static int MESG_TYPE_SET_ZOOM=Constants.MsgSection.MESG_TYPE_SET_ZOOM;
+	private static int MESG_TYPE_GET_FOCUS_ZOOM=Constants.MsgSection.MESG_TYPE_GET_FOCUS_ZOOM;
+	private static int MESG_TYPE_SET_FOCUS_ZOOM=Constants.MsgSection.MESG_TYPE_SET_FOCUS_ZOOM;
 	private static P2PHandler manager = null;
 
 	private static int IP_CONFIG = Constants.MsgSection.IP_CONFIG;
+
+	private static int MESG_GET_GPIO=Constants.MsgSection.MESG_GET_GPIO;
+
+	private static int MESG_GET_DEFENCE_WORK_GROUP=Constants.MsgSection.MESG_GET_DEFENCE_WORK_GROUP;
+	private static int MESG_SET_DEFENCE_WORK_GROUP=Constants.MsgSection.MESG_SET_DEFENCE_WORK_GROUP;
+
+	private static int MESG_GET_FTP_CONFIG_INFO=Constants.MsgSection.MESG_GET_FTP_CONFIG_INFO;
+	private static int MESG_SET_FTP_CONFIG_INFO=Constants.MsgSection.MESG_SET_FTP_CONFIG_INFO;
 
 	private P2PHandler() {
 	}
@@ -119,23 +131,25 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 初始化
+	 * 鍒濆鍖�
 	 */
 	public void p2pInit(Context context, IP2P p2pListener,
-			ISetting settingListener) {
+						ISetting settingListener) {
 		// new MediaPlayer();
 		MediaPlayer.getInstance().setP2PInterface(p2pListener);
 		MediaPlayer.getInstance().setSettingInterface(settingListener);
 	}
 
 	/**
-	 * p2p连接
+	 * p2p杩炴帴
 	 */
 	public boolean p2pConnect(String activeUser, int codeStr1, int codeStr2) {
 		// final String cHostName="|6sci.com|6sci.com.cn";
 		// final String cHostName =
 		// "|cloudlinks.cn|2cu.co|gwelltimes.com|cloud-links.net";
-		final String cHostName = "|p2p1.cloudlinks.cn|p2p3.cloud-links.net|p2p2.cloudlinks.cn|p2p4.cloud-links.net";
+		final String cHostName = "|p2p1.cloudlinks.cn|p2p3.cloud-links.net|p2p2.cloudlinks.cn|p2p4.cloud-links.net|p2p5.cloudlinks.cn|p2p6.cloudlinks.cn|p2p7.cloudlinks.cn|p2p8.cloudlinks.cn|p2p9.cloudlinks.cn|p2p10.cloudlinks.cn";
+//		final String cHostName = "|104.250.135.115";
+		//		final String cHostName = "|p2p1.cloudlinks.cn|p2p3.cloud-links.net|p2p2.cloudlinks.cn|p2p4.cloud-links.net";
 		// final String cHostName = "|videoipcamera.cn|videoipcamera.com";
 		// if (MediaPlayer.getInstance().native_p2p_connect(
 		// Integer.parseInt(activeUser)|0x80000000, 886976412, codeStr1,
@@ -174,7 +188,7 @@ public class P2PHandler {
 	}
 
 	/**
-	 * p2p断开
+	 * p2p鏂紑
 	 */
 	public void p2pDisconnect() {
 		Log.e("leleTest", "p2pDisconnect");
@@ -183,24 +197,24 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 获取WIFI列表
+	 * 鑾峰彇WIFI鍒楄〃
 	 */
 	public void getWifiList(String contactId, String password) {
 		Log.e(TAG, "P2PHANDLER:getWifiList");
 		if (this.MSG_ID_GETTING_WIFI_LIST >= (Constants.MsgSection.MSG_ID_GETTING_WIFI_LIST)) {
 			this.MSG_ID_GETTING_WIFI_LIST = Constants.MsgSection.MSG_ID_GETTING_WIFI_LIST - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iGetNPCWifiList(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_GETTING_WIFI_LIST);
+				Integer.parseInt(passwordStr), this.MSG_ID_GETTING_WIFI_LIST);
 		this.MSG_ID_GETTING_WIFI_LIST++;
 	}
 
 	/**
-	 * 设置WIFI
+	 * 璁剧疆WIFI
 	 */
 	public void setWifi(String contactId, String password, int type,
-			String name, String wifiPassword) {
+						String name, String wifiPassword) {
 		Log.e(TAG, "P2PHANDLER:setWifi");
 		String s = null;
 		byte[] bt;
@@ -217,23 +231,23 @@ public class P2PHandler {
 		if (this.MSG_ID_SETTING_WIFI >= (Constants.MsgSection.MSG_ID_SETTING_WIFI)) {
 			this.MSG_ID_SETTING_WIFI = Constants.MsgSection.MSG_ID_SETTING_WIFI - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCWifi(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_SETTING_WIFI, type,
+				Integer.parseInt(passwordStr), this.MSG_ID_SETTING_WIFI, type,
 				name.getBytes(), name.length(), wifiPassword.getBytes(),
 				wifiPassword.length());
 		this.MSG_ID_SETTING_WIFI++;
 	}
 
 	/**
-	 * 获取NPC各种设置
+	 * 鑾峰彇NPC鍚勭璁剧疆
 	 */
 	public void getNpcSettings(String contactId, String password) {
 		Log.e(TAG, "P2PHANDLER:getNpcSettings");
-
+		String passwordStr = EntryPassword(password);
 		int iPassword = Integer.MAX_VALUE;
 		try {
-			iPassword = Integer.parseInt(password);
+			iPassword = Integer.parseInt(passwordStr);
 		} catch (Exception e) {
 			iPassword = Integer.MAX_VALUE;
 		}
@@ -248,13 +262,14 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 获取布放状态
+	 * 鑾峰彇甯冩斁鐘舵��
 	 */
 	public void getDefenceStates(String contactId, String password) {
 		Log.e(TAG, "P2PHANDLER:getDefenceStates");
+		String passwordStr = EntryPassword(password);
 		int iPassword = Integer.MAX_VALUE;
 		try {
-			iPassword = Integer.parseInt(password);
+			iPassword = Integer.parseInt(passwordStr);
 		} catch (Exception e) {
 			iPassword = Integer.MAX_VALUE;
 		}
@@ -270,43 +285,45 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 检查密码
+	 * 妫�鏌ュ瘑鐮�
 	 */
 	public void checkPassword(String contactId, String password) {
 		Log.e(TAG, "P2PHANDLER:checkPassword");
 		if (this.MSG_ID_CHECK_DEVICE_PASSWORD >= (Constants.MsgSection.MSG_ID_CHECK_DEVICE_PASSWORD)) {
 			this.MSG_ID_CHECK_DEVICE_PASSWORD = Constants.MsgSection.MSG_ID_CHECK_DEVICE_PASSWORD - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iGetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_CHECK_DEVICE_PASSWORD);
+				Integer.parseInt(passwordStr), this.MSG_ID_CHECK_DEVICE_PASSWORD);
 		this.MSG_ID_CHECK_DEVICE_PASSWORD++;
 	}
 
 	/**
-	 * 获取防区设置
+	 * 鑾峰彇闃插尯璁剧疆
 	 */
 	public void getDefenceArea(String contactId, String password) {
 		Log.e(TAG, "P2PHANDLER:getDefenceArea");
+		String passwordStr = EntryPassword(password);
 		if (this.MSG_ID_GETTING_DEFENCEAREA >= (Constants.MsgSection.MSG_ID_GETTING_DEFENCEAREA)) {
 			this.MSG_ID_GETTING_DEFENCEAREA = Constants.MsgSection.MSG_ID_GETTING_DEFENCEAREA - 1000;
 		}
 
 		MediaPlayer.iGetAlarmCodeStatus(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_GETTING_DEFENCEAREA);
+				Integer.parseInt(passwordStr), this.MSG_ID_GETTING_DEFENCEAREA);
 		this.MSG_ID_GETTING_DEFENCEAREA++;
 	}
 
 	/**
-	 * 设置远程布防
+	 * 璁剧疆杩滅▼甯冮槻
 	 */
 	public void setRemoteDefence(String contactId, String password, int value) {
 		Log.e(TAG, "P2PHANDLER:setRemoteDefence");
+		String passwordStr = EntryPassword(password);
 		if (this.MSG_ID_SET_REMOTE_DEFENCE >= (Constants.MsgSection.MSG_ID_SET_REMOTE_DEFENCE)) {
 			this.MSG_ID_SET_REMOTE_DEFENCE = Constants.MsgSection.MSG_ID_SET_REMOTE_DEFENCE - 1000;
 		}
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_SET_REMOTE_DEFENCE,
+				Integer.parseInt(passwordStr), this.MSG_ID_SET_REMOTE_DEFENCE,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_REMOTE_DEFENCE,
 				value);
 		this.MSG_ID_SET_REMOTE_DEFENCE++;
@@ -319,22 +336,23 @@ public class P2PHandler {
 	// }
 
 	public void vSendWiFiCmd(int iType, byte[] SSID, int iSSIDLen,
-			byte[] Password, int iPasswordLen) {
+							 byte[] Password, int iPasswordLen) {
 		MediaPlayer.vSendWiFiCmd(iType, SSID, iSSIDLen, Password, iPasswordLen);
 	}
 
 	/**
-	 * 设置远程录像
+	 * 璁剧疆杩滅▼褰曞儚
 	 */
 	public void setRemoteRecord(String contactId, String password, int value) {
 		Log.e(TAG, "P2PHANDLER:setRemoteRecord");
 		if (this.MSG_ID_SET_REMOTE_RECORD >= (Constants.MsgSection.MSG_ID_SET_REMOTE_RECORD)) {
 			this.MSG_ID_SET_REMOTE_RECORD = Constants.MsgSection.MSG_ID_SET_REMOTE_RECORD - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer
 				.iSetNPCSettings(
 						Integer.parseInt(contactId),
-						Integer.parseInt(password),
+						Integer.parseInt(passwordStr),
 						this.MSG_ID_SET_REMOTE_RECORD,
 						Constants.P2P_SETTING.SETTING_TYPE.SETTING_REMOTE_RECORD,
 						value);
@@ -342,7 +360,7 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 设置设备时间
+	 * 璁剧疆璁惧鏃堕棿
 	 */
 	public void setDeviceTime(String contactId, String password, String time) {
 		Log.e(TAG, "P2PHANDLER:setDeviceTime");
@@ -377,102 +395,103 @@ public class P2PHandler {
 			}
 
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCDateTime(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_SETTING_DEVICE_TIME,
+				Integer.parseInt(passwordStr), this.MSG_ID_SETTING_DEVICE_TIME,
 				parseTime);
 		this.MSG_ID_SETTING_DEVICE_TIME++;
 	}
 
 	/**
-	 * 获取设备时间
+	 * 鑾峰彇璁惧鏃堕棿
 	 */
 	public void getDeviceTime(String contactId, String password) {
 		Log.e(TAG, "P2PHANDLER:getDeviceTime");
 		if (this.MSG_ID_GETTING_DEVICE_TIME >= (Constants.MsgSection.MSG_ID_GETTING_DEVICE_TIME)) {
 			this.MSG_ID_GETTING_DEVICE_TIME = Constants.MsgSection.MSG_ID_GETTING_DEVICE_TIME - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iGetNPCDateTime(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_GETTING_DEVICE_TIME);
+				Integer.parseInt(passwordStr), this.MSG_ID_GETTING_DEVICE_TIME);
 		this.MSG_ID_GETTING_DEVICE_TIME++;
 	}
 
 	/**
-	 * 设置设备音量
+	 * 璁剧疆璁惧闊抽噺
 	 */
 	public void setVideoVolume(String contactId, String password, int value) {
 		Log.e(TAG, "P2PHANDLER:setVideoVolume");
 		if (this.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME)) {
 			this.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME = Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_VOLUME, value);
 		this.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_VOLUME++;
 	}
 
 	/**
-	 * 设置视频格式
+	 * 璁剧疆瑙嗛鏍煎紡
 	 */
 	public void setVideoFormat(String contactId, String password, int value) {
 		Log.e(TAG, "P2PHANDLER:setVideoFormat");
 		if (this.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT)) {
 			this.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT = Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_VIDEO_FORMAT, value);
 		this.MSG_ID_SETTING_NPC_SETTINGS_VIDEO_FORMAT++;
 	}
 
 	/**
-	 * 设置录像类型
+	 * 璁剧疆褰曞儚绫诲瀷
 	 */
 	public void setRecordType(String contactId, String password, int type) {
 		Log.e(TAG, "P2PHANDLER:setRecordType");
 		if (this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE)) {
 			this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE = Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_RECORD_TYPE, type);
 		this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TYPE++;
 	}
 
 	/**
-	 * 设置录像时间
+	 * 璁剧疆褰曞儚鏃堕棿
 	 */
 	public void setRecordTime(String contactId, String password, int time) {
 		Log.e(TAG, "P2PHANDLER:setRecordTime");
 		if (this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME)) {
 			this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME = Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_RECORD_TIME, time);
 		this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_TIME++;
 	}
 
 	/**
-	 * 设置录像计划时间
+	 * 璁剧疆褰曞儚璁″垝鏃堕棿
 	 */
 	public void setRecordPlanTime(String contactId, String password, String time) {
 		Log.e(TAG, "P2PHANDLER:setRecordPlanTime");
 		if (this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME)) {
 			this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME = Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		int iTime = MyUtils.convertPlanTime(time);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_SETTING_NPC_SETTINGS_RECORD_PLAN_TIME,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_RECORD_PLAN_TIME,
 				iTime);
@@ -480,59 +499,59 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 设置防区状态
+	 * 璁剧疆闃插尯鐘舵��
 	 */
 	public void setDefenceAreaState(String contactId, String password,
-			int group, int item, int type) {
+									int group, int item, int type) {
 		Log.e(TAG, "P2PHANDLER:setDefenceAreaState");
 		if (this.MSG_ID_SETTING_DEFENCEAREA >= (Constants.MsgSection.MSG_ID_SETTING_DEFENCEAREA)) {
 			this.MSG_ID_SETTING_DEFENCEAREA = Constants.MsgSection.MSG_ID_SETTING_DEFENCEAREA - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetAlarmCodeStatus(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_SETTING_DEFENCEAREA, 1,
+				Integer.parseInt(passwordStr), this.MSG_ID_SETTING_DEFENCEAREA, 1,
 				type, new int[] { group }, new int[] { item });
 		this.MSG_ID_SETTING_DEFENCEAREA++;
 	}
 
 	/**
-	 * 清空防区状态
+	 * 娓呯┖闃插尯鐘舵��
 	 */
 	public void clearDefenceAreaState(String contactId, String password,
-			int group) {
+									  int group) {
 		Log.e(TAG, "P2PHANDLER:setDefenceAreaState");
 		if (this.MSG_ID_CLEAR_DEFENCE_GROUP >= (Constants.MsgSection.MSG_ID_CLEAR_DEFENCE_GROUP)) {
 			this.MSG_ID_CLEAR_DEFENCE_GROUP = Constants.MsgSection.MSG_ID_CLEAR_DEFENCE_GROUP - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iClearAlarmCodeGroup(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_CLEAR_DEFENCE_GROUP,
+				Integer.parseInt(passwordStr), this.MSG_ID_CLEAR_DEFENCE_GROUP,
 				group);
 
 		this.MSG_ID_CLEAR_DEFENCE_GROUP++;
 	}
 
 	/**
-	 * 设置网络类型
+	 * 璁剧疆缃戠粶绫诲瀷
 	 */
 	public void setNetType(String contactId, String password, int type) {
 		Log.e(TAG, "P2PHANDLER:setNetType");
 		if (this.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE)) {
 			this.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE = Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_NET_TYPE, type);
 		this.MSG_ID_SETTING_NPC_SETTINGS_NET_TYPE++;
 	}
 
 	/**
-	 * 设置绑定报警ID
+	 * 璁剧疆缁戝畾鎶ヨID
 	 */
 	public void setBindAlarmId(String contactId, String password, int count,
-			String[] datas) {
+							   String[] datas) {
 		Log.e(TAG, "P2PHANDLER:setBindAlarmId");
 		if (this.MSG_ID_SETTING_ALARM_BIND_ID >= (Constants.MsgSection.MSG_ID_SETTING_ALARM_BIND_ID)) {
 			this.MSG_ID_SETTING_ALARM_BIND_ID = Constants.MsgSection.MSG_ID_SETTING_ALARM_BIND_ID - 1000;
@@ -547,67 +566,68 @@ public class P2PHandler {
 			iData = new int[] { 0 };
 			count = 1;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetBindAlarmId(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_SETTING_ALARM_BIND_ID,
+				Integer.parseInt(passwordStr), this.MSG_ID_SETTING_ALARM_BIND_ID,
 				count, iData);
 		this.MSG_ID_SETTING_ALARM_BIND_ID++;
 	}
 
 	/**
-	 * 获取绑定报警ID
+	 * 鑾峰彇缁戝畾鎶ヨID
 	 */
 	public void getBindAlarmId(String contactId, String password) {
 		Log.e(TAG, "P2PHANDLER:getBindAlarmId");
 		if (this.MSG_ID_GETTING_ALARM_BIND_ID >= (Constants.MsgSection.MSG_ID_GETTING_ALARM_BIND_ID)) {
 			this.MSG_ID_GETTING_ALARM_BIND_ID = Constants.MsgSection.MSG_ID_GETTING_ALARM_BIND_ID - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iGetBindAlarmId(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_GETTING_ALARM_BIND_ID);
+				Integer.parseInt(passwordStr), this.MSG_ID_GETTING_ALARM_BIND_ID);
 		this.MSG_ID_GETTING_ALARM_BIND_ID++;
 	}
 
 	/**
-	 * 设置报警邮箱
+	 * 璁剧疆鎶ヨ閭
 	 */
 	public void setAlarmEmail(String contactId, String password, String email) {
 		Log.e(TAG, "P2PHANDLER:setAlarmEmail");
 		if (this.MSG_ID_SETTING_ALARM_EMAIL >= (Constants.MsgSection.MSG_ID_SETTING_ALARM_EMAIL)) {
 			this.MSG_ID_SETTING_ALARM_EMAIL = Constants.MsgSection.MSG_ID_SETTING_ALARM_EMAIL - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCEmail(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_SETTING_ALARM_EMAIL,
+				Integer.parseInt(passwordStr), this.MSG_ID_SETTING_ALARM_EMAIL,
 				email.getBytes(), email.length());
 		this.MSG_ID_SETTING_ALARM_EMAIL++;
 	}
 
 	/**
-	 * 设置报警邮箱带SMTP参数（添加##结束标记并用0补齐8的整数位）
-	 * 
+	 * 璁剧疆鎶ヨ閭甯MTP鍙傛暟锛堟坊鍔�##缁撴潫鏍囪骞剁敤0琛ラ綈8鐨勬暣鏁颁綅锛�
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param boption
-	 *            操作标记
+	 *            鎿嶄綔鏍囪
 	 * @param emailaddress
-	 *            收件人邮箱地址
+	 *            鏀朵欢浜洪偖绠卞湴鍧�
 	 * @param port
-	 *            发件人的邮局SMTP端口参数
+	 *            鍙戜欢浜虹殑閭眬SMTP绔彛鍙傛暟
 	 * @param server
-	 *            发件人的邮局SMTP服务参数
+	 *            鍙戜欢浜虹殑閭眬SMTP鏈嶅姟鍙傛暟
 	 * @param user
-	 *            发件人邮箱
+	 *            鍙戜欢浜洪偖绠�
 	 * @param pwd
-	 *            发件人邮箱密码
+	 *            鍙戜欢浜洪偖绠卞瘑鐮�
 	 * @param subject
-	 *            发件主题
+	 *            鍙戜欢涓婚
 	 * @param content
-	 *            发件邮件内容
+	 *            鍙戜欢閭欢鍐呭
 	 */
 	public void setAlarmEmailWithSMTP(String contactId, String password,
-			byte boption, String emailaddress, int port, String server,
-			String user, String pwd, String subject, String content,
-			byte Entry, byte reserve1, int reserve2) {
+									  byte boption, String emailaddress, int port, String server,
+									  String user, String pwd, String subject, String content,
+									  byte Entry, byte reserve1, int reserve2) {
 		Log.e(TAG, "P2PHANDLER:setAlarmEmail");
 		if (this.MSG_ID_SETTING_ALARM_EMAIL >= (Constants.MsgSection.MSG_ID_SETTING_ALARM_EMAIL)) {
 			this.MSG_ID_SETTING_ALARM_EMAIL = Constants.MsgSection.MSG_ID_SETTING_ALARM_EMAIL - 1000;
@@ -625,123 +645,152 @@ public class P2PHandler {
 			ppp = new byte[] { 0 };
 			e.printStackTrace();
 		}
-		Log.e("alarm_email", "contactId=" + contactId + "--" + "password="
-				+ Integer.parseInt(password) + "--" + "boption=" + boption
-				+ "--" + "emailaddress=" + emailaddress + "--" + "port=" + port
-				+ "--" + "server=" + server + "--" + "user=" + user + "--"
-				+ "ppp=" + ppp + "--" + "subject=" + subject + "--"
-				+ "content=" + content + "--" + "Entry=" + Entry + "--"
-				+ "reserve1=" + reserve1 + "--" + "reserve2=" + reserve1);
+		String passwordStr = EntryPassword(password);
+
 		MediaPlayer.SetRobortEmailNew(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_SETTING_ALARM_EMAIL,
+				Integer.parseInt(passwordStr), this.MSG_ID_SETTING_ALARM_EMAIL,
 				boption, emailaddress, port, server, user, ppp, subject,
 				content, Entry, (byte) reserve1, reserve2, ppp.length);
 		this.MSG_ID_SETTING_ALARM_EMAIL++;
 	}
 
 	/**
-	 * 获取报警邮箱
+	 * 鑾峰彇鎶ヨ閭
 	 */
 	public void getAlarmEmail(String contactId, String password) {
 		Log.e(TAG, "P2PHANDLER:getAlarmEmail");
 		if (this.MSG_ID_GETTING_ALARM_EMAIL >= (Constants.MsgSection.MSG_ID_GETTING_ALARM_EMAIL)) {
 			this.MSG_ID_GETTING_ALARM_EMAIL = Constants.MsgSection.MSG_ID_GETTING_ALARM_EMAIL - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iGetNPCEmail(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_GETTING_ALARM_EMAIL);
+				Integer.parseInt(passwordStr), this.MSG_ID_GETTING_ALARM_EMAIL);
 		this.MSG_ID_GETTING_ALARM_EMAIL++;
 	}
 
 	/**
-	 * 设置蜂鸣器
+	 * 璁剧疆铚傞福鍣�
 	 */
 	public void setBuzzer(String contactId, String password, int value) {
 		Log.e(TAG, "P2PHANDLER:setBuzzer");
 		if (this.MSG_ID_SETTING_NPC_SETTINGS_BUZZER >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_BUZZER)) {
 			this.MSG_ID_SETTING_NPC_SETTINGS_BUZZER = Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_BUZZER - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_SETTING_NPC_SETTINGS_BUZZER,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_BUZZER, value);
 		this.MSG_ID_SETTING_NPC_SETTINGS_BUZZER++;
 	}
 
 	/**
-	 * 设置移动侦测
+	 * 璁剧疆绉诲姩渚︽祴
 	 */
 	public void setMotion(String contactId, String password, int value) {
 		Log.e(TAG, "P2PHANDLER:setMotion");
 		if (this.MSG_ID_SETTING_NPC_SETTINGS_MOTION >= (Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_MOTION)) {
 			this.MSG_ID_SETTING_NPC_SETTINGS_MOTION = Constants.MsgSection.MSG_ID_SETTING_NPC_SETTINGS_MOTION - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_SETTING_NPC_SETTINGS_MOTION,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_MOTION_DECT, value);
 		this.MSG_ID_SETTING_NPC_SETTINGS_MOTION++;
 	}
 
 	/**
-	 * 设置初始密码
+	 * 璁剧疆鍒濆瀵嗙爜
 	 */
-	public void setInitPassword(String contactId, String password) {
+	public void setInitPassword(String contactId, String password,String userPassword) {
 		Log.e(TAG, "P2PHANDLER:setInitPassword");
 		if (this.MSG_ID_SETTING_INIT_PASSWORD >= (Constants.MsgSection.MSG_ID_SETTING_INIT_PASSWORD)) {
 			this.MSG_ID_SETTING_INIT_PASSWORD = Constants.MsgSection.MSG_ID_SETTING_INIT_PASSWORD - 1000;
 		}
-
+		int pwdLen=userPassword.length();
+		byte[] EntryPwd=getPwdBytes(userPassword);
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetInitPassword(Integer.parseInt(contactId), 0,
-				this.MSG_ID_SETTING_INIT_PASSWORD, Integer.parseInt(password),Integer.parseInt(contactId));
+				this.MSG_ID_SETTING_INIT_PASSWORD, Integer.parseInt(passwordStr),Integer.parseInt(contactId),pwdLen,EntryPwd);
 		this.MSG_ID_SETTING_INIT_PASSWORD++;
 	}
 
 	/**
-	 * 设置设备密码
+	 * 璁剧疆璁惧瀵嗙爜
 	 */
 	public void setDevicePassword(String contactId, String oldPassword,
-			String newPassword) {
+								  String newPassword) {
 		Log.e(TAG, "P2PHANDLER:setDevicePassword");
 		if (this.MSG_ID_SETTING_DEVICE_PASSWORD >= (Constants.MsgSection.MSG_ID_SETTING_DEVICE_PASSWORD)) {
 			this.MSG_ID_SETTING_DEVICE_PASSWORD = Constants.MsgSection.MSG_ID_SETTING_DEVICE_PASSWORD - 1000;
 		}
-
+		String oldPasswordStr = EntryPassword(oldPassword);
+		String newPasswordStr = EntryPassword(newPassword);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(oldPassword),
+				Integer.parseInt(oldPasswordStr),
 				this.MSG_ID_SETTING_DEVICE_PASSWORD,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_DEVICE_PWD,
-				Integer.parseInt(newPassword));
+				Integer.parseInt(newPasswordStr));
 		this.MSG_ID_SETTING_DEVICE_PASSWORD++;
 	}
 
 	/**
-	 * 设置访客密码
+	 * 璁剧疆璁惧瀵嗙爜,NVR涓撶敤
+	 */
+	public void setDevicePassword(String contactId, String oldPassword,
+								  String newPassword,String userPwd) {
+		Log.e(TAG, "P2PHANDLER:setDevicePassword");
+		String oldPasswordStr = EntryPassword(oldPassword);
+		String newPasswordStr = EntryPassword(newPassword);
+		if (this.MSG_ID_SETTING_DEVICE_PASSWORD >= (Constants.MsgSection.MSG_ID_SETTING_DEVICE_PASSWORD)) {
+			this.MSG_ID_SETTING_DEVICE_PASSWORD = Constants.MsgSection.MSG_ID_SETTING_DEVICE_PASSWORD - 1000;
+		}
+		byte[] tt=new byte[32];
+		int len=userPwd.length();
+		byte[] ss=userPwd.getBytes();
+		System.arraycopy(ss, 0, tt, 0, ss.length);
+		for(int i=0;i<tt.length/8;i++){
+			byte[] de=new byte[8];
+			System.arraycopy(tt, i*8, de, 0, de.length);
+			byte[] entry=P2PEntryPassword(de);
+			System.arraycopy(entry, 0, tt, i*8, entry.length);
+		}
+		MediaPlayer.iSetDevicePwd(Integer.parseInt(contactId),
+				Integer.parseInt(oldPasswordStr),
+				this.MSG_ID_SETTING_DEVICE_PASSWORD,
+				Constants.P2P_SETTING.SETTING_TYPE.SETTING_DEVICE_PWD,
+				Integer.parseInt(newPasswordStr),len,tt);
+		this.MSG_ID_SETTING_DEVICE_PASSWORD++;
+	}
+
+	/**
+	 * 璁剧疆璁垮瀵嗙爜
 	 */
 	public void setDeviceVisitorPassword(String contactId, String oldPassword,
-			String visitorPassword) {
+										 String visitorPassword) {
 		Log.e(TAG, "P2PHANDLER:setDevicePassword");
+		String oldPasswordStr = EntryPassword(oldPassword);
+		String newPasswordStr = EntryPassword(visitorPassword);
 		if (this.MESG_STTING_ID_GUEST_PASSWD >= (Constants.MsgSection.MESG_STTING_ID_GUEST_PASSWD)) {
 			this.MESG_STTING_ID_GUEST_PASSWD = Constants.MsgSection.MESG_STTING_ID_GUEST_PASSWD - 1000;
 		}
 
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(oldPassword),
+				Integer.parseInt(oldPasswordStr),
 				this.MESG_STTING_ID_GUEST_PASSWD,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_GUEST_PASSWD,
-				Integer.parseInt(visitorPassword));
-		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(oldPassword),
-				this.MESG_STTING_ID_GUEST_PASSWD,
-				Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_VISITORPWD,
-				Integer.parseInt(visitorPassword));
+				Integer.parseInt(newPasswordStr));
+//		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
+//				Integer.parseInt(oldPassword),
+//				this.MESG_STTING_ID_GUEST_PASSWD,
+//				Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_VISITORPWD,
+//				Integer.parseInt(visitorPassword));
 		this.MESG_STTING_ID_GUEST_PASSWD++;
 	}
 
 	/**
-	 * 获取好友状态
+	 * 鑾峰彇濂藉弸鐘舵��
 	 */
 
 	public void getFriendStatus(String[] contactIds) {
@@ -758,11 +807,11 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 获取录像列表
+	 * 鑾峰彇褰曞儚鍒楄〃
 	 */
 
 	public void getRecordFiles(String contactId, String password,
-			int timeInterval) {
+							   int timeInterval) {
 		Log.e(TAG, "P2PHANDLER:getRecordFiles");
 		if (this.MSG_ID_GETTING_RECORD_FILE_LIST >= (Constants.MsgSection.MSG_ID_GETTING_RECORD_FILE_LIST)) {
 			this.MSG_ID_GETTING_RECORD_FILE_LIST = Constants.MsgSection.MSG_ID_GETTING_RECORD_FILE_LIST - 1000;
@@ -783,21 +832,19 @@ public class P2PHandler {
 		int i_end = ((now.getYear() - 100) << 24)
 				| (((now.getMonth() + 1) << 18)) | ((now.getDate()) << 12)
 				| ((now.getHours()) << 6) | ((now.getMinutes()) << 0);
-		Log.e("timestamp", "year" + now.getYear() + "month" + now.getMonth()
-				+ "hour" + now.getHours());
-		Log.e("timestamp", "i_start=" + i_start + "i_end=" + i_end);
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iGetRecFiles(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_GETTING_RECORD_FILE_LIST, i_start, i_end);
 		this.MSG_ID_GETTING_RECORD_FILE_LIST++;
 	}
 
 	/**
-	 * 获取录像列表
+	 * 鑾峰彇褰曞儚鍒楄〃
 	 */
 
 	public void getRecordFiles(String contactId, String password, Date start,
-			Date end) {
+							   Date end) {
 		Log.e(TAG, "P2PHANDLER:getRecordFiles");
 		if (this.MSG_ID_GETTING_RECORD_FILE_LIST >= (Constants.MsgSection.MSG_ID_GETTING_RECORD_FILE_LIST)) {
 			this.MSG_ID_GETTING_RECORD_FILE_LIST = Constants.MsgSection.MSG_ID_GETTING_RECORD_FILE_LIST - 1000;
@@ -809,15 +856,15 @@ public class P2PHandler {
 		int i_end = ((end.getYear() - 100) << 24)
 				| (((end.getMonth() + 1) << 18)) | ((end.getDate()) << 12)
 				| ((end.getHours()) << 6) | ((end.getMinutes()) << 0);
-		Log.e("timestamp", "i_start=" + i_start + "i_end=" + i_end);
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iGetRecFiles(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MSG_ID_GETTING_RECORD_FILE_LIST, i_start, i_end);
 		this.MSG_ID_GETTING_RECORD_FILE_LIST++;
 	}
 
 	/**
-	 * 发送端消息
+	 * 鍙戦�佺娑堟伅
 	 */
 	public String sendMessage(String contactId, String msg) {
 		Log.e(TAG, "P2PHANDLER:sendMessage");
@@ -832,15 +879,16 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 发送自定义命令
+	 * 鍙戦�佽嚜瀹氫箟鍛戒护
 	 */
 	public String sendCustomCmd(String contactId, String password, String msg) {
 		Log.e(TAG, "P2PHANDLER:sendCustomCmd");
 		if (this.MSG_ID_SEND_CUSTOM_CMD >= (Constants.MsgSection.MSG_ID_SEND_CUSTOM_CMD)) {
 			this.MSG_ID_SEND_CUSTOM_CMD = Constants.MsgSection.MSG_ID_SEND_CUSTOM_CMD - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		int iId = Integer.parseInt(contactId);
-		MediaPlayer.iSendCmdToFriend(iId, Integer.parseInt(password),
+		MediaPlayer.iSendCmdToFriend(iId, Integer.parseInt(passwordStr),
 				this.MSG_ID_SEND_CUSTOM_CMD, msg.getBytes(),
 				msg.getBytes().length);
 		this.MSG_ID_SEND_CUSTOM_CMD++;
@@ -848,10 +896,10 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 打开音频设备并准备播放
-	 * 
+	 * 鎵撳紑闊抽璁惧骞跺噯澶囨挱鏀�
+	 *
 	 * @param callType
-	 *            监控类型
+	 *            鐩戞帶绫诲瀷
 	 */
 	public void openAudioAndStartPlaying(int callType) {
 		try {
@@ -868,7 +916,7 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 挂断p2p
+	 * 鎸傛柇p2p
 	 */
 	public synchronized void reject() {
 		synchronized (P2PHandler.this) {
@@ -878,7 +926,7 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 接听
+	 * 鎺ュ惉
 	 */
 	public void accept() {
 		MediaPlayer.getInstance().native_p2p_accpet();
@@ -888,31 +936,32 @@ public class P2PHandler {
 	 * RTSP
 	 */
 	public void RTSPConnect(final String contactId, final String password,
-			final boolean isOutCall, final int callType, final String callId,
-			final String ipFlag, final String pushMsg, String ipAddress,
-			int VideoMode, Handler rtspHandler,String headerID) {
-		new RtspThread(ipAddress, rtspHandler, contactId, password, isOutCall,
+							final boolean isOutCall, final int callType, final String callId,
+							final String ipFlag, final String pushMsg, String ipAddress,
+							int VideoMode, Handler rtspHandler,String headerID) {
+		String passwordStr = EntryPassword(password);
+		new RtspThread(ipAddress, rtspHandler, contactId, passwordStr, isOutCall,
 				callType, callId, ipFlag, pushMsg, VideoMode,headerID).start();
-		
+
 	}
 
 	/**
-	 * 呼叫（监控）
+	 * 鍛煎彨锛堢洃鎺э級
 	 * @param contactId APPID
-	 * @param password 密码
-	 * @param isOutCall 
-	 * @param callType 
-	 * @param callId 呼叫ID
-	 * @param ipFlag IP标记
-	 * @param pushMsg 附带消息
-	 * @param VideoMode 视屏分辨率
-	 * @param headerID 头像截图命名ID
+	 * @param password 瀵嗙爜
+	 * @param isOutCall
+	 * @param callType
+	 * @param callId 鍛煎彨ID
+	 * @param ipFlag IP鏍囪
+	 * @param pushMsg 闄勫甫娑堟伅
+	 * @param VideoMode 瑙嗗睆鍒嗚鲸鐜�
+	 * @param headerID 澶村儚鎴浘鍛藉悕ID
 	 * @return
 	 */
 
 	public boolean call(final String contactId, final String password,
-			final boolean isOutCall, final int callType, final String callId,
-			final String ipFlag, final String pushMsg, int VideoMode,String headerID) {
+						final boolean isOutCall, final int callType, final String callId,
+						final String ipFlag, final String pushMsg, int VideoMode,String headerID) {
 		boolean result = false;
 		long headerId=Long.parseLong(headerID);
 		byte[] byt = new byte[8];
@@ -951,7 +1000,8 @@ public class P2PHandler {
 				int isMonitor = 0;
 				if (callType == Constants.P2P_TYPE.P2P_TYPE_MONITOR) {
 					isMonitor = 1;
-					pwd = Integer.parseInt(password);
+					String passwordStr = EntryPassword(password);
+					pwd = Integer.parseInt(passwordStr);
 				}
 
 				int x = 0;
@@ -1025,8 +1075,8 @@ public class P2PHandler {
 			1, 7 };
 
 	private void call_alter(String threeNumber, String password,
-			boolean isOutCall, int callType, String callId, String ipFlag,
-			String pushMsg, int VideoMode,String headerID) throws UnsupportedEncodingException {
+							boolean isOutCall, int callType, String callId, String ipFlag,
+							String pushMsg, int VideoMode,String headerID) throws UnsupportedEncodingException {
 		byte[] byt = new byte[8];
 		long headerId=Long.parseLong(headerID);
 		if (isOutCall) {
@@ -1068,8 +1118,9 @@ public class P2PHandler {
 			int isMonitor = 0;
 			if (callType == Constants.P2P_TYPE.P2P_TYPE_MONITOR) {
 				isMonitor = 1;
-				if (MyUtils.isNumeric(password)) {
-					pwd = Integer.parseInt(password);
+				String passwordStr = EntryPassword(password);
+				if (MyUtils.isNumeric(passwordStr)) {
+					pwd = Integer.parseInt(passwordStr);
 				}
 			}
 
@@ -1094,19 +1145,20 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 录像回放连接
+	 * 褰曞儚鍥炴斁杩炴帴
 	 */
 	public void playbackConnect(String contactId, String password,
-			String filename, int recordFilePosition, int VideoMode) {
+								String filename, int recordFilePosition, int VideoMode) {
 		byte[] byt = filename.getBytes();
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.getInstance().native_p2p_call(Integer.parseInt(contactId),
 				Constants.P2P_TYPE.P2P_TYPE_PLAYBACK,
-				Integer.parseInt(password), recordFilePosition, VideoMode, byt,
+				Integer.parseInt(passwordStr), recordFilePosition, VideoMode, byt,
 				"".getBytes(), "gwell",Integer.parseInt(contactId));
 	}
 
 	/**
-	 * 设置视频模式
+	 * 璁剧疆瑙嗛妯″紡
 	 */
 
 	public int setVideoMode(int type) {
@@ -1115,22 +1167,22 @@ public class P2PHandler {
 	}
 
 	public void checkDeviceUpdate(String contactId, String password) {
-
+		String passwordStr = EntryPassword(password);
 		Log.e(TAG, "P2PHANDLER:checkDeviceUpdate");
 		if (this.MSG_ID_CHECK_DEVICE_UPDATE >= (Constants.MsgSection.MSG_ID_CHECK_DEVICE_UPDATE)) {
 			this.MSG_ID_CHECK_DEVICE_UPDATE = Constants.MsgSection.MSG_ID_CHECK_DEVICE_UPDATE - 1000;
 		}
 
 		MediaPlayer.getInstance().checkDeviceUpdate(
-				Integer.parseInt(contactId), Integer.parseInt(password),
+				Integer.parseInt(contactId), Integer.parseInt(passwordStr),
 				this.MSG_ID_CHECK_DEVICE_UPDATE);
 		this.MSG_ID_CHECK_DEVICE_UPDATE++;
 	}
-	
+
 
 	/**
-	 * 设备固件更新
-	 * 
+	 * 璁惧鍥轰欢鏇存柊
+	 *
 	 * @param contactId
 	 * @param password
 	 */
@@ -1140,16 +1192,16 @@ public class P2PHandler {
 		if (this.MSG_ID_DO_DEVICE_UPDATE >= (Constants.MsgSection.MSG_ID_DO_DEVICE_UPDATE)) {
 			this.MSG_ID_DO_DEVICE_UPDATE = Constants.MsgSection.MSG_ID_DO_DEVICE_UPDATE - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.getInstance().doDeviceUpdate(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_DO_DEVICE_UPDATE);
+				Integer.parseInt(passwordStr), this.MSG_ID_DO_DEVICE_UPDATE);
 		this.MSG_ID_DO_DEVICE_UPDATE++;
 
 	}
 
 	/**
-	 * 取消设备固件更新
-	 * 
+	 * 鍙栨秷璁惧鍥轰欢鏇存柊
+	 *
 	 * @param contactId
 	 * @param password
 	 */
@@ -1159,17 +1211,17 @@ public class P2PHandler {
 		if (this.MSG_ID_CANCEL_DEVICE_UPDATE >= (Constants.MsgSection.MSG_ID_CANCEL_DEVICE_UPDATE)) {
 			this.MSG_ID_CANCEL_DEVICE_UPDATE = Constants.MsgSection.MSG_ID_CANCEL_DEVICE_UPDATE - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.getInstance().cancelDeviceUpdate(
-				Integer.parseInt(contactId), Integer.parseInt(password),
+				Integer.parseInt(contactId), Integer.parseInt(passwordStr),
 				this.MSG_ID_CANCEL_DEVICE_UPDATE);
 		this.MSG_ID_CANCEL_DEVICE_UPDATE++;
 
 	}
 
 	/**
-	 * 获得固件版本
-	 * 
+	 * 鑾峰緱鍥轰欢鐗堟湰
+	 *
 	 * @param contactId
 	 * @param password
 	 */
@@ -1179,9 +1231,9 @@ public class P2PHandler {
 		if (this.MSG_ID_GET_DEVICE_VERSION >= (Constants.MsgSection.MSG_ID_GET_DEVICE_VERSION)) {
 			this.MSG_ID_GET_DEVICE_VERSION = Constants.MsgSection.MSG_ID_GET_DEVICE_VERSION - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.getInstance().getDeviceVersion(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MSG_ID_GET_DEVICE_VERSION);
+				Integer.parseInt(passwordStr), this.MSG_ID_GET_DEVICE_VERSION);
 		this.MSG_ID_GET_DEVICE_VERSION++;
 	}
 
@@ -1198,8 +1250,8 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 设置是否接收音视频数据在高端2CU中单独设置无效
-	 * 
+	 * 璁剧疆鏄惁鎺ユ敹闊宠棰戞暟鎹湪楂樼2CU涓崟鐙缃棤鏁�
+	 *
 	 * @param fgEn
 	 */
 	public void setRecvAVDataEnable(boolean fgEn) {
@@ -1211,10 +1263,11 @@ public class P2PHandler {
 		if ((this.MESG_ID_STTING_PIC_REVERSE) >= (Constants.MsgSection.MESG_ID_STTING_PIC_REVERSE)) {
 			this.MESG_ID_STTING_PIC_REVERSE = Constants.MsgSection.MESG_ID_STTING_PIC_REVERSE - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer
 				.iSetNPCSettings(
 						Integer.parseInt(contactId),
-						Integer.parseInt(password),
+						Integer.parseInt(passwordStr),
 						this.MESG_ID_STTING_PIC_REVERSE,
 						Constants.P2P_SETTING.SETTING_TYPE.SETTING_IMAGE_REVERSE,
 						value);
@@ -1225,8 +1278,9 @@ public class P2PHandler {
 		if ((this.MESG_ID_STTING_IR_ALARM_EN) >= (Constants.MsgSection.MESG_ID_STTING_IR_ALARM_EN)) {
 			this.MESG_ID_STTING_IR_ALARM_EN = Constants.MsgSection.MESG_ID_STTING_IR_ALARM_EN - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_ID_STTING_IR_ALARM_EN,
+				Integer.parseInt(passwordStr), this.MESG_ID_STTING_IR_ALARM_EN,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_IR_ALARM_EN,
 				value);
 		this.MESG_ID_STTING_IR_ALARM_EN++;
@@ -1236,10 +1290,11 @@ public class P2PHandler {
 		if ((this.MESG_STTING_ID_EXTLINE_ALARM_IN_EN) >= (Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_IN_EN)) {
 			this.MESG_STTING_ID_EXTLINE_ALARM_IN_EN = Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_IN_EN - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer
 				.iSetNPCSettings(
 						Integer.parseInt(contactId),
-						Integer.parseInt(password),
+						Integer.parseInt(passwordStr),
 						this.MESG_STTING_ID_EXTLINE_ALARM_IN_EN,
 						Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_EXTLINE_ALARM_IN_EN,
 						value);
@@ -1250,10 +1305,11 @@ public class P2PHandler {
 		if ((this.MESG_STTING_ID_EXTLINE_ALARM_OUT_EN) >= (Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_OUT_EN)) {
 			this.MESG_STTING_ID_EXTLINE_ALARM_OUT_EN = Constants.MsgSection.MESG_STTING_ID_EXTLINE_ALARM_OUT_EN - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer
 				.iSetNPCSettings(
 						Integer.parseInt(contactId),
-						Integer.parseInt(password),
+						Integer.parseInt(passwordStr),
 						this.MESG_STTING_ID_EXTLINE_ALARM_OUT_EN,
 						Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_EXTLINE_ALARM_OUT_EN,
 						value);
@@ -1264,15 +1320,16 @@ public class P2PHandler {
 		if ((this.MESG_STTING_ID_SECUPGDEV) >= (Constants.MsgSection.MESG_STTING_ID_SECUPGDEV)) {
 			this.MESG_STTING_ID_SECUPGDEV = Constants.MsgSection.MESG_STTING_ID_SECUPGDEV - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_STTING_ID_SECUPGDEV,
+				Integer.parseInt(passwordStr), this.MESG_STTING_ID_SECUPGDEV,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_SECUPGDEV, value);
 		this.MESG_STTING_ID_SECUPGDEV++;
 	}
 
 	/**
-	 * 设置时区
-	 * 
+	 * 璁剧疆鏃跺尯
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param value
@@ -1281,8 +1338,9 @@ public class P2PHandler {
 		if ((this.MESG_STTING_ID_TIMEZONE) >= (Constants.MsgSection.MESG_STTING_ID_TIMEZONE)) {
 			this.MESG_STTING_ID_TIMEZONE = Constants.MsgSection.MESG_STTING_ID_TIMEZONE - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_STTING_ID_TIMEZONE,
+				Integer.parseInt(passwordStr), this.MESG_STTING_ID_TIMEZONE,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_TIMEZONE, value);
 		this.MESG_STTING_ID_TIMEZONE++;
 	}
@@ -1296,15 +1354,16 @@ public class P2PHandler {
 		datas[1] = 0;
 		datas[2] = 0;
 		datas[3] = 0;
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_GET_SD_CARD_CAPACITY,
+				Integer.parseInt(passwordStr), this.MESG_GET_SD_CARD_CAPACITY,
 				datas, 4);
 		this.MESG_GET_SD_CARD_CAPACITY++;
 	}
 
 	/**
-	 * SD卡格式化
-	 * 
+	 * SD鍗℃牸寮忓寲
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param SDcardID
@@ -1320,8 +1379,9 @@ public class P2PHandler {
 		datas[3] = 0;
 		datas[4] = (byte) SDcardID;
 		Log.e("id", "id:" + datas[4]);
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_SD_CARD_FORMAT, datas, 5);
+				Integer.parseInt(passwordStr), this.MESG_SD_CARD_FORMAT, datas, 5);
 		this.MESG_SD_CARD_FORMAT++;
 	}
 
@@ -1362,9 +1422,9 @@ public class P2PHandler {
 		for (int j = 0; j < datas.length; j++) {
 			s = s + " " + datas[j];
 		}
-		Log.e("GPIO", "GPIO" + s + " " + "length=" + datas.length);
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_SET_GPIO, datas,
+				Integer.parseInt(passwordStr), this.MESG_SET_GPIO, datas,
 				datas.length);
 		this.MESG_SET_GPIO++;
 	}
@@ -1398,16 +1458,16 @@ public class P2PHandler {
 		for (int j = 0; j < datas.length; j++) {
 			s = s + " " + datas[j];
 		}
-		Log.e("GPIO", "GPIO" + s + " " + "length=" + datas.length);
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_SET_GPI1_0, datas,
+				Integer.parseInt(passwordStr), this.MESG_SET_GPI1_0, datas,
 				datas.length);
 		this.MESG_SET_GPI1_0++;
 	}
 
 	/**
-	 * 设置预录像
-	 * 
+	 * 璁剧疆棰勫綍鍍�
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param value
@@ -1416,15 +1476,16 @@ public class P2PHandler {
 		if ((this.MESG_SET_PRE_RECORD) >= (Constants.MsgSection.MESG_SET_PRE_RECORD)) {
 			this.MESG_SET_PRE_RECORD = Constants.MsgSection.MESG_SET_PRE_RECORD - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_SET_PRE_RECORD,
+				Integer.parseInt(passwordStr), this.MESG_SET_PRE_RECORD,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_PRERECORD, value);
 		this.MESG_SET_PRE_RECORD++;
 	}
 
 	/**
-	 * 获得防区报警开关状态，需要设备配置
-	 * 
+	 * 鑾峰緱闃插尯鎶ヨ寮�鍏崇姸鎬侊紝闇�瑕佽澶囬厤缃�
+	 *
 	 * @param contactId
 	 * @param password
 	 */
@@ -1445,26 +1506,27 @@ public class P2PHandler {
 		datas[9] = 0;
 		datas[10] = 0;
 		datas[11] = 0;
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_GET_DEFENCE_AREA_SWITCH,
+				Integer.parseInt(passwordStr), this.MESG_GET_DEFENCE_AREA_SWITCH,
 				datas, datas.length);
 		this.MESG_GET_DEFENCE_AREA_SWITCH++;
 	}
 
 	/**
-	 * 设置防区报警开关
-	 * 
+	 * 璁剧疆闃插尯鎶ヨ寮�鍏�
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param state
-	 *            开关状态
+	 *            寮�鍏崇姸鎬�
 	 * @param group
-	 *            防区
+	 *            闃插尯
 	 * @param item
-	 *            通道
+	 *            閫氶亾
 	 */
 	public void setDefenceAreaAlarmSwitch(String contactId, String password,
-			int state, int group, int item) {
+										  int state, int group, int item) {
 		if ((this.MESG_SET_DEFENCE_AREA_SWITCH) >= (Constants.MsgSection.MESG_SET_DEFENCE_AREA_SWITCH)) {
 			this.MESG_SET_DEFENCE_AREA_SWITCH = Constants.MsgSection.MESG_SET_DEFENCE_AREA_SWITCH - 1000;
 		}
@@ -1481,15 +1543,16 @@ public class P2PHandler {
 		datas[9] = (byte) (item >> 8 & 0xFF);
 		datas[10] = (byte) (item >> 16 & 0xFF);
 		datas[11] = (byte) (item >> 24 & 0xFF);
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_SET_DEFENCE_AREA_SWITCH,
+				Integer.parseInt(passwordStr), this.MESG_SET_DEFENCE_AREA_SWITCH,
 				datas, datas.length);
 		this.MESG_SET_DEFENCE_AREA_SWITCH++;
 	}
 
 	/**
-	 * 获得灯的状态
-	 * 
+	 * 鑾峰緱鐏殑鐘舵��
+	 *
 	 * @param contactId
 	 * @param password
 	 */
@@ -1497,14 +1560,15 @@ public class P2PHandler {
 		if (this.MESG_GET_LAMP >= (Constants.MsgSection.MESG_GET_LAMP)) {
 			this.MESG_GET_LAMP = Constants.MsgSection.MESG_GET_LAMP - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iGetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_GET_LAMP);
+				Integer.parseInt(passwordStr), this.MESG_GET_LAMP);
 		this.MESG_GET_LAMP++;
 	}
 
 	/**
-	 * 设置灯的状态
-	 * 
+	 * 璁剧疆鐏殑鐘舵��
+	 *
 	 * @param contactId
 	 * @param password
 	 */
@@ -1512,24 +1576,25 @@ public class P2PHandler {
 		if (this.MESG_SET_LAMP >= (Constants.MsgSection.MESG_SET_LAMP)) {
 			this.MESG_SET_LAMP = Constants.MsgSection.MESG_SET_LAMP - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_SET_LAMP, 34, LampStatus);
+				Integer.parseInt(passwordStr), this.MESG_SET_LAMP, 34, LampStatus);
 		this.MESG_SET_LAMP++;
 	}
 
 	/**
-	 * 自定义串口消息
-	 * 
+	 * 鑷畾涔変覆鍙ｆ秷鎭�
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param dataBuffer
-	 *            用户输入的串口消息
+	 *            鐢ㄦ埛杈撳叆鐨勪覆鍙ｆ秷鎭�
 	 * @param len
-	 *            消息长度
+	 *            娑堟伅闀垮害
 	 * @param appID
 	 */
 	public void vSendDataToURAT(String contactId, String password,
-			byte[] dataBuffer, int len, boolean appID) {
+								byte[] dataBuffer, int len, boolean appID) {
 		if (this.SET_USER_DEFINE_MESG >= (Constants.MsgSection.SET_USER_DEFINE_MESG)) {
 			this.SET_USER_DEFINE_MESG = Constants.MsgSection.SET_USER_DEFINE_MESG - 1000;
 		}
@@ -1546,73 +1611,75 @@ public class P2PHandler {
 		byte[] datas = new byte[fgme.length + dataBuffer.length];
 		System.arraycopy(fgme, 0, datas, 0, fgme.length);
 		System.arraycopy(dataBuffer, 0, datas, fgme.length, dataBuffer.length);
-		MediaPlayer.iSendCmdToFriend(iId, Integer.parseInt(password),
+		String passwordStr = EntryPassword(password);
+		MediaPlayer.iSendCmdToFriend(iId, Integer.parseInt(passwordStr),
 				this.SET_USER_DEFINE_MESG, datas, datas.length);
 		this.SET_USER_DEFINE_MESG++;
 	}
 
 	/**
-	 * 获取报警类型或防区通道对应的摄像头预置位置
-	 * 
+	 * 鑾峰彇鎶ヨ绫诲瀷鎴栭槻鍖洪�氶亾瀵瑰簲鐨勬憚鍍忓ご棰勭疆浣嶇疆
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param data
 	 */
 	public void sMesgGetAlarmPresetMotorPos(String contactId, String password,
-			byte[] data) {
+											byte[] data) {
 		if ((this.MESG_GET_PRESET_MOTOR_POS) >= (Constants.MsgSection.MESG_GET_PRESET_MOTOR_POS)) {
 			this.MESG_GET_PRESET_MOTOR_POS = Constants.MsgSection.MESG_GET_PRESET_MOTOR_POS - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_GET_PRESET_MOTOR_POS,
+				Integer.parseInt(passwordStr), this.MESG_GET_PRESET_MOTOR_POS,
 				data, 7);
 
 		this.MESG_GET_PRESET_MOTOR_POS++;
 	}
 
 	/**
-	 * 设置报警类型或防区通道对应的摄像头预置位置
-	 * 
+	 * 璁剧疆鎶ヨ绫诲瀷鎴栭槻鍖洪�氶亾瀵瑰簲鐨勬憚鍍忓ご棰勭疆浣嶇疆
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param data
 	 */
 	public void sMesgSetAlarmPresetMotorPos(String contactId, String password,
-			byte[] data) {
+											byte[] data) {
 		if ((this.MESG_SET_PRESET_MOTOR_POS) >= (Constants.MsgSection.MESG_SET_PRESET_MOTOR_POS)) {
 			this.MESG_SET_PRESET_MOTOR_POS = Constants.MsgSection.MESG_SET_PRESET_MOTOR_POS - 1000;
 		}
-
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_SET_PRESET_MOTOR_POS,
+				Integer.parseInt(passwordStr), this.MESG_SET_PRESET_MOTOR_POS,
 				data, 7);
 
 		this.MESG_SET_PRESET_MOTOR_POS++;
 	}
 
 	/**
-	 * 设置/查看摄像头预置位置
-	 * 
+	 * 璁剧疆/鏌ョ湅鎽勫儚澶撮缃綅缃�
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param data
 	 */
 	public void sMesgPresetMotorPos(String contactId, String password,
-			byte[] data) {
+									byte[] data) {
 		if ((this.MESG_PRESET_MOTOR_POS) >= (Constants.MsgSection.MESG_PRESET_MOTOR_POS)) {
 			this.MESG_PRESET_MOTOR_POS = Constants.MsgSection.MESG_PRESET_MOTOR_POS - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer
 				.iExtendedCmd(Integer.parseInt(contactId),
-						Integer.parseInt(password), this.MESG_PRESET_MOTOR_POS,
+						Integer.parseInt(passwordStr), this.MESG_PRESET_MOTOR_POS,
 						data, 7);
 		this.MESG_PRESET_MOTOR_POS++;
 	}
 
 	/**
-	 * 获取设备IP相关信息
-	 * 
+	 * 鑾峰彇璁惧IP鐩稿叧淇℃伅
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param data
@@ -1621,8 +1688,9 @@ public class P2PHandler {
 		if ((this.IP_CONFIG) >= (Constants.MsgSection.IP_CONFIG)) {
 			this.IP_CONFIG = Constants.MsgSection.IP_CONFIG - 1000;
 		}
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.IP_CONFIG, data, 8);
+				Integer.parseInt(passwordStr), this.IP_CONFIG, data, 8);
 		this.IP_CONFIG++;
 	}
 
@@ -1646,15 +1714,16 @@ public class P2PHandler {
 		Log.e("alarmcenter", "MESG_GET_ALARM_CENTER_PARAMETER="
 				+ this.MESG_GET_ALARM_CENTER_PARAMETER + "  " + "length="
 				+ datas.length);
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MESG_GET_ALARM_CENTER_PARAMETER, datas, datas.length);
 		this.MESG_GET_ALARM_CENTER_PARAMETER++;
 	}
 
 	/**
-	 * 设置报警中心参数
-	 * 
+	 * 璁剧疆鎶ヨ涓績鍙傛暟
+	 *
 	 * @param contactId
 	 * @param password
 	 * @param port
@@ -1663,7 +1732,7 @@ public class P2PHandler {
 	 * @param state
 	 */
 	public void setAlarmCenterParameters(String contactId, String password,
-			int port, String ipdress, String userId, int state) {
+										 int port, String ipdress, String userId, int state) {
 		if ((this.MESG_SET_ALARM_CENTER_PARAMETER) >= (Constants.MsgSection.MESG_SET_ALARM_CENTER_PARAMETER)) {
 			this.MESG_SET_ALARM_CENTER_PARAMETER = Constants.MsgSection.MESG_SET_ALARM_CENTER_PARAMETER - 1000;
 		}
@@ -1706,8 +1775,9 @@ public class P2PHandler {
 		Log.e("alarmcenter", "MESG_SET_ALARM_CENTER_PARAMETER="
 				+ this.MESG_SET_ALARM_CENTER_PARAMETER + "  " + "length="
 				+ datas.length);
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password),
+				Integer.parseInt(passwordStr),
 				this.MESG_SET_ALARM_CENTER_PARAMETER, datas, datas.length);
 		this.MESG_SET_ALARM_CENTER_PARAMETER++;
 	}
@@ -1723,11 +1793,12 @@ public class P2PHandler {
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId), 0,
 				this.MESG_DELETE_ALARMID, datas, datas.length);
 		Log.e("vRetExtenedCmd", "datas-->" + Arrays.toString(datas));
+		Log.e("leledeleteAlarm", "DeleteDeviceAlarmId");
 		this.MESG_DELETE_ALARMID++;
 	}
 
 	public void setSystemMessageIndex(int iSystemMessageType,
-			int iSystemMessageIndex) {
+									  int iSystemMessageIndex) {
 		if ((this.MESG_SET_SYSTEM_MESSAGE_INDEX) >= (Constants.MsgSection.MESG_SET_SYSTEM_MESSAGE_INDEX)) {
 			this.MESG_SET_SYSTEM_MESSAGE_INDEX = Constants.MsgSection.MESG_SET_SYSTEM_MESSAGE_INDEX - 1000;
 		}
@@ -1738,13 +1809,13 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 自定义截图路径
-	 * 
+	 * 鑷畾涔夋埅鍥捐矾寰�
+	 *
 	 * @param path
-	 *            路径（必须省略sdcard路径）~/11/22/33/10234.jpg时 path=/11/22/33
+	 *            璺緞锛堝繀椤荤渷鐣dcard璺緞锛墌/11/22/33/10234.jpg鏃� path=/11/22/33
 	 * @param name
 	 *            name=1023.jpg
-	 * @return 创建文件夹是否成功 0成功 !0失败
+	 * @return 鍒涘缓鏂囦欢澶规槸鍚︽垚鍔� 0鎴愬姛 !0澶辫触
 	 */
 	public int setScreenShotpath(String path, String name) {
 		return MediaPlayer.getInstance().SetScreenShotPath(path, name);
@@ -1763,17 +1834,16 @@ public class P2PHandler {
 				sendData[j] = 0;
 			}
 		}
-		Log.e("control_camera", "contactId=" + contactId + "--" + "password="
-				+ password + "--" + Arrays.toString(sendData));
+		String passwordStr = EntryPassword(password);
 		int iId = Integer.parseInt(contactId);
-		MediaPlayer.iExtendedCmd(iId, Integer.parseInt(password),
+		MediaPlayer.iExtendedCmd(iId, Integer.parseInt(passwordStr),
 				this.CONTROL_CAMERA, sendData, sendData.length);
 		this.CONTROL_CAMERA++;
 
 	}
 
 	/**
-	 * 收到门铃
+	 * 鏀跺埌闂ㄩ搩
 	 */
 	public void setReceiveDoorBell(String contactId) {
 		Log.e(TAG, "P2PHANDLER:setRemoteDefence");
@@ -1789,6 +1859,7 @@ public class P2PHandler {
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId), 0,
 				this.MESG_SET_RECEIVE_DOOBELL, datas, datas.length);
 		Log.e("vRetExtenedCmd", "datas-->" + Arrays.toString(datas));
+		Log.e("leledeleteAlarm", "setReceiveDoorBell");
 		this.MESG_SET_RECEIVE_DOOBELL++;
 	}
 
@@ -1798,22 +1869,24 @@ public class P2PHandler {
 		}
 		byte[] datas = new byte[7];
 		datas[0] = (byte) 211;
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_GET_LANGUEGE, datas,
+				Integer.parseInt(passwordStr), this.MESG_GET_LANGUEGE, datas,
 				datas.length);
 		this.MESG_GET_LANGUEGE++;
 	}
 
 	public void setDevieceLanguege(String contactId, String password,
-			int curLanguege) {
+								   int curLanguege) {
 		if ((this.MESG_SET_LANGUEGE) >= (Constants.MsgSection.MESG_SET_LANGUEGE)) {
 			this.MESG_SET_LANGUEGE = Constants.MsgSection.MESG_SET_LANGUEGE - 1000;
 		}
 		byte[] datas = new byte[7];
 		datas[0] = (byte) 212;
 		datas[5] = (byte) curLanguege;
+		String passwordStr = EntryPassword(password);
 		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_SET_LANGUEGE, datas,
+				Integer.parseInt(passwordStr), this.MESG_SET_LANGUEGE, datas,
 				datas.length);
 		this.MESG_SET_LANGUEGE++;
 	}
@@ -1832,34 +1905,41 @@ public class P2PHandler {
 		Log.e("ptz", "zoom--" + Arrays.toString(data));
 	}
 
-	public String EntryPassword(String password) {
-		if (MyUtils.isNumeric(password) && password.length() < 10) {
+	//	public String EntryPassword(String password) {
+//		String passwordStr = EntryPassword(password);
+//		if (passwordStr.length()==0||(MyUtils.isNumeric(passwordStr) && passwordStr.length() < 10&&(passwordStr.charAt(0)!='0'))) {
+//			return passwordStr;
+//		} else {
+//			return String.valueOf(MediaPlayer.EntryPwd(passwordStr));
+//		}
+//	}
+	public String EntryPassword(String password){
+		if(MyUtils.isNumeric(password)&&password.length()<10){
 			return password;
-		} else {
+		}else{
 			return String.valueOf(MediaPlayer.EntryPwd(password));
 		}
 	}
 
 	/**
-	 * 获取报警图像
-	 * 
-	 * @param id设备ID
-	 * @param password密码
+	 * 鑾峰彇鎶ヨ鍥惧儚
+	 *
 	 * @param filename
-	 *            图片文件名完整路径
+	 *            鍥剧墖鏂囦欢鍚嶅畬鏁磋矾寰�
 	 * @param localName
-	 *            存放文件名完整路径
+	 *            瀛樻斁鏂囦欢鍚嶅畬鏁磋矾寰�
 	 * @return
 	 */
 	public int GetAllarmImage(String id, String password, String filename,
-			String localName) {
+							  String localName) {
+		String passwordStr = EntryPassword(password);
 		return MediaPlayer.GetAllarmImage(Integer.parseInt(id),
-				Integer.parseInt(password), filename, localName);
+				Integer.parseInt(passwordStr), filename, localName);
 	}
 
 	/**
-	 * 获取图片的进度
-	 * 
+	 * 鑾峰彇鍥剧墖鐨勮繘搴�
+	 *
 	 * @return
 	 */
 	public int GetAllarmImageProgress() {
@@ -1867,7 +1947,7 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 取消获取图片
+	 * 鍙栨秷鑾峰彇鍥剧墖
 	 */
 	public void CancelGetAllarmImage() {
 		MediaPlayer.CancelGetRemoteFile();
@@ -1901,7 +1981,7 @@ public class P2PHandler {
 		byte[] data = new byte[20];
 		data[0] = (byte) 129;
 		MediaPlayer.iExtendedCmd(Integer.parseInt(nvrId),
-				Integer.parseInt(password), this.MESG_TYPE_GET_LAN_IPC_LIST,
+				Integer.parseInt(EntryPassword(password)), this.MESG_TYPE_GET_LAN_IPC_LIST,
 				data, data.length);
 		Log.e("nvr_list", "nvrId=" + nvrId + "--" + "password=" + password
 				+ "data=" + Arrays.toString(data));
@@ -1910,8 +1990,8 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 兼容RTSP密码加密
-	 * 
+	 * 鍏煎RTSP瀵嗙爜鍔犲瘑
+	 *
 	 * @param password
 	 * @return
 	 */
@@ -1924,12 +2004,9 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 服务器保存的设备密码的解密函数（应用场景：从服务器获取设备列表）
-	 * 
-	 * @param userID用户ID
-	 * @param password密文
-	 * @param backLen返回的字符串缓冲区长度，建议比预估的值稍大
-	 * @return 返回的error可能是错误 也可能是缓冲区长度不足
+	 * 鏈嶅姟鍣ㄤ繚瀛樼殑璁惧瀵嗙爜鐨勮В瀵嗗嚱鏁帮紙搴旂敤鍦烘櫙锛氫粠鏈嶅姟鍣ㄨ幏鍙栬澶囧垪琛級
+	 *
+	 * @return 杩斿洖鐨別rror鍙兘鏄敊璇� 涔熷彲鑳芥槸缂撳啿鍖洪暱搴︿笉瓒�
 	 */
 	public String HTTPDecrypt(String userID, String password, int backLen) {
 		if (password != null && password.length() > 0) {
@@ -1940,12 +2017,9 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 服务器保存的设备密码的加密函数（应用场景：上传设备列表到服务器）
-	 * 
-	 * @param userID登陆账号关联的ID
-	 * @param password明文
-	 * @param backLen返回的字符串缓冲区长度，建议比预估的值稍大
-	 * @return 返回的error可能是错误 也可能是缓冲区长度不足
+	 * 鏈嶅姟鍣ㄤ繚瀛樼殑璁惧瀵嗙爜鐨勫姞瀵嗗嚱鏁帮紙搴旂敤鍦烘櫙锛氫笂浼犺澶囧垪琛ㄥ埌鏈嶅姟鍣級
+	 *
+	 * @return 杩斿洖鐨別rror鍙兘鏄敊璇� 涔熷彲鑳芥槸缂撳啿鍖洪暱搴︿笉瓒�
 	 */
 	public String HTTPEncrypt(String userID, String password, int backLen) {
 		if (password != null && password.length() > 0) {
@@ -1956,26 +2030,203 @@ public class P2PHandler {
 	}
 
 	/**
-	 * 密码加密，用于P2P
-	 * 
+	 * 瀵嗙爜鍔犲瘑锛岀敤浜嶱2P
+	 *
 	 * @param pwd
 	 * @return
 	 */
-	public byte[] P2PEntryPassword(int pwd) {
+	public byte[] P2PEntryPassword(byte[] pwd) {
 		return MediaPlayer.P2PEntryPassword(pwd);
 	}
-	
+
 	/**
-	 * 设置AP模式切換  1切換
+	 * 璁剧疆AP妯″紡鍒囨彌  1鍒囨彌
 	 */
 	public void setAPModeChange(String contactId, String password, int value) {
 		if (this.MESG_TYPE_SET_AP_MODE_CHANGE >= (Constants.MsgSection.MESG_TYPE_SET_AP_MODE_CHANGE)) {
 			this.MESG_TYPE_SET_AP_MODE_CHANGE = Constants.MsgSection.MESG_TYPE_SET_AP_MODE_CHANGE - 1000;
 		}
 		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
-				Integer.parseInt(password), this.MESG_TYPE_SET_AP_MODE_CHANGE,
+				Integer.parseInt(EntryPassword(password)), this.MESG_TYPE_SET_AP_MODE_CHANGE,
 				Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_SET_WIFI_WORK_MODE,
 				value);
 		this.MESG_TYPE_SET_AP_MODE_CHANGE++;
 	}
+	public void setZoom(String contactId, String password, int state) {
+		Log.e(TAG, "P2PHANDLER:setRecordType");
+		if (this.MESG_TYPE_SET_ZOOM >= (Constants.MsgSection.MESG_TYPE_SET_ZOOM)) {
+			this.MESG_TYPE_SET_ZOOM = Constants.MsgSection.MESG_TYPE_SET_ZOOM - 1000;
+		}
+
+		MediaPlayer.iSetNPCSettings(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)),
+				this.MESG_TYPE_SET_ZOOM,
+				Constants.P2P_SETTING.SETTING_TYPE.SETTING_ID_ZOOM, state);
+		this.MESG_TYPE_SET_ZOOM++;
+	}
+	/**
+	 * 璁剧疆AP妯″紡鍒囨彌  1鍒囨彌
+	 */
+	public void getNVRInfo(String contactId, String password) {
+		if (this.MESG_TYPE_GET_NVRINFO >= (Constants.MsgSection.MESG_TYPE_GET_NVRINFO)) {
+			this.MESG_TYPE_GET_NVRINFO = Constants.MsgSection.MESG_TYPE_GET_NVRINFO - 1000;
+		}
+		byte[] data = new byte[94];
+		data[0] = (byte) 131;
+		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)), this.MESG_TYPE_GET_NVRINFO,
+				data, data.length);
+		this.MESG_TYPE_GET_NVRINFO++;
+	}
+	//
+	public void getFocusZoom(String contactId, String password){
+		if (this.MESG_TYPE_GET_FOCUS_ZOOM >= (Constants.MsgSection.MESG_TYPE_GET_FOCUS_ZOOM)) {
+			this.MESG_TYPE_GET_FOCUS_ZOOM = Constants.MsgSection.MESG_TYPE_GET_FOCUS_ZOOM - 1000;
+		}
+		byte[] data = new byte[4];
+		data[0] = (byte) 224;
+		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)), this.MESG_TYPE_GET_FOCUS_ZOOM,
+				data, data.length);
+		this.MESG_TYPE_GET_FOCUS_ZOOM++;
+	}
+	public void setFocusZoom(String contactId, String password,int value){
+		if (this.MESG_TYPE_SET_FOCUS_ZOOM >= (Constants.MsgSection.MESG_TYPE_SET_FOCUS_ZOOM)) {
+			this.MESG_TYPE_SET_FOCUS_ZOOM = Constants.MsgSection.MESG_TYPE_SET_FOCUS_ZOOM - 1000;
+		}
+		byte[] data = new byte[4];
+		data[0] = (byte) 224;
+		data[1]=(byte)1;
+		data[3]=(byte) value;
+		Log.e("focus_zoom", "focus_zoom="+value);
+		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)), this.MESG_TYPE_SET_FOCUS_ZOOM,
+				data, data.length);
+		this.MESG_TYPE_SET_FOCUS_ZOOM++;
+	}
+
+	public byte[] getPwdBytes(String pwd){
+		int m = pwd.length();
+		int k = 8 - m % 8;
+		for (int i = 0; i < k; i++) {
+			pwd = pwd + "0";
+		}
+		byte[] ppp = null;
+		try {
+			ppp = DES.des(pwd.getBytes(), 0);
+		} catch (Exception e) {
+			ppp = new byte[] { 0 };
+			e.printStackTrace();
+		}
+		return ppp;
+	}
+
+	public void setGPIO(String contactId, String password, int group, int pin,int[] data){
+		if ((this.MESG_SET_GPIO) >= (Constants.MsgSection.MESG_SET_GPIO)) {
+			this.MESG_SET_GPIO = Constants.MsgSection.MESG_SET_GPIO - 1000;
+		}
+		byte[] datas = new byte[37];
+		datas[0] = 95;
+		datas[1] = 0;
+		datas[2] = (byte) group;
+		datas[3] = (byte) pin;
+		datas[4]=(byte) Math.min(8, data.length);
+		for (int i = 0; i < datas[4]; i++) {
+			byte[] io=intToByte4(data[i]);
+			System.arraycopy(io, 0, datas, 5+i*io.length, io.length);
+		}
+		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)), this.MESG_SET_GPIO, datas,
+				datas.length);
+		this.MESG_SET_GPIO++;
+	}
+	public void getGPIO(String contactId, String password, int group, int pin,int[] data){
+		if ((this.MESG_GET_GPIO) >= (Constants.MsgSection.MESG_GET_GPIO)) {
+			this.MESG_GET_GPIO = Constants.MsgSection.MESG_GET_GPIO - 1000;
+		}
+		byte[] datas = new byte[37];
+		datas[0] = 95;
+		datas[1] = 0;
+		datas[2] = (byte) group;
+		datas[3] = (byte) pin;
+		datas[4]=(byte)0xFF;
+		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)), this.MESG_GET_GPIO, datas,
+				datas.length);
+		this.MESG_GET_GPIO++;
+	}
+	/**
+	 * 获取定时布防信息
+	 * @param contactId
+	 * @param password
+	 */
+	public void getDefenceWorkGroup(String contactId, String password){
+		if ((this.MESG_GET_DEFENCE_WORK_GROUP) >= (Constants.MsgSection.MESG_GET_DEFENCE_WORK_GROUP)) {
+			this.MESG_GET_DEFENCE_WORK_GROUP = Constants.MsgSection.MESG_GET_DEFENCE_WORK_GROUP - 1000;
+		}
+		byte[] datas=new byte[64];
+		datas[0]=(byte)214;
+		datas[1]=0;
+		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)), this.MESG_GET_DEFENCE_WORK_GROUP, datas, datas.length);
+		this.MESG_GET_DEFENCE_WORK_GROUP++;
+	}
+	/**
+	 * 设置定时布防信息
+	 * @param contactId
+	 * @param password
+	 * @param groupCount
+	 * @param data
+	 */
+	public void setDefenceWorkGroup(String contactId, String password,short groupCount,byte[] data){
+		if ((this.MESG_SET_DEFENCE_WORK_GROUP) >= (Constants.MsgSection.MESG_SET_DEFENCE_WORK_GROUP)) {
+			this.MESG_SET_DEFENCE_WORK_GROUP = Constants.MsgSection.MESG_SET_DEFENCE_WORK_GROUP - 1000;
+		}
+		byte[] datas=new byte[64];
+		datas[0]=(byte)215;
+		datas[1]=0;
+		if(groupCount>10||data.length>60)return;
+		byte[] count=MyUtils.shortToByte2(groupCount);
+		System.arraycopy(count, 0, datas, 2, count.length);
+		System.arraycopy(data, 0, datas, 4, data.length);
+		Log.e("wxy", "p2p:"+Arrays.toString(datas));
+		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)), this.MESG_SET_DEFENCE_WORK_GROUP, datas, datas.length);
+		this.MESG_SET_DEFENCE_WORK_GROUP++;
+	}
+
+	public void getFTPConfigInfo(String contactId, String password){
+		if ((this.MESG_GET_FTP_CONFIG_INFO) >= (Constants.MsgSection.MESG_GET_FTP_CONFIG_INFO)) {
+			this.MESG_GET_FTP_CONFIG_INFO = Constants.MsgSection.MESG_GET_FTP_CONFIG_INFO - 1000;
+		}
+		byte[] data=new byte[102];
+		data[0]=(byte)225;
+		data[1]=0;
+		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)), this.MESG_GET_FTP_CONFIG_INFO, data, data.length);
+		this.MESG_GET_FTP_CONFIG_INFO++;
+
+	}
+	public void setFTPConfigInfo(String contactId, String password,String hostname,String username,String pass,short svrport,short usrflag){
+		if ((this.MESG_SET_FTP_CONFIG_INFO) >= (Constants.MsgSection.MESG_SET_FTP_CONFIG_INFO)) {
+			this.MESG_SET_FTP_CONFIG_INFO = Constants.MsgSection.MESG_SET_FTP_CONFIG_INFO - 1000;
+		}
+		byte[] data=new byte[102];
+		data[0]=(byte)226;
+		data[1]=0;
+		byte[] hostnames=hostname.getBytes();
+		byte[] usernames=username.getBytes();
+		byte[] passwords=pass.getBytes();
+		byte[] svrports=MyUtils.shortToByte2(svrport);
+		byte[] usrflags=MyUtils.shortToByte2(usrflag);
+		System.arraycopy(hostnames, 0, data, 2, hostnames.length);
+		System.arraycopy(usernames, 0, data, 34, usernames.length);
+		System.arraycopy(passwords, 0, data, 66, passwords.length);
+		System.arraycopy(svrports, 0, data, 98, svrports.length);
+		System.arraycopy(usrflags, 0, data, 100, usrflags.length);
+		MediaPlayer.iExtendedCmd(Integer.parseInt(contactId),
+				Integer.parseInt(EntryPassword(password)), this.MESG_GET_FTP_CONFIG_INFO, data, data.length);
+		this.MESG_GET_FTP_CONFIG_INFO++;
+	}
+
 }

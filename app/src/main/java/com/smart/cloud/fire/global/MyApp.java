@@ -25,6 +25,8 @@ import com.squareup.leakcanary.LeakCanary;
 public class MyApp extends Application {
     public static MyApp app;
     public String pushState;
+    public static int SCREENWIGHT;
+    public static int SCREENHIGHT;
     private NotificationManager mNotificationManager;
     private Notification mNotification;
     public static final int NOTIFICATION_DOWN_ID = 0x53256562;

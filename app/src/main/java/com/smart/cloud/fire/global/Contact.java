@@ -4,15 +4,19 @@ package com.smart.cloud.fire.global;
  * Created by Administrator on 2016/8/4.
  */
 
+import android.util.Log;
+
 import com.p2p.core.P2PValue;
+import com.smart.cloud.fire.utils.Utils;
 import com.smart.cloud.fire.utils.WifiUtils;
 
 import java.io.Serializable;
 import java.net.InetAddress;
 
 
-public class Contact implements Serializable, Comparable {
 
+
+public class Contact implements Serializable, Comparable {
     // id
     public int id;
     // 联系人名称
@@ -40,7 +44,7 @@ public class Contact implements Serializable, Comparable {
     // 用户输入的密码
     public String userPassword="";
     //是否设备有更新
-    public int Update= ConstantValues.P2P_SET.DEVICE_UPDATE.UNKNOWN;
+    public int Update=ConstantValues.P2P_SET.DEVICE_UPDATE.UNKNOWN;
     //当前版本
     public String cur_version="";
     //可更新到的版本
@@ -51,8 +55,10 @@ public class Contact implements Serializable, Comparable {
     public String wifiPassword="12345678";
     //AP模式下的wifi密码
     public int mode= P2PValue.DeviceMode.GERNERY_MODE;
-    public int apModeState= ConstantValues.APmodeState.UNLINK;
+    public int apModeState=ConstantValues.APmodeState.UNLINK;
     public boolean isConnectApWifi=false;
+    public int subType=0;
+    public int FishMode=-1;
     @Override
     public int compareTo(Object arg0) {
         // TODO Auto-generated method stub
@@ -90,14 +96,14 @@ public class Contact implements Serializable, Comparable {
     }
 
     public int getApModeState(){
-        if(contactType== P2PValue.DeviceType.IPC&&mode== P2PValue.DeviceMode.AP_MODE){
+        if(contactType==P2PValue.DeviceType.IPC&&mode==P2PValue.DeviceMode.AP_MODE){
             String wifiName= AppConfig.Relese.APTAG+contactId;
             if(WifiUtils.getInstance().isConnectWifi(AppConfig.Relese.APTAG+contactId)){
-                apModeState= ConstantValues.APmodeState.LINK;
+                apModeState=ConstantValues.APmodeState.LINK;
             }else{
                 if(WifiUtils.getInstance().isScanExist(wifiName)){
                     //处于AP模式
-                    apModeState= ConstantValues.APmodeState.UNLINK;
+                    apModeState=ConstantValues.APmodeState.UNLINK;
                 }else{
                     return apModeState;
                 }
@@ -121,7 +127,10 @@ public class Contact implements Serializable, Comparable {
         }
     }
 
-    public int onLineStatues;//0离线，1在线
-}
 
+    public boolean isSmartHomeContatct(){
+        Log.e("leleContact", "contactId="+contactId+"--"+"subType="+subType);
+        return Utils.isSmartHomeContatct(contactType, subType);
+    }
+}
 

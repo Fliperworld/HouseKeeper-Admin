@@ -8,9 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.MonthDisplayHelper;
 import android.view.MotionEvent;
-
 
 import com.p2p.core.global.Constants;
 import com.p2p.core.utils.MyUtils;
@@ -30,6 +28,7 @@ public abstract class BaseMonitorActivity extends BaseCoreActivity {
 	boolean isBaseRegFilter = false;
 	public boolean isFullScreen = false;
 	public boolean isLand = true;// 是否全屏
+	public boolean isHalfScreen=true;
 	private int PrePoint=-1;
 	public static String contactId;
 	public static String password;
@@ -69,7 +68,7 @@ public abstract class BaseMonitorActivity extends BaseCoreActivity {
 	}
 
 	public void initScaleView(Activity activity, int windowWidth,
-			int windowHeight) {
+							  int windowHeight) {
 		pView.setmActivity(activity);
 		pView.setScreen_W(windowHeight);
 		pView.setScreen_H(windowWidth);
@@ -95,7 +94,9 @@ public abstract class BaseMonitorActivity extends BaseCoreActivity {
 	public void setIsLand(boolean isLan) {
 		this.isLand = isLan;
 	}
-
+	public void setHalfScreen(boolean isHalfScreen){
+		this.isHalfScreen=isHalfScreen;
+	}
 	private BroadcastReceiver baseReceiver = new BroadcastReceiver() {
 
 		@Override
@@ -135,7 +136,7 @@ public abstract class BaseMonitorActivity extends BaseCoreActivity {
 
 		@Override
 		public boolean onDoubleTap(MotionEvent e) {
-			if (isLand) {
+			if (isLand&&!isHalfScreen) {
 				if (!isFullScreen) {
 					isFullScreen = true;
 					pView.fullScreen();
@@ -147,11 +148,11 @@ public abstract class BaseMonitorActivity extends BaseCoreActivity {
 
 			return super.onDoubleTap(e);
 		}
-		
+
 
 		@Override
 		public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-				float velocityY) {
+							   float velocityY) {
 			int id = -1;
 			float distance = 0;
 			boolean ishorizontal = false;
@@ -183,7 +184,7 @@ public abstract class BaseMonitorActivity extends BaseCoreActivity {
 			}
 
 			if (id != -1) {
-				MediaPlayer.getInstance().native_p2p_control(id);		
+				MediaPlayer.getInstance().native_p2p_control(id);
 //				if(id==USR_CMD_OPTION_PTZ_TURN_UP){
 //					P2PHandler.getInstance().controlCamera(contactId, password,MyUtils.btop);
 //				}else if(id==USR_CMD_OPTION_PTZ_TURN_DOWN){
@@ -237,7 +238,7 @@ public abstract class BaseMonitorActivity extends BaseCoreActivity {
 			isBaseRegFilter = false;
 		}
 	}
- 
+
 	protected abstract void onP2PViewSingleTap();
 	protected abstract void onCaptureScreenResult(boolean isSuccess,int prePoint);
 }

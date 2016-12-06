@@ -1,25 +1,27 @@
 package com.smart.cloud.fire.yoosee;
 
-/**
- * Created by Administrator on 2016/8/4.
- */
-
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 import com.p2p.core.P2PInterface.ISetting;
+import com.p2p.core.P2PValue;
+import com.smart.cloud.fire.data.AlarmRecord;
+import com.smart.cloud.fire.data.Message;
 import com.smart.cloud.fire.global.ConstantValues;
+import com.smart.cloud.fire.global.Contact;
 import com.smart.cloud.fire.global.MyApp;
-import com.smart.cloud.fire.utils.SerializableMap;
+import com.smart.cloud.fire.global.NpcCommon;
+import com.smart.cloud.fire.utils.MusicManger;
+import com.smart.cloud.fire.utils.SharedPreferencesManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SettingListener implements ISetting {
     String TAG = "SDK";
-    String TAG1 = "SDKfangqu";
     private static boolean isAlarming = false;
     private static String MonitorDeviceID = "";
 
@@ -35,7 +37,7 @@ public class SettingListener implements ISetting {
      * 检查密码 开始
      */
     @Override
-    public void ACK_vRetCheckDevicePassword(int msgId, int result) {
+    public void ACK_vRetCheckDevicePassword(int msgId, int result,String deviceId) {
         // TODO Auto-generated method stub
         Log.e(TAG, "ACK_vRetCheckDevicePassword:" + result);
         // if(result==ConstantValues.P2P_SET.ACK_RESULT.ACK_INSUFFICIENT_PERMISSIONS){
@@ -44,7 +46,8 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_CHECK_PASSWORD);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+        i.putExtra("deviceId", deviceId);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -61,10 +64,41 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_GET_NPC_SETTINGS);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
-	
+    @Override
+    public void ACK_vRetGetDefenceStates(String contactId, int msgId, int result) {
+        // TODO Auto-generated method stub
+        Log.e(TAG, "ACK_vRetGetDefenceStates:" + result);
+        Log.e("defence", "contactId=" + contactId + "result=" + result);
+        if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_NET_ERROR) {
+//			FList.getInstance().setDefenceState(contactId,
+//					ConstantValues.DefenceState.DEFENCE_STATE_WARNING_NET);
+            Intent i = new Intent();
+            i.putExtra("state", ConstantValues.DefenceState.DEFENCE_STATE_WARNING_NET);
+            i.putExtra("contactId", contactId);
+            i.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
+             MyApp.app.sendBroadcast(i);
+        } else if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_PWD_ERROR) {
+//			FList.getInstance().setDefenceState(contactId,
+//					ConstantValues.DefenceState.DEFENCE_STATE_WARNING_PWD);
+            Intent i = new Intent();
+            i.putExtra("state",
+                    ConstantValues.DefenceState.DEFENCE_STATE_WARNING_PWD);
+            i.putExtra("contactId", contactId);
+            i.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
+             MyApp.app.sendBroadcast(i);
+        } else if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_INSUFFICIENT_PERMISSIONS) {
+//			FList.getInstance().setDefenceState(contactId,
+//					ConstantValues.DefenceState.DEFENCE_NO_PERMISSION);
+        }
+        Intent ack_Defence = new Intent();
+        ack_Defence.setAction(ConstantValues.P2P.ACK_GET_REMOTE_DEFENCE);
+        ack_Defence.putExtra("contactId", contactId);
+        ack_Defence.putExtra("result", result);
+         MyApp.app.sendBroadcast(ack_Defence);
+    }
 
 	/*
 	 * 获取设备各种设置回调 结束
@@ -82,7 +116,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_TIME);
         i.putExtra("time", time);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -92,7 +126,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.RET_SET_TIME);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -102,7 +136,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_TIME);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -112,7 +146,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_GET_TIME);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -130,7 +164,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_VIDEO_FORMAT);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -140,7 +174,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_VIDEO_FORMAT);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -150,7 +184,7 @@ public class SettingListener implements ISetting {
         Intent format_type = new Intent();
         format_type.setAction(ConstantValues.P2P.RET_GET_VIDEO_FORMAT);
         format_type.putExtra("type", type);
-        MyApp.app.sendBroadcast(format_type);
+         MyApp.app.sendBroadcast(format_type);
     }
 
 	/*
@@ -168,7 +202,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_VIDEO_VOLUME);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -178,7 +212,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_VIDEO_VOLUME);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -188,7 +222,7 @@ public class SettingListener implements ISetting {
         Intent volume = new Intent();
         volume.setAction(ConstantValues.P2P.RET_GET_VIDEO_VOLUME);
         volume.putExtra("value", value);
-        MyApp.app.sendBroadcast(volume);
+         MyApp.app.sendBroadcast(volume);
     }
 
 	/*
@@ -206,7 +240,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_DEVICE_PASSWORD);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -216,7 +250,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_DEVICE_PASSWORD);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -235,7 +269,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_NET_TYPE);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -245,7 +279,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_NET_TYPE);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -255,7 +289,7 @@ public class SettingListener implements ISetting {
         Intent net_type = new Intent();
         net_type.setAction(ConstantValues.P2P.RET_GET_NET_TYPE);
         net_type.putExtra("type", type);
-        MyApp.app.sendBroadcast(net_type);
+         MyApp.app.sendBroadcast(net_type);
     }
 
 	/*
@@ -274,7 +308,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_WIFI);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -284,7 +318,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_GET_WIFI);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -300,12 +334,12 @@ public class SettingListener implements ISetting {
             i.putExtra("iType", types);
             i.putExtra("iStrength", strengths);
             i.putExtra("names", names);
-            MyApp.app.sendBroadcast(i);
+             MyApp.app.sendBroadcast(i);
         } else {
             Intent i = new Intent();
             i.putExtra("result", result);
             i.setAction(ConstantValues.P2P.RET_SET_WIFI);
-            MyApp.app.sendBroadcast(i);
+             MyApp.app.sendBroadcast(i);
         }
     }
 
@@ -323,24 +357,22 @@ public class SettingListener implements ISetting {
     public void ACK_vRetSetAlarmBindId(int srcID, int result) {
         // TODO Auto-generated method stub
         Log.e(TAG, "ACK_vRetSetAlarmBindId:" + result);
-        System.out.println("result1="+result);
         Intent i = new Intent();
         i.putExtra("result", result);
         i.putExtra("srcID", String.valueOf(srcID));
         i.setAction(ConstantValues.P2P.ACK_RET_SET_BIND_ALARM_ID);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
     public void ACK_vRetGetAlarmBindId(int srcID, int result) {
         // TODO Auto-generated method stub
         Log.e(TAG, "ACK_vRetGetAlarmBindId:" + result);
-        System.out.println("result2="+result);
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_GET_BIND_ALARM_ID);
         i.putExtra("srcID", String.valueOf(srcID));
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -348,21 +380,20 @@ public class SettingListener implements ISetting {
                                       String[] data) {
         // TODO Auto-generated method stub
         Log.e(TAG, "vRetBindAlarmIdResult:" + result);
-        System.out.println("result3="+result);
         if (result == 1) {
             Intent alarmId = new Intent();
             alarmId.setAction(ConstantValues.P2P.RET_GET_BIND_ALARM_ID);
             alarmId.putExtra("data", data);
             alarmId.putExtra("max_count", maxCount);
             alarmId.putExtra("srcID", String.valueOf(srcID));
-            MyApp.app.sendBroadcast(alarmId);
+             MyApp.app.sendBroadcast(alarmId);
         } else {
             Intent i = new Intent();
             i.putExtra("result", result);
             i.setAction(ConstantValues.P2P.RET_SET_BIND_ALARM_ID);
             i.putExtra("max_count", maxCount);
             i.putExtra("srcID", String.valueOf(srcID));
-            MyApp.app.sendBroadcast(i);
+             MyApp.app.sendBroadcast(i);
         }
     }
 
@@ -382,7 +413,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_ALARM_EMAIL);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -392,7 +423,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_GET_ALARM_EMAIL);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -407,12 +438,12 @@ public class SettingListener implements ISetting {
             i.setAction(ConstantValues.P2P.RET_GET_ALARM_EMAIL);
             i.putExtra("email", email);
             i.putExtra("result", result);
-            MyApp.app.sendBroadcast(i);
+             MyApp.app.sendBroadcast(i);
         } else {
             // Intent i = new Intent();
             // i.putExtra("result", result);
             // i.setAction(ConstantValues.P2P.RET_SET_ALARM_EMAIL);
-            // MyApp.app.sendBroadcast(i);
+            //  MyApp.app.sendBroadcast(i);
         }
     }
 
@@ -433,7 +464,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_MOTION);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -443,7 +474,7 @@ public class SettingListener implements ISetting {
         Intent motion = new Intent();
         motion.setAction(ConstantValues.P2P.RET_GET_MOTION);
         motion.putExtra("motionState", state);
-        MyApp.app.sendBroadcast(motion);
+         MyApp.app.sendBroadcast(motion);
     }
 
     @Override
@@ -453,7 +484,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_MOTION);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -472,7 +503,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_BUZZER);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -482,7 +513,7 @@ public class SettingListener implements ISetting {
         Intent buzzer = new Intent();
         buzzer.setAction(ConstantValues.P2P.RET_GET_BUZZER);
         buzzer.putExtra("buzzerState", state);
-        MyApp.app.sendBroadcast(buzzer);
+         MyApp.app.sendBroadcast(buzzer);
     }
 
     @Override
@@ -492,7 +523,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_BUZZER);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -511,7 +542,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_RECORD_TYPE);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -521,7 +552,7 @@ public class SettingListener implements ISetting {
         Intent record_type = new Intent();
         record_type.setAction(ConstantValues.P2P.RET_GET_RECORD_TYPE);
         record_type.putExtra("type", type);
-        MyApp.app.sendBroadcast(record_type);
+         MyApp.app.sendBroadcast(record_type);
     }
 
     @Override
@@ -531,7 +562,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_RECORD_TYPE);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -551,7 +582,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_RECORD_TIME);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -561,7 +592,7 @@ public class SettingListener implements ISetting {
         Intent record_time = new Intent();
         record_time.setAction(ConstantValues.P2P.RET_GET_RECORD_TIME);
         record_time.putExtra("time", time);
-        MyApp.app.sendBroadcast(record_time);
+         MyApp.app.sendBroadcast(record_time);
     }
 
     @Override
@@ -571,7 +602,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_RECORD_TIME);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -590,7 +621,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_RECORD_PLAN_TIME);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -600,7 +631,7 @@ public class SettingListener implements ISetting {
         Intent plan_time = new Intent();
         plan_time.setAction(ConstantValues.P2P.RET_GET_RECORD_PLAN_TIME);
         plan_time.putExtra("time", time);
-        MyApp.app.sendBroadcast(plan_time);
+         MyApp.app.sendBroadcast(plan_time);
     }
 
     @Override
@@ -610,7 +641,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_RECORD_PLAN_TIME);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -625,60 +656,60 @@ public class SettingListener implements ISetting {
     @Override
     public void ACK_vRetSetDefenceArea(int msgId, int result) {
         // TODO Auto-generated method stub
-        Log.e(TAG1, "ACK_vRetSetDefenceArea:" + result);
+        Log.e(TAG, "ACK_vRetSetDefenceArea:" + result);
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_SET_DEFENCE_AREA);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
     public void ACK_vRetClearDefenceAreaState(int msgId, int result) {
         // TODO Auto-generated method stub
-        Log.e(TAG1, "ACK_vRetClearDefenceAreaState:" + result);
+        Log.e(TAG, "ACK_vRetClearDefenceAreaState:" + result);
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_CLEAR_DEFENCE_AREA);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
     public void vRetClearDefenceAreaState(int result) {
         // TODO Auto-generated method stub
-        Log.e(TAG1, "vRetClearDefenceAreaState:" + result);
+        Log.e(TAG, "vRetClearDefenceAreaState:" + result);
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.RET_CLEAR_DEFENCE_AREA);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
     public void ACK_vRetGetDefenceArea(int msgId, int result) {
         // TODO Auto-generated method stub
-        Log.e(TAG1, "ACK_vRetGetDefenceArea:" + result);
+        Log.e(TAG, "ACK_vRetGetDefenceArea:" + result);
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_GET_DEFENCE_AREA);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
     public void vRetDefenceAreaResult(int result, ArrayList<int[]> data,
                                       int group, int item) {
         // TODO Auto-generated method stub
-        Log.e(TAG1, "vRetDefenceAreaResult:" + result);
+        Log.e(TAG, "vRetDefenceAreaResult:" + result);
         if (result == 1) {
             Intent i = new Intent();
             i.setAction(ConstantValues.P2P.RET_GET_DEFENCE_AREA);
             i.putExtra("data", data);
-            MyApp.app.sendBroadcast(i);
+             MyApp.app.sendBroadcast(i);
         } else {
             Intent i = new Intent();
             i.putExtra("result", result);
             i.setAction(ConstantValues.P2P.RET_SET_DEFENCE_AREA);
             i.putExtra("group", group);
             i.putExtra("item", item);
-            MyApp.app.sendBroadcast(i);
+             MyApp.app.sendBroadcast(i);
         }
     }
 
@@ -687,7 +718,54 @@ public class SettingListener implements ISetting {
 	 * ****************************************************************
 	 */
 
+    /*
+     * 远程设置相关 开始
+     * ****************************************************************
+     */
+    @Override
+    public void ACK_vRetSetRemoteDefence(String contactId, int msgId, int result) {
+        // TODO Auto-generated method stub
+        Log.e(TAG, "ACK_vRetSetRemoteDefence:" + result);
+        Log.e("remote_defence", "ACK_vRetSetRemoteDefence--" + "contactId="
+                + contactId + "---" + "result=" + result);
+//		Intent i = new Intent();
+//		i.putExtra("state",
+//				ConstantValues.DefenceState.DEFENCE_STATE_WARNING_NET);
+//		i.putExtra("contactId", contactId);
+//		i.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
+//		 MyApp.app.sendBroadcast(i);
+//		if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_SUCCESS) {
+//			Contact contact = FList.getInstance().isContact(contactId);
+//			if (null != contact) {
+//				P2PHandler.getInstance().getNpcSettings(contact.contactId,
+//						contact.contactPassword);
+//			}
+//
+//		} else if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_NET_ERROR) {
+//			FList.getInstance().setDefenceState(contactId,
+//					ConstantValues.DefenceState.DEFENCE_STATE_WARNING_NET);
+//			Intent i = new Intent();
+//			i.putExtra("state",
+//					ConstantValues.DefenceState.DEFENCE_STATE_WARNING_NET);
+//			i.putExtra("contactId", contactId);
+//			i.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
+//			 MyApp.app.sendBroadcast(i);
+//
+//		} else if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_PWD_ERROR) {
+//			FList.getInstance().setDefenceState(contactId,
+//					ConstantValues.DefenceState.DEFENCE_STATE_WARNING_PWD);
+//			Intent i = new Intent();
+//			i.putExtra("state",
+//					ConstantValues.DefenceState.DEFENCE_STATE_WARNING_PWD);
+//			i.putExtra("contactId", contactId);
+//			i.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
+//			 MyApp.app.sendBroadcast(i);
+//		} else if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_INSUFFICIENT_PERMISSIONS) {
+//			FList.getInstance().setDefenceState(contactId,
+//					ConstantValues.DefenceState.DEFENCE_NO_PERMISSION);
+//		}
 
+    }
 
     @Override
     public void ACK_vRetSetRemoteRecord(int msgId, int result) {
@@ -696,10 +774,30 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.RET_SET_REMOTE_RECORD);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
+    @Override
+    public void vRetGetRemoteDefenceResult(String contactId, int state) {
+        // TODO Auto-generated method stub
+        Log.e(TAG, "vRetGetRemoteDefenceResult:" + state);
+        Log.e("dxsdefence", "contactId=" + contactId);
+//		try{
+//			FList f = FList.getInstance();
+//			if (state == ConstantValues.P2P_SET.REMOTE_DEFENCE_SET.ALARM_SWITCH_ON) {
+//				f.setDefenceState(contactId, ConstantValues.DefenceState.DEFENCE_STATE_ON);
+//			} else {
+//				FList.getInstance().setDefenceState(contactId, ConstantValues.DefenceState.DEFENCE_STATE_OFF);
+//			}
+//		}catch (Exception e){
+//		}
 
+        Intent defence = new Intent();
+        defence.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
+        defence.putExtra("state", state);
+        defence.putExtra("contactId", contactId);
+         MyApp.app.sendBroadcast(defence);
+    }
 
     @Override
     public void vRetGetRemoteRecordResult(int state) {
@@ -708,9 +806,19 @@ public class SettingListener implements ISetting {
         Intent record = new Intent();
         record.setAction(ConstantValues.P2P.RET_GET_REMOTE_RECORD);
         record.putExtra("state", state);
-        MyApp.app.sendBroadcast(record);
+         MyApp.app.sendBroadcast(record);
     }
 
+    @Override
+    public void vRetSetRemoteDefenceResult(String contactId, int result) {
+        // TODO Auto-generated method stub
+        Log.e(TAG, "vRetSetRemoteDefenceResult:" + result);
+        Intent defence = new Intent();
+        defence.setAction(ConstantValues.P2P.RET_SET_REMOTE_DEFENCE);
+        defence.putExtra("state", result);
+        defence.putExtra("contactId", contactId);
+         MyApp.app.sendBroadcast(defence);
+    }
 
     @Override
     public void vRetSetRemoteRecordResult(int result) {
@@ -719,7 +827,7 @@ public class SettingListener implements ISetting {
         Intent record = new Intent();
         record.setAction(ConstantValues.P2P.RET_SET_REMOTE_RECORD);
         record.putExtra("state", result);
-        MyApp.app.sendBroadcast(record);
+         MyApp.app.sendBroadcast(record);
     }
 
 	/*
@@ -738,7 +846,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_INIT_PASSWORD);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -749,7 +857,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_INIT_PASSWORD);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -768,7 +876,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_GET_DEVICE_INFO);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -783,7 +891,7 @@ public class SettingListener implements ISetting {
         i.putExtra("iKernelVersion", iKernelVersion);
         i.putExtra("iRootfsVersion", iRootfsVersion);
         i.setAction(ConstantValues.P2P.RET_GET_DEVICE_INFO);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -793,7 +901,22 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_CHECK_DEVICE_UPDATE);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
+    }
+
+    @Override
+    public void vRetCheckDeviceUpdate(String contactId, int result,
+                                      String cur_version, String upg_version) {
+        Log.e("vRetCheckDeviceUpdate", "vRetCheckDeviceUpdate:" + result
+                + "cur_version-->" + cur_version + "upg_version-->"
+                + upg_version);
+        Intent i = new Intent();
+        i.putExtra("result", result);
+        i.putExtra("cur_version", cur_version);
+        i.putExtra("upg_version", upg_version);
+        i.putExtra("contactId", contactId);
+        i.setAction(ConstantValues.P2P.RET_CHECK_DEVICE_UPDATE);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -803,7 +926,19 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_DO_DEVICE_UPDATE);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
+    }
+
+    @Override
+    public void vRetDoDeviceUpdate(String contactId, int result, int value) {
+        // TODO Auto-generated method stub
+        Log.e(TAG, "vRetDoDeviceUpdate:" + result);
+        Intent i = new Intent();
+        i.putExtra("result", result);
+        i.putExtra("value", value);
+        i.putExtra("contactId", contactId);
+        i.setAction(ConstantValues.P2P.RET_DO_DEVICE_UPDATE);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -813,7 +948,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_CANCEL_DEVICE_UPDATE);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -823,7 +958,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.RET_CHECK_DEVICE_UPDATE);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
 	/*
@@ -838,7 +973,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("result", result);
         i.setAction(ConstantValues.P2P.ACK_RET_GET_PLAYBACK_FILES);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -848,10 +983,66 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_PLAYBACK_FILES);
         i.putExtra("recordList", names);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
+    //原版
+//	@Override
+//	public void vRetGetFriendStatus(int count, String[] contactIDs,
+//			int[] status, int[] types) {
+//		Log.e(TAG, "vRetGetFriendStatus:" + count);
+//		FList flist = FList.getInstance();
+//		for (int i = 0; i < count; i++) {
+//			flist.setState(contactIDs[i], status[i]);
+//			Log.e("friends", "contactID=" + contactIDs[i] + "--" + "status="
+//					+ status[i]);
+//			if (contactIDs[i].length() > 0 && contactIDs[i].charAt(0) == '0') {
+//				flist.setType(contactIDs[i], P2PValue.DeviceType.PHONE);
+//			} else {
+//				if (status[i] == ConstantValues.DeviceState.ONLINE) {
+//					Log.e("friends", "contactID=" + contactIDs[i] + "--"
+//							+ "type=" + types[i]);
+//					flist.setType(contactIDs[i], types[i]);
+//				}
+//			}
+//		}
+//		// TODO Auto-generated method stub
+//		FList.getInstance().sort();
+//		FList.getInstance().getDefenceState();
+//		Log.e("leleWorkMode", "get work mode");
+//		Intent friends = new Intent();
+//		friends.setAction(ConstantValues.Action.GET_FRIENDS_STATE);
+//		 MyApp.app.sendBroadcast(friends);
+//
+//		Intent i = new Intent();
+//		i.setAction(ConstantValues.Action.GET_DEVICE_TYPE);
+//		i.putExtra("contactIDs", contactIDs);
+//		i.putExtra("types", types);
+//		 MyApp.app.sendBroadcast(i);
+//	}
 
+    @Override
+    public void vRetGetFriendStatus(int count, String[] contactIDs,
+                                    int[] status, int[] types) {
+        Map<String,Contact> contactMap = new HashMap<>();
+        for (int i = 0; i < count; i++) {
+            Contact contact = new Contact();
+            contact.contactId= contactIDs[i];
+            contact.onLineState = status[i];
+            if (contactIDs[i].length() > 0 && contactIDs[i].charAt(0) == '0') {
+                contact.contactType = P2PValue.DeviceType.PHONE;
+            } else {
+                if (status[i] == ConstantValues.DeviceState.ONLINE) {
+                    contact.contactType = types[i];
+                }
+            }
+            contactMap.put(contactIDs[i],contact);
+        }
+        Intent friends = new Intent();
+        friends.putExtra("contact", (Serializable) contactMap);
+        friends.setAction(ConstantValues.Action.GET_FRIENDS_STATE);
+         MyApp.app.sendBroadcast(friends);
+    }
 
     @Override
     public void ACK_vRetMessage(int msgId, int result) {
@@ -860,10 +1051,110 @@ public class SettingListener implements ISetting {
         i.setAction(ConstantValues.Action.RECEIVE_MSG);
         i.putExtra("msgFlag", msgId + "");
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
+    @Override
+    public void vRetMessage(String contactId, String msgStr) {
+        // TODO Auto-generated method stub
+        Message msg = new Message();
+        msg.activeUser = NpcCommon.mThreeNum;
+        msg.fromId = contactId;
+        msg.toId = NpcCommon.mThreeNum;
+        msg.msg = msgStr;
+        msg.msgTime = String.valueOf(System.currentTimeMillis());
+        msg.msgFlag = String.valueOf(-1);
+        msg.msgState = String.valueOf(ConstantValues.MessageType.READED);
+        // FList.getInstance().update(contact);
+        Intent k = new Intent();
+        k.setAction(ConstantValues.Action.REFRESH_CONTANTS);
+         MyApp.app.sendBroadcast(k);
+        MusicManger.getInstance().playMsgMusic();
+    }
 
+    @Override
+    public void vRetSysMessage(String msg) {
+        // TODO Auto-generated method stub
+//		SysMessage sysMessage = new SysMessage();
+//		sysMessage.activeUser = NpcCommon.mThreeNum;
+//		sysMessage.msg = msg;
+//		sysMessage.msg_time = String.valueOf(System.currentTimeMillis());
+//		sysMessage.msgState = SysMessage.MESSAGE_STATE_NO_READ;
+//		sysMessage.msgType = SysMessage.MESSAGE_TYPE_ADMIN;
+//		DataManager.insertSysMessage( MyApp.app, sysMessage);
+//		Intent i = new Intent();
+//		i.setAction(SysMsgActivity.REFRESH);
+//		 MyApp.app.sendBroadcast(i);
+//		Intent k = new Intent();
+//		k.setAction(ConstantValues.Action.RECEIVE_SYS_MSG);
+//		 MyApp.app.sendBroadcast(k);
+    }
+
+    @Override
+    public void vRetCustomCmd(int contactId, int len, byte[] cmd) {
+
+        // TODO Auto-generated method stub
+        if (len < 11 || cmd.length < 11) {
+            return;
+        }
+        String id = String.valueOf(contactId);
+        String v_call = String.valueOf(cmd).substring(0, 11);
+
+        if (cmd.equals("anerfa:disconnect")) {
+            Intent i = new Intent();
+            i.setAction(ConstantValues.P2P.RET_CUSTOM_CMD_DISCONNECT);
+            i.putExtra("contactId", contactId);
+             MyApp.app.sendBroadcast(i);
+            return;
+        }
+        AlarmRecord alarmRecord = new AlarmRecord();
+        alarmRecord.alarmTime = String.valueOf(System.currentTimeMillis());
+        alarmRecord.deviceId = id;
+        alarmRecord.alarmType = 13;
+        alarmRecord.activeUser = NpcCommon.mThreeNum;
+        alarmRecord.group = -1;
+        alarmRecord.item = -1;
+        Intent i = new Intent();
+        i.setAction(ConstantValues.Action.REFRESH_ALARM_RECORD);
+        P2PConnect.mContext.sendBroadcast(i);
+        long time = SharedPreferencesManager.getInstance().getIgnoreAlarmTime(
+                 MyApp.app);
+        int time_interval = SharedPreferencesManager.getInstance()
+                .getAlarmTimeInterval( MyApp.app);
+        if ((System.currentTimeMillis() - time) < (1000 * time_interval)) {
+            return;
+        }
+        if (v_call.equals("anerfa:call")) {
+            if (MonitorDeviceID.equals("")) {// 没在监控
+                Log.i("dxsalarmmessage", "没在监控" + id + "MonitorDeviceID-->"
+                        + MonitorDeviceID);
+                if (!isAlarming) {
+//					Intent it = new Intent();
+//					it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//					it.setClass(P2PConnect.mContext, DoorBellNewActivity.class);
+//					it.putExtra("contactId", id);
+//					it.putExtra("CustomCmdDoorAlarm", true);
+//					P2PConnect.mContext.startActivity(it);
+//					Log.e("cus_cmd", "-----");
+                }
+            } else if (MonitorDeviceID.equals(id)) {// 正在监控此设备
+                Log.i("dxsalarmmessage", "正在监控此设备" + id + "MonitorDeviceID-->"
+                        + MonitorDeviceID);
+                // 不推送
+            } else {// 正在监控但不是此设备
+                // 监控页面弹窗
+                Log.i("dxsalarmmessage", "正在监控但不是此设备" + id
+                        + "MonitorDeviceID-->" + MonitorDeviceID);
+                Intent k = new Intent();
+                k.setAction(ConstantValues.Action.MONITOR_NEWDEVICEALARMING);
+                k.putExtra("messagetype", 2);// 1是报警，2是透传门铃
+                k.putExtra("contactId", id);
+                k.putExtra("CustomCmdDoorAlarm", true);
+                 MyApp.app.sendBroadcast(k);
+            }
+        }
+
+    }
 
     @Override
     public void ACK_vRetCustomCmd(int msgId, int result) {
@@ -876,7 +1167,8 @@ public class SettingListener implements ISetting {
         // TODO Auto-generated method stub
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_DEVICE_NOT_SUPPORT);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
+        Log.e("leleSupport", "NotSupport");
     }
 
     @Override
@@ -885,7 +1177,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_VRET_SET_IMAGEREVERSE);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -898,7 +1190,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_IMAGE_REVERSE);
         i.putExtra("type", type);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -906,7 +1198,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_INFRARED_SWITCH);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -915,7 +1207,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_INFRARED_SWITCH);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -929,7 +1221,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_WIRED_ALARM_INPUT);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -938,7 +1230,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_WIRED_ALARM_OUT);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -946,7 +1238,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_AUTOMATIC_UPGRADE);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -955,7 +1247,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_WIRED_ALARM_INPUT);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -964,7 +1256,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_WIRED_ALARM_OUT);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -973,7 +1265,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_AUTOMATIC_UPGRAD);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -997,11 +1289,11 @@ public class SettingListener implements ISetting {
 
     @Override
     public void ACK_VRetSetVisitorDevicePassword(int msgId, int state) {
-        Log.i("dxssetting", "state-->"+state);
+        Log.i("dxssetting", "state-->" + state);
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_VISITOR_DEVICE_PASSWORD);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -1010,7 +1302,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_VISITOR_DEVICE_PASSWORD);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -1019,7 +1311,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_TIME_ZONE);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -1028,7 +1320,8 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_TIME_ZONE);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
+
 
     }
 
@@ -1046,7 +1339,7 @@ public class SettingListener implements ISetting {
         i.putExtra("remain_capacity", result2);
         i.putExtra("SDcardID", SDcardID);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
         Log.e("sdid", SDcardID + "");
     }
 
@@ -1056,7 +1349,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_GET_SD_CARD_CAPACITY);
         i.putExtra("result", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1065,7 +1358,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_GET_SD_CARD_FORMAT);
         i.putExtra("result", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1073,7 +1366,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_SD_CARD_FORMAT);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1085,19 +1378,33 @@ public class SettingListener implements ISetting {
         i.putExtra("remain_capacity", result2);
         i.putExtra("SDcardID", SDcardID);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
     public void ACK_vRetSetGPIO(int msgId, int state) {
-        // TODO Auto-generated method stub
+        Intent i=new Intent();
+        i.setAction(ConstantValues.P2P.ACK_RET_SET_GPIO);
+        i.putExtra("result", state);
+         MyApp.app.sendBroadcast(i);
 
     }
 
     @Override
     public void ACK_vRetSetGPIO1_0(int msgId, int state) {
-        // TODO Auto-generated method stub
+        Intent i=new Intent();
+        i.setAction(ConstantValues.P2P.ACK_RET_SET_GPIO1_0);
+        i.putExtra("result", state);
+         MyApp.app.sendBroadcast(i);
 
+    }
+    @Override
+    public void vRetSetGPIO(int result) {
+        // TODO Auto-generated method stub
+        Intent i = new Intent();
+        i.setAction(ConstantValues.P2P.RET_SET_GPIO);
+        i.putExtra("result", result);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1106,17 +1413,10 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_AUDIO_DEVICE_TYPE);
         i.putExtra("type", type);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
-    @Override
-    public void vRetSetGPIO(int result) {
-        // TODO Auto-generated method stub
-        Intent i = new Intent();
-        i.setAction(ConstantValues.P2P.RET_SET_GPIO);
-        i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
-    }
+
 
     @Override
     public void ACK_vRetSetPreRecord(int msgId, int state) {
@@ -1124,7 +1424,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_PRE_RECORD);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1133,7 +1433,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_GET_PRE_RECORD);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1142,7 +1442,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_PRE_RECORD);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1151,7 +1451,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_GET_SENSOR_SWITCH);
         i.putExtra("result", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1160,7 +1460,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_RET_SET_SENSOR_SWITCH);
         i.putExtra("result", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1170,7 +1470,7 @@ public class SettingListener implements ISetting {
         i.setAction(ConstantValues.P2P.RET_GET_SENSOR_SWITCH);
         i.putExtra("result", result);
         i.putExtra("data", data);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1179,7 +1479,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.RET_SET_SENSOR_SWITCH);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1187,7 +1487,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.SET_LAMP_STATUS);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -1196,7 +1496,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.ACK_SET_LAMP_STATUS);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -1205,8 +1505,52 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.GET_LAMP_STATUS);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
+    }
+
+    @Override
+    public void vRetAlarmEmailResultWithSMTP(int result, String email,
+                                             int smtpport, byte Entry, String[] SmptMessage, byte reserve1) {
+        if ((result & (1 << 0)) == 1) {
+            Intent i = new Intent();
+            i.setAction(ConstantValues.P2P.RET_GET_ALARM_EMAIL_WITHSMTP);
+            i.putExtra("contectid", SmptMessage[5]);
+            i.putExtra("result", result);
+            i.putExtra("email", email);
+            i.putExtra("smtpport", smtpport);
+            i.putExtra("SmptMessage", SmptMessage);
+            i.putExtra("encrypt", (int) Entry);
+            i.putExtra("isSupport", (int) reserve1);
+             MyApp.app.sendBroadcast(i);
+        } else {
+            Intent i = new Intent();
+            i.putExtra("result", result);
+            i.setAction(ConstantValues.P2P.RET_SET_ALARM_EMAIL);
+             MyApp.app.sendBroadcast(i);
+        }
+
+    }
+
+    @Override
+    public void vRetPresetMotorPos(byte[] result) {
+        Log.e("dxsprepoint", Arrays.toString(result));
+        Intent i = new Intent();
+        i.setAction(ConstantValues.P2P.RET_TOSEE_PRESETMOTOROS);
+        int resultCode = result[1];
+//        if(result[2] == 0){
+//            i.setAction(ConstantValues.P2P.RET_TOSEE_PRESETMOTOROS);
+//        }else if (result[2] == 1) {//设置预置位返回
+//            i.setAction(ConstantValues.P2P.RET_SET_PRESETMOTOROS);
+//        } else if (result[2] == 2) {//查询所有预置位返回
+//            i.setAction(ConstantValues.P2P.RET_GET_PRESETMOTOROS);
+//        } else if (result[2] == 3) {//删除预置位返回
+//            i.setAction(ConstantValues.P2P.RET_DELETE_PRESETMOTOROS);
+//        } else if (result[2] == 4) {//是否在预置位返回
+//            i.setAction(ConstantValues.P2P.RET_GET_IS_PRESETMOTOROS);
+//        }
+        i.putExtra("result", resultCode);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1221,14 +1565,13 @@ public class SettingListener implements ISetting {
 
     }
 
-    //查看/设置防区通道预置位
     @Override
     public void vRetAlarmPresetMotorPos(byte[] result) {
         // TODO Auto-generated method stub
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.MESG_TYPE_RET_ALARM_TYPE_MOTOR_PRESET_POS);
         i.putExtra("result", result);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -1245,7 +1588,7 @@ public class SettingListener implements ISetting {
         Intent i = new Intent();
         i.putExtra("visitorpwd", pwd);
         i.setAction(ConstantValues.P2P.RET_GET_VISTOR_PASSWORD);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -1281,63 +1624,12 @@ public class SettingListener implements ISetting {
     }
 
     @Override
-    public void vRetAlarmEmailResultWithSMTP(int result, String email,
-                                             int smtpport, byte Entry, String[] SmptMessage, byte reserve) {
-        // TODO Auto-generated method stub
-        if ((result & (1 << 0)) == 1) {
-            Intent i = new Intent();
-            i.setAction(ConstantValues.P2P.RET_GET_ALARM_EMAIL_WITHSMTP);
-            i.putExtra("contectid", SmptMessage[5]);
-            i.putExtra("result", result);
-            i.putExtra("email", email);
-            i.putExtra("smtpport", smtpport);
-            i.putExtra("SmptMessage", SmptMessage);
-            MyApp.app.sendBroadcast(i);
-        } else {
-            Intent i = new Intent();
-            i.putExtra("result", result);
-            i.setAction(ConstantValues.P2P.RET_SET_ALARM_EMAIL);
-            MyApp.app.sendBroadcast(i);
-        }
-    }
-
-    @Override
-    public void vRetCheckDeviceUpdate(String contactId, int result,
-                                      String cur_version, String upg_version) {
-        // TODO Auto-generated method stub
-        Log.e(TAG, "vRetCheckDeviceUpdate:" + result);
+    public void vRetDeleteDeviceAlarmID(int result, int resultType) {
         Intent i = new Intent();
-        i.putExtra("result", result);
-        i.putExtra("cur_version", cur_version);
-        i.putExtra("upg_version", upg_version);
-        i.setAction(ConstantValues.P2P.RET_CHECK_DEVICE_UPDATE);
-        MyApp.app.sendBroadcast(i);
-    }
-
-    @Override
-    public void vRetDoDeviceUpdate(String contactId, int result, int value) {
-        // TODO Auto-generated method stub
-        Log.e(TAG, "vRetDoDeviceUpdate:" + result);
-        Intent i = new Intent();
-        i.putExtra("result", result);
-        i.putExtra("value", value);
-        i.setAction(ConstantValues.P2P.RET_DO_DEVICE_UPDATE);
-        MyApp.app.sendBroadcast(i);
-    }
-
-    //设置/查看预置位返回结果
-    @Override
-    public void vRetPresetMotorPos(byte[] result) {
-        // TODO Auto-generated method stub
-        Intent i = new Intent();
-        i.putExtra("result", Integer.parseInt(result[1]+""));
-//		i.setAction(ConstantValues.P2P.RET_PRESET_MOTORPOS_STATUS);
-        MyApp.app.sendBroadcast(i);
-    }
-
-    @Override
-    public void vRetDeleteDeviceAlarmID(int result) {
-        // TODO Auto-generated method stub
+        i.putExtra("deleteResult", result);
+        i.putExtra("resultType", resultType);
+        i.setAction(ConstantValues.P2P.DELETE_BINDALARM_ID);
+         MyApp.app.sendBroadcast(i);
 
     }
 
@@ -1345,160 +1637,262 @@ public class SettingListener implements ISetting {
     public void vRetDeviceLanguege(int result, int languegecount,
                                    int curlanguege, int[] langueges) {
         // TODO Auto-generated method stub
-
+        if (result == 1) {
+            Intent i = new Intent();
+            i.putExtra("languegecount", languegecount);
+            i.putExtra("curlanguege", curlanguege);
+            i.putExtra("langueges", langueges);
+            i.setAction(ConstantValues.P2P.RET_GET_LANGUEGE);
+             MyApp.app.sendBroadcast(i);
+        } else {
+            Intent i = new Intent();
+            i.putExtra("result", result);
+            i.setAction(ConstantValues.P2P.RET_SET_LANGUEGE);
+             MyApp.app.sendBroadcast(i);
+        }
     }
 
     @Override
-    public void vRetFocusZoom(int result) {
+    public void vRetFocusZoom(String deviceId, int result) {
         // TODO Auto-generated method stub
-
+        Log.e(TAG, "vRetFocusZoom:" + result);
+        Log.e("vRetFocusZoom", "vRetFocusZoom:" + result);
+        Intent i = new Intent();
+        i.putExtra("result", result);
+        i.putExtra("deviceId", deviceId);
+        i.setAction(ConstantValues.P2P.RET_GET_FOCUS_ZOOM);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
     public void vRetGetAllarmImage(int id, String filename, int errorCode) {
         // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void ACK_vRetSetRemoteDefence(String contactId, int msgId, int result) {
-        // TODO Auto-generated method stub
-        Log.e(TAG, "ACK_vRetSetRemoteDefence:" + result);
-        if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_NET_ERROR) {
-
-            Intent i = new Intent();
-            i.putExtra("state",
-                    ConstantValues.DefenceState.DEFENCE_STATE_WARNING_NET);
-            i.putExtra("contactId", contactId);
-            i.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
-            MyApp.app.sendBroadcast(i);
-
-        } else if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_PWD_ERROR) {
-
-            Intent i = new Intent();
-            i.putExtra("state",
-                    ConstantValues.DefenceState.DEFENCE_STATE_WARNING_PWD);
-            i.putExtra("contactId", contactId);
-            i.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
-            MyApp.app.sendBroadcast(i);
-        }
-    }
-
-    @Override
-    public void ACK_vRetGetDefenceStates(String contactId, int msgId, int result) {
-        // TODO Auto-generated method stub
-        Log.e(TAG, "ACK_vRetGetDefenceStates:" + result);
-        if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_NET_ERROR) {
-            Intent i = new Intent();
-            i.putExtra("state",
-                    ConstantValues.DefenceState.DEFENCE_STATE_WARNING_NET);
-            i.putExtra("contactId", contactId);
-            i.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
-            MyApp.app.sendBroadcast(i);
-        } else if (result == ConstantValues.P2P_SET.ACK_RESULT.ACK_PWD_ERROR) {
-            Intent i = new Intent();
-            i.putExtra("state",
-                    ConstantValues.DefenceState.DEFENCE_STATE_WARNING_PWD);
-            i.putExtra("contactId", contactId);
-            i.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
-            MyApp.app.sendBroadcast(i);
-        }
-    }
-
-    @Override
-    public void vRetGetRemoteDefenceResult(String contactId, int state) {
-        // TODO Auto-generated method stub
-        Log.e(TAG, "vRetGetRemoteDefenceResult:" + state);
-
-        Intent defence = new Intent();
-        defence.setAction(ConstantValues.P2P.RET_GET_REMOTE_DEFENCE);
-        defence.putExtra("state", state);
-        defence.putExtra("contactId", contactId);
-        MyApp.app.sendBroadcast(defence);
-    }
-
-    @Override
-    public void vRetGetFriendStatus(int count, String[] contactIds,
-                                    int[] status, int[] types) {
-        // TODO Auto-generated method stub
-        Log.e(TAG, "vRetGetFriendStatus:" + count);
-        Map<String,Integer> contactList = new HashMap<String,Integer>();
-        for (int i = 0; i < count; i++) {
-            contactList.put(contactIds[i], status[i]);
-        }
-//        Intent friends = new Intent();
-//        friends.putExtra("contactList",(Serializable)contactList);//接收   (List<YourObject>) getIntent().getSerializable(key)
-//        friends.setAction(ConstantValues.Action.GET_FRIENDS_STATE);
-//        MyApp.app.sendBroadcast(friends);
-
-        final SerializableMap myMap=new SerializableMap();
-        myMap.setIntMap(contactList);
-        Intent intent = new Intent();
-        Bundle bundle=new Bundle();
-        bundle.putSerializable("contactList", myMap);
-        intent.putExtras(bundle);
-        intent.setAction(ConstantValues.Action.GET_FRIENDS_STATE);
-        MyApp.app.sendBroadcast(intent);
-    }
-
-    @Override
-    public void vRetMessage(String contactId, String msg) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void vRetSysMessage(String msg) {
-        // TODO Auto-generated method stub
-
-    }
-
-
-    @Override
-    public void ACK_VRetGetNvrIpcList(int msgId, int state) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void vRetSetRemoteDefenceResult(String contactId, int result) {
-        // TODO Auto-generated method stub
-        Intent defence = new Intent();
-        defence.setAction(ConstantValues.P2P.RET_SET_REMOTE_DEFENCE);
-        defence.putExtra("state", result);
-        defence.putExtra("contactId", contactId);
-        MyApp.app.sendBroadcast(defence);
-    }
-
-    @Override
-    public void vRetCustomCmd(int contactId, int len, byte[] cmd) {
-        // TODO Auto-generated method stub
-
+        Intent i = new Intent();
+        i.putExtra("id", id);
+        i.putExtra("filename", filename);
+        i.putExtra("errorCode", errorCode);
+        i.setAction(ConstantValues.P2P.RET_GET_ALLARMIMAGE);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
     public void vRetFishEyeData(int iSrcID, byte[] data, int datasize) {
         // TODO Auto-generated method stub
+        // 鱼眼设备回调
+        Intent i = new Intent();
+        i.putExtra("iSrcID", iSrcID);
+        i.putExtra("boption", data[2]);
+        i.putExtra("data", data);
+        Log.e("vRetFishEyeData",
+                "iSrcID-->" + iSrcID + "--data-->" + Arrays.toString(data));
+        switch (data[1]) {
+            case 2:
+                i.setAction(ConstantValues.P2P.RET_SET_IPC_WORKMODE);
+                break;
+            case 4:
+                i.setAction(ConstantValues.P2P.RET_SET_SENSER_WORKMODE);
+                break;
+            case 6:
+                i.setAction(ConstantValues.P2P.RET_SET_SCHEDULE_WORKMODE);
+                break;
+            case 8:
+                i.setAction(ConstantValues.P2P.RET_DELETE_SCHEDULE);
+                break;
+            case 10:
+                i.setAction(ConstantValues.P2P.RET_GET_CURRENT_WORKMODE);
+                break;
+            case 12:
+                i.setAction(ConstantValues.P2P.RET_GET_SENSOR_WORKMODE);
+                break;
+            case 14:
+                i.setAction(ConstantValues.P2P.RET_GET_SCHEDULE_WORKMODE);
+                break;
+            case 16:
+                i.setAction(ConstantValues.P2P.RET_SET_ALLSENSER_SWITCH);
+                break;
+            case 18:
+                i.setAction(ConstantValues.P2P.RET_GET_ALLSENSER_SWITCH);
+                break;
+            case 20:
+                i.setAction(ConstantValues.P2P.RET_SET_LOWVOL_TIMEINTERVAL);// 暂时不处理
+                break;
+            case 22:
+                i.setAction(ConstantValues.P2P.RET_GET_LOWVOL_TIMEINTERVAL);// 暂时不处理
+                break;
+            case 24:
+                i.setAction(ConstantValues.P2P.RET_DELETE_ONE_CONTROLER);
+                break;
+            case 26:
+                i.setAction(ConstantValues.P2P.RET_DELETE_ONE_SENSOR);
+                break;
+            case 28:
+                // 修改遥控器名字返回,但不带修改后的名字
+                i.setAction(ConstantValues.P2P.RET_CHANGE_CONTROLER_NAME);
+                break;
+            case 30:
+                // 修改传感器名字返回,但不带修改后的名字
+                i.setAction(ConstantValues.P2P.RET_CHANGE_SENSOR_NAME);
+                break;
+            case 32:
+                i.setAction(ConstantValues.P2P.RET_INTO_LEARN_STATE);
+                break;
+            case 34:
+                i.setAction(ConstantValues.P2P.RET_TURN_SENSOR);
+                break;
+            case 36:
+                // 分享时管理员返回
+                i.setAction(ConstantValues.P2P.RET_SHARE_TO_MEMBER);
+                break;
+            case 37:
+                // 分享时用户收到的信息
+                i.setAction(ConstantValues.P2P.RET_GOT_SHARE);
+                break;
+            case 39:
+                i.setAction(ConstantValues.P2P.RET_DEV_RECV_MEMBER_FEEDBACK);
+                break;
+            case 41:
+                i.setAction(ConstantValues.P2P.RET_ADMIN_DELETE_ONE_MEMBER);
+                break;
+            case 43:
+                i.setAction(ConstantValues.P2P.RET_DELETE_DEV);
+                break;
+            case 45:
+                i.setAction(ConstantValues.P2P.RET_GET_MEMBER_LIST);
+                break;
+            case 47:
+                i.setAction(ConstantValues.P2P.RET_SET_ONE_SPECIAL_ALARM);
+                break;
+            case 49:
+                i.setAction(ConstantValues.P2P.RET_GET_ALL_SPECIAL_ALARM);
+                break;
+            case 51:
+                i.setAction(ConstantValues.P2P.RET_GET_LAMPSTATE);
+                break;
+            case 53:
+                i.setAction(ConstantValues.P2P.RET_KEEP_CLIENT);
+                break;
+        }
+         MyApp.app.sendBroadcast(i);
 
     }
 
     @Override
-    public void vRetGetNvrIpcList(String contactId, String[] date, int number) {
+    public void ACK_VRetGetNvrIpcList(int msgId, int state) {
         // TODO Auto-generated method stub
+        Intent i = new Intent();
+        i.setAction(ConstantValues.P2P.ACK_GET_NVR_IPC_LIST);
+        i.putExtra("state", state);
+         MyApp.app.sendBroadcast(i);
+        Log.e("ACK_VRetGetNvrIpcList", "state=" + state);
+    }
+
+    @Override
+    public void vRetGetNvrIpcList(String contactId, String[] data, int number) {
+        // TODO Auto-generated method stub
+        Intent i = new Intent();
+        i.setAction(ConstantValues.P2P.RET_GET_NVR_IPC_LIST);
+        i.putExtra("contactId", contactId);
+        i.putExtra("data", data);
+        i.putExtra("number", number);
+         MyApp.app.sendBroadcast(i);
 
     }
 
     @Override
     public void vRetSetWifiMode(String id, int result) {
-        // TODO Auto-generated method stub
+        Intent i = new Intent();
+        i.putExtra("id", id);
+        i.putExtra("result", result);
+        i.setAction(ConstantValues.P2P.RET_SET_AP_MODE);
+         MyApp.app.sendBroadcast(i);
 
     }
 
     @Override
     public void vRetAPModeSurpport(String id, int result) {
+        Intent i = new Intent();
+        i.putExtra("id", id);
+        i.putExtra("result", result);
+        i.setAction(ConstantValues.P2P.RET_AP_MODESURPPORT);
+         MyApp.app.sendBroadcast(i);
+
+    }
+
+    @Override
+    public void vRetDeviceType(String id, int mainType, int subType) {
+        // TODO Auto-generated method stub
+        Log.e("lelesubType", "id="+id+"--"+"mainType="+mainType+"--"+"subType="+subType);
+//		FList.getInstance().setSubType(id, subType);
+    }
+
+    @Override
+    public void ACK_VRetGetNvrInfo(int msgId, int state) {
+        Intent i = new Intent();
+        i.setAction(ConstantValues.P2P.ACK_GET_NVRINFO);
+        i.putExtra("state", state);
+         MyApp.app.sendBroadcast(i);
+    }
+
+    @Override
+    public void vRetNVRInfo(int iSrcID, byte[] data, int datasize) {
+        // TODO Auto-generated method stub
+        Intent i = new Intent();
+        i.putExtra("iSrcID", iSrcID);
+        i.putExtra("boption", data[1]);
+        i.putExtra("data", data);
+        i.setAction(ConstantValues.P2P.RET_GET_NVRINFO);
+         MyApp.app.sendBroadcast(i);
+    }
+
+    @Override
+    public void vRetGetFocusZoom(String deviceId, int result, int value) {
+        // TODO Auto-generated method stub
+        Intent i=new Intent();
+        i.putExtra("deviceId", deviceId);
+        i.putExtra("result", result);
+        i.putExtra("value", value);
+        i.setAction(ConstantValues.P2P.RET_GET_FOCUS_ZOOM_POSITION);
+         MyApp.app.sendBroadcast(i);
+    }
+
+    @Override
+    public void vRetSetFocusZoom(String deviceId, int result, int value) {
+        // TODO Auto-generated method stub
+        Intent i=new Intent();
+        i.putExtra("deviceId", deviceId);
+        i.putExtra("result", result);
+        i.putExtra("value", value);
+        i.setAction(ConstantValues.P2P.RET_SET_FOCUS_ZOOM_POSITION);
+         MyApp.app.sendBroadcast(i);
+    }
+
+    @Override
+    public void vRetSetGPIO(String contactid, int result) {
         // TODO Auto-generated method stub
 
     }
 
-}
+    @Override
+    public void vRetGetGPIO(String contactid, int result, int bValueNs) {
+        // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public void vRetGetDefenceWorkGroup(String contactid, byte[] data) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void vRetSetDefenceWorkGroup(String contactid, byte[] data) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void vRetFTPConfigInfo(String contactid, byte[] data) {
+        // TODO Auto-generated method stub
+
+    }
+}

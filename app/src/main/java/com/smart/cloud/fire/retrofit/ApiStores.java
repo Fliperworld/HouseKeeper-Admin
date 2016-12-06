@@ -1,8 +1,9 @@
 package com.smart.cloud.fire.retrofit;
 
+import com.smart.cloud.fire.data.CameraData;
+import com.smart.cloud.fire.data.Defence;
 import com.smart.cloud.fire.global.AlarmCameraInfo;
 import com.smart.cloud.fire.global.AlarmMsg;
-import com.smart.cloud.fire.global.CameraMap;
 import com.smart.cloud.fire.global.Electric;
 import com.smart.cloud.fire.global.ElectricInfo;
 import com.smart.cloud.fire.global.ElectricValue;
@@ -185,11 +186,6 @@ public interface ApiStores {
     @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<LoginServer> loginServer(@Query("userId") String userId, @Query("phone") String phone, @Query("email") String email);
 
-//    http://192.168.4.111:51091/camera/managerGetAllCamera?userId=13428282520&privilege=3&page=1
-    @GET("managerGetAllCamera")
-    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
-    Observable<CameraMap> managerGetAllCamera(@Query("userId") String userId, @Query("privilege") String privilege, @Query("page") String page);
-
     //    9 获取摄像头信息
 //    9 get:	  http://192.168.4.111:51091/camera/getOneCamera?cameraId=3121164
     @GET("getOneCamera")
@@ -220,4 +216,32 @@ public interface ApiStores {
     @FormUrlEncoded
     @POST("bindUserIdCameraId")
     Observable<PostResult> bindUserIdCameraId(@Field("userId") String userId, @Field("cameraId") String cameraId);
+
+//    managerGetAllCamera?userId=13428282520&privilege=3&page=1
+    @GET("managerGetAllCamera")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
+    Observable<CameraData> managerGetAllCamera(@Query("userId") String userId, @Query("privilege") String privilege, @Query("page") String page);
+
+    //    changeCameraName （cameraId=3121164&cameraName=camera_3121164)
+    @FormUrlEncoded
+    @POST("changeCameraName")
+    Observable<PostResult> changeCameraName(@Field("cameraId") String cameraId, @Field("cameraName") String cameraName);
+
+    @GET("getAllDefence")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
+    Observable<Defence> getAllDefence(@Query("cameraId") String cameraId, @Query("page") String page);
+
+    @FormUrlEncoded
+    @POST("deleteCameraSensor")
+    Observable<PostResult> deleteCameraSensor(@Field("defenceId") String defenceId, @Field("cameraId") String cameraId);
+
+    @FormUrlEncoded
+    @POST("changeDefenceName")
+    Observable<PostResult> changeDefenceName(@Field("cameraId") String cameraId, @Field("defenceId") String defenceId,
+                                             @Field("defenceName") String defenceName);
+
+    @FormUrlEncoded
+    @POST("bindCameraSensor")
+    Observable<PostResult> bindCameraSensor(@Field("defenceId") String defenceId, @Field("defenceName") String defenceName,
+                                            @Field("sensorId") String sensorId, @Field("cameraId") String cameraId);
 }

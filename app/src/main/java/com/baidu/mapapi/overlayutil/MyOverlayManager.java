@@ -13,21 +13,21 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.Polyline;
 import com.baidu.mapapi.model.LatLng;
-import com.smart.cloud.fire.global.CameraMap;
+import com.smart.cloud.fire.data.CameraData;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.MapFragmentPresenter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MyOverlayManager extends OverlayManager {
-    private List<CameraMap.CameraBean> cameraBeanList;
+    private List<CameraData.CameraBean> cameraBeanList;
     private MapFragmentPresenter mMapFragmentPresenter;
     private List<BitmapDescriptor> viewList;
 
     public  MyOverlayManager(){
     }
 
-    public void init(BaiduMap baiduMap, List<CameraMap.CameraBean> cameraBeanList, MapFragmentPresenter mMapFragmentPresenter, List<BitmapDescriptor> viewList){
+    public void init(BaiduMap baiduMap, List<CameraData.CameraBean> cameraBeanList, MapFragmentPresenter mMapFragmentPresenter, List<BitmapDescriptor> viewList){
         initBaiduMap(baiduMap);
         this.cameraBeanList = cameraBeanList;
         this.mMapFragmentPresenter = mMapFragmentPresenter;
@@ -55,7 +55,7 @@ public class MyOverlayManager extends OverlayManager {
             ArrayList<BitmapDescriptor> giflist2 = new ArrayList<>();
             giflist2.add(viewList.get(0));
             giflist2.add(viewList.get(1));
-            for (CameraMap.CameraBean cameraBean : cameraBeanList) {
+            for (CameraData.CameraBean cameraBean : cameraBeanList) {
                 int alarmState = cameraBean.getIfDealAlarm();
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("mNormalSmoke",cameraBean);

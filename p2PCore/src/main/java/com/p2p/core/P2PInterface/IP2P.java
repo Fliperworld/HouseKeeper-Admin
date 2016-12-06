@@ -24,8 +24,8 @@ public interface IP2P {
 	public void vRetPlayNumber(int iNumber);
 
 	public void vRecvAudioVideoData(byte[] AudioBuffer, int AudioLen, int AudioFrames, long AudioPTS,
-			byte[] VideoBuffer, int VideoLen, long VideoPTS);
-	public void vAllarmingWitghTime(String srcId, int type, int option, int iGroup, int iItem,int imagecounts,String imagePath,String alarmCapDir,String VideoPath);
+									byte[] VideoBuffer, int VideoLen, long VideoPTS);
+	public void vAllarmingWitghTime(String srcId, int type, int option, int iGroup, int iItem,int imagecounts,String imagePath,String alarmCapDir,String VideoPath,String sensorName,int deviceType);
 	public void vRetNewSystemMessage(int iSystemMessageType,int iSystemMessageIndex);
 	public void vRetRTSPNotify(int arg2,String msg);
 	public void vRetPostFromeNative(int what,int iDesID, int arg1, int arg2, String msgStr);

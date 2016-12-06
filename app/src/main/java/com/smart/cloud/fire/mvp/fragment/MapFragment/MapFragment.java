@@ -18,8 +18,8 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.overlayutil.MyOverlayManager;
 import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.base.ui.MvpFragment;
+import com.smart.cloud.fire.data.CameraData;
 import com.smart.cloud.fire.global.Area;
-import com.smart.cloud.fire.global.CameraMap;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.global.Contact;
 import com.smart.cloud.fire.global.MyApp;
@@ -81,9 +81,7 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
                 SharedPreferencesManager.SP_FILE_GWELL,
                 SharedPreferencesManager.KEY_RECENTNAME);
         privilege = MyApp.app.getPrivilege();
-//        add_fire.setVisibility(View.VISIBLE);
-//        add_fire.setImageResource(R.drawable.search);
-        mvpPresenter.getAllSmoke(userID, privilege + "");
+        mvpPresenter.getAllCamera(userID, privilege + "");
         animation_out = AnimationUtils.loadAnimation(mContext,
                 R.anim.scale_amplify);
         animation_in = AnimationUtils.loadAnimation(mContext,
@@ -135,7 +133,7 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
     private MyOverlayManager mMyOverlayManager;
 
     @Override
-    public void getDataSuccess(List<CameraMap.CameraBean> cameraBeanList) {
+    public void getDataSuccess(List<CameraData.CameraBean> cameraBeanList) {
         mBaiduMap.clear();
         List<BitmapDescriptor> viewList = initMark();
         if (mMyOverlayManager == null) {

@@ -3,6 +3,7 @@ package com.p2p.core;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -24,6 +25,8 @@ public class P2PView extends BaseP2PView {
 	int mWindowWidth, mWindowHeight;
 	public int fgFullScreen = 0;
 	boolean isInitScale;
+	//电子放大时:SUPPORT_ZOOM=true SUPPORT_ZOOM_FOCUS=false
+	//变倍 : SUPPORT_ZOOM=true SUPPORT_ZOOM_FOCUS=true|false
 	static final boolean SUPPORT_ZOOM =true;
 	static final boolean SUPPORT_ZOOM_FOCUS=true;
 	public static int type=0;
@@ -35,7 +38,7 @@ public class P2PView extends BaseP2PView {
 		this.mContext = context;
 		mPlayer = MediaPlayer.getInstance();
 		Log.e("leleTest", "P2PView--");
-		
+
 	}
 
 	public P2PView(Context context, AttributeSet attrs) {
@@ -64,7 +67,7 @@ public class P2PView extends BaseP2PView {
 		mWidth = mWindowWidth;
 		mHeight = mWindowHeight;
 		//如果type==1，type等于其它值时，通过npc和ipc来判断
-        //scale：0 代表4：3     1 代表16：9
+		//scale：0 代表4：3     1 代表16：9
 		if (fgFullScreen == 0) {
 			if(type==1){
 				if (scale==0) {
@@ -191,59 +194,59 @@ public class P2PView extends BaseP2PView {
 
 	SurfaceHolder.Callback mSHCallback = new SurfaceHolder.Callback() {
 		public void surfaceChanged(SurfaceHolder holder, int format, int w,
-				int h) {
+								   int h) {
 			// startVideo();
 			Log.v(TAG, "surfaceChanged()");
 			int sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565 by default
 			switch (format) {
-			case PixelFormat.A_8:
-				Log.v(TAG, "pixel format A_8");
-				break;
-			case PixelFormat.LA_88:
-				Log.v(TAG, "pixel format LA_88");
-				break;
-			case PixelFormat.L_8:
-				Log.v(TAG, "pixel format L_8");
-				break;
-			case PixelFormat.RGBA_4444:
-				Log.v(TAG, "pixel format RGBA_4444");
-				sdlFormat = 0x85421002; // SDL_PIXELFORMAT_RGBA4444
-				break;
-			case PixelFormat.RGBA_5551:
-				Log.v(TAG, "pixel format RGBA_5551");
-				sdlFormat = 0x85441002; // SDL_PIXELFORMAT_RGBA5551
-				break;
-			case PixelFormat.RGBA_8888:
-				Log.v(TAG, "pixel format RGBA_8888");
-				sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
-				break;
-			case PixelFormat.RGBX_8888:
-				Log.v(TAG, "pixel format RGBX_8888");
-				sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
-				break;
-			case PixelFormat.RGB_332:
-				Log.v(TAG, "pixel format RGB_332");
-				sdlFormat = 0x84110801; // SDL_PIXELFORMAT_RGB332
-				break;
-			case PixelFormat.RGB_565:
-				Log.v(TAG, "pixel format RGB_565");
-				sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
-				break;
-			case PixelFormat.RGB_888:
-				Log.v(TAG, "pixel format RGB_888");
-				// Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
-				sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
-				break;
-			default:
-				Log.v(TAG, "pixel format unknown " + format);
-				break;
+				case PixelFormat.A_8:
+					Log.v(TAG, "pixel format A_8");
+					break;
+				case PixelFormat.LA_88:
+					Log.v(TAG, "pixel format LA_88");
+					break;
+				case PixelFormat.L_8:
+					Log.v(TAG, "pixel format L_8");
+					break;
+				case PixelFormat.RGBA_4444:
+					Log.v(TAG, "pixel format RGBA_4444");
+					sdlFormat = 0x85421002; // SDL_PIXELFORMAT_RGBA4444
+					break;
+				case PixelFormat.RGBA_5551:
+					Log.v(TAG, "pixel format RGBA_5551");
+					sdlFormat = 0x85441002; // SDL_PIXELFORMAT_RGBA5551
+					break;
+				case PixelFormat.RGBA_8888:
+					Log.v(TAG, "pixel format RGBA_8888");
+					sdlFormat = 0x86462004; // SDL_PIXELFORMAT_RGBA8888
+					break;
+				case PixelFormat.RGBX_8888:
+					Log.v(TAG, "pixel format RGBX_8888");
+					sdlFormat = 0x86262004; // SDL_PIXELFORMAT_RGBX8888
+					break;
+				case PixelFormat.RGB_332:
+					Log.v(TAG, "pixel format RGB_332");
+					sdlFormat = 0x84110801; // SDL_PIXELFORMAT_RGB332
+					break;
+				case PixelFormat.RGB_565:
+					Log.v(TAG, "pixel format RGB_565");
+					sdlFormat = 0x85151002; // SDL_PIXELFORMAT_RGB565
+					break;
+				case PixelFormat.RGB_888:
+					Log.v(TAG, "pixel format RGB_888");
+					// Not sure this is right, maybe SDL_PIXELFORMAT_RGB24 instead?
+					sdlFormat = 0x86161804; // SDL_PIXELFORMAT_RGB888
+					break;
+				default:
+					Log.v(TAG, "pixel format unknown " + format);
+					break;
 			}
 			mPlayer.onNativeResize(w, h, sdlFormat);
 			Log.e("surface", w + ":" + h);
 			mWidth = w;
 			mHeight = h;
 
-            
+
 			if (fgFullScreen == 0) {
 				if(type==1){
 					if (scale ==0) {
@@ -314,7 +317,7 @@ public class P2PView extends BaseP2PView {
 	public void sendStartBrod(){
 		if(!isInitScreen){
 			isInitScreen=true;
-			mPlayer.init(mWidth, mHeight, mWindowWidth);
+			MediaPlayer.getInstance().init(mWidth, mHeight, mWindowWidth);
 			Intent start = new Intent();
 			start.setAction(Constants.P2P_WINDOW.Action.P2P_WINDOW_READY_TO_START);
 			mContext.sendBroadcast(start);
@@ -322,9 +325,9 @@ public class P2PView extends BaseP2PView {
 
 	}
 	public synchronized void release() {
+
 		if (mPlayer != null) {
 			// mPlayer.native_p2p_hungup();
-			Log.e("leleTest", "release");
 			mPlayer.stop();
 			mPlayer.release();
 			mPlayer = null;
@@ -360,7 +363,6 @@ public class P2PView extends BaseP2PView {
 		// Log.e("Gview","zoom" + x + ":" + y+"       "+scale);
 
 		mPlayer.ZoomView(x, y, scale);
-
 	}
 
 	@Override
@@ -392,6 +394,9 @@ public class P2PView extends BaseP2PView {
 		 * setLayoutParams(layoutParams); mPlayer.ChangeScreenSize(mFixWidth,
 		 * mFixHeight, 0);
 		 */
+	}
+	public void setHandler(Handler handler){
+		myHandler=handler;
 	}
 
 }

@@ -34,6 +34,15 @@ public class P2PValue {
 		public static final int NVR=11;
 		public static final int ROBOT = 999;
 	}
+
+	public static class subType{
+		public static final int IPC_8=8;
+		public static final int IPC_18=18;
+		public static final int IPC_28=28;
+		public static final int IPC_868=30;//只支持868
+		public static final int IPC_868_SCENE_MODE=31;//支持868+情景模式
+		public static final int IPC_868_SCENE_MODE_SHARE=32;//支持868+情景模式+分享
+	}
 	
 	public static class VideoMode{
 		public static final int VIDEO_MODE_SD = 5;

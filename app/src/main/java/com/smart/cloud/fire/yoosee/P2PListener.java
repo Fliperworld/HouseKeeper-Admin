@@ -1,9 +1,5 @@
 package com.smart.cloud.fire.yoosee;
 
-/**
- * Created by Administrator on 2016/8/4.
- */
-
 import android.content.Intent;
 import android.util.Log;
 
@@ -16,7 +12,6 @@ import com.smart.cloud.fire.utils.MusicManger;
 import com.smart.cloud.fire.utils.SharedPreferencesManager;
 
 
-
 public class P2PListener implements IP2P {
 
     @Override
@@ -26,13 +21,13 @@ public class P2PListener implements IP2P {
             P2PConnect.vCalling(true, type);
         } else {
             int c_muteState = SharedPreferencesManager.getInstance()
-                    .getCMuteState(MyApp.app);
+                    .getCMuteState( MyApp.app);
             if (c_muteState == 1) {
                 MusicManger.getInstance().playCommingMusic();
             }
 
             int c_vibrateState = SharedPreferencesManager.getInstance()
-                    .getCVibrateState(MyApp.app);
+                    .getCVibrateState( MyApp.app);
             if (c_vibrateState == 1) {
                 MusicManger.getInstance().Vibrate();
             }
@@ -49,56 +44,56 @@ public class P2PListener implements IP2P {
         String reason = "";
         switch (reason_code) {
             case 0:
-                reason = MyApp.app.getResources().getString(R.string.pw_incrrect);
+                reason =  MyApp.app.getResources().getString(R.string.pw_incrrect);
                 break;
             case 1:
-                reason = MyApp.app.getResources().getString(R.string.busy);
+                reason =  MyApp.app.getResources().getString(R.string.busy);
                 break;
             case 2:
-                reason = MyApp.app.getResources().getString(R.string.none);
+                reason =  MyApp.app.getResources().getString(R.string.none);
                 break;
             case 3:
-                reason = MyApp.app.getResources().getString(R.string.id_disabled);
+                reason =  MyApp.app.getResources().getString(R.string.id_disabled);
                 break;
             case 4:
-                reason = MyApp.app.getResources().getString(R.string.id_overdate);
+                reason =  MyApp.app.getResources().getString(R.string.id_overdate);
                 break;
             case 5:
-                reason = MyApp.app.getResources().getString(R.string.id_inactived);
+                reason =  MyApp.app.getResources().getString(R.string.id_inactived);
                 break;
             case 6:
-                reason = MyApp.app.getResources().getString(R.string.offline);
+                reason =  MyApp.app.getResources().getString(R.string.offline);
                 break;
             case 7:
-                reason = MyApp.app.getResources().getString(R.string.powerdown);
+                reason =  MyApp.app.getResources().getString(R.string.powerdown);
                 break;
             case 8:
-                reason = MyApp.app.getResources().getString(R.string.nohelper);
+                reason =  MyApp.app.getResources().getString(R.string.nohelper);
                 break;
             case 9:
-                reason = MyApp.app.getResources().getString(R.string.hungup);
+                reason =  MyApp.app.getResources().getString(R.string.hungup);
                 break;
             case 10:
-                reason = MyApp.app.getResources().getString(R.string.timeout);
+                reason =  MyApp.app.getResources().getString(R.string.timeout);
                 break;
             case 11:
-                reason = MyApp.app.getResources().getString(R.string.no_body);
+                reason =  MyApp.app.getResources().getString(R.string.no_body);
                 break;
             case 12:
-                reason = MyApp.app.getResources()
+                reason =  MyApp.app.getResources()
                         .getString(R.string.internal_error);
                 break;
             case 13:
-                reason = MyApp.app.getResources().getString(R.string.conn_fail);
+                reason =  MyApp.app.getResources().getString(R.string.conn_fail);
                 break;
             case 14:
-                reason = MyApp.app.getResources().getString(R.string.not_support);
+                reason =  MyApp.app.getResources().getString(R.string.not_support);
                 break;
             case 15:
-                reason = "rtsp_not_frame";
+                reason =  MyApp.app.getResources().getString(R.string.rtsp_not_frame);
                 break;
             default:
-                reason = MyApp.app.getResources().getString(R.string.conn_fail)+"("+reason_code+")";
+                reason =  MyApp.app.getResources().getString(R.string.conn_fail)+"("+reason_code+")";
                 break;
 
         }
@@ -131,7 +126,7 @@ public class P2PListener implements IP2P {
         // TODO Auto-generated method stub
         Intent i = new Intent(ConstantValues.P2P.P2P_CHANGE_IMAGE_TRANSFER);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -141,7 +136,7 @@ public class P2PListener implements IP2P {
         i.setAction(ConstantValues.P2P.PLAYBACK_CHANGE_SEEK);
         i.putExtra("max", length);
         i.putExtra("current", currentPos);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -150,7 +145,7 @@ public class P2PListener implements IP2P {
         Intent i = new Intent();
         i.setAction(ConstantValues.P2P.PLAYBACK_CHANGE_STATE);
         i.putExtra("state", state);
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -175,7 +170,7 @@ public class P2PListener implements IP2P {
             P2PConnect.setMode(P2PValue.VideoMode.VIDEO_MODE_LD);
             i.putExtra("mode", P2PValue.VideoMode.VIDEO_MODE_LD);
         }
-        MyApp.app.sendBroadcast(i);
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -206,16 +201,21 @@ public class P2PListener implements IP2P {
     @Override
     public void vAllarmingWitghTime(String srcId, int type, int option,
                                     int iGroup, int iItem, int imagecounts, String imagePath,
-                                    String alarmCapDir, String VideoPath) {
+                                    String alarmCapDir, String VideoPath,String sensorName,int deviceType) {
         // TODO Auto-generated method stub
-        P2PConnect.vAllarmingWithPath(srcId, type, option, iGroup, iItem, imagecounts,imagePath, alarmCapDir, VideoPath);
+        P2PConnect.vAllarmingWithPath(srcId, type, option, iGroup, iItem, imagecounts,imagePath, alarmCapDir, VideoPath,sensorName,deviceType);
     }
 
     @Override
     public void vRetNewSystemMessage(int iSystemMessageType,
                                      int iSystemMessageIndex) {
         // TODO Auto-generated method stub
-
+        Log.e("vRetNewSystemMessage", "vRetNewSystemMessage---");
+        Intent i=new Intent();
+        i.setAction(ConstantValues.P2P.RET_NEW_SYSTEM_MESSAGE);
+        i.putExtra("iSystemMessageType",String.valueOf(iSystemMessageType));
+        i.putExtra("iSystemMessageIndex",String.valueOf(iSystemMessageIndex));
+         MyApp.app.sendBroadcast(i);
     }
 
     @Override
@@ -226,9 +226,8 @@ public class P2PListener implements IP2P {
             //视频渲染标记
             Intent i = new Intent();
             i.setAction(ConstantValues.P2P.RET_P2PDISPLAY);
-            MyApp.app.sendBroadcast(i);
+             MyApp.app.sendBroadcast(i);
         }
 
     }
 }
-

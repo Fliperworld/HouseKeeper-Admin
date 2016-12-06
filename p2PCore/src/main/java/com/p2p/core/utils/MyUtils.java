@@ -263,12 +263,12 @@ public class MyUtils {
 	public static byte[] aperture_big = { (byte) 130, 1, 7, 0, (byte) 0xff,
 			0x01, 0x04, 0x00, 0x00, 0x00, 0x05 };// 光圈大
 
-	public static int bytesToInt(byte[] src, int offset) {
-		int value;
-		value = (int) ((src[offset] & 0xFF) | ((src[offset + 1] & 0xFF) << 8)
-				| ((src[offset + 2] & 0xFF) << 16) | ((src[offset + 3] & 0xFF) << 24));
-		return value;
-	}
+//	public static int bytesToInt(byte[] src, int offset) {
+//		int value;
+//		value = (int) ((src[offset] & 0xFF) | ((src[offset + 1] & 0xFF) << 8)
+//				| ((src[offset + 2] & 0xFF) << 16) | ((src[offset + 3] & 0xFF) << 24));
+//		return value;
+//	}
 	/**
 	 * 临时格式化数字
 	 * @param src
@@ -283,6 +283,86 @@ public class MyUtils {
 			return String.valueOf(src);
 		}
 
+	}
+	public static byte[] intToByte4(int i) {
+		byte[] targets = new byte[4];
+		targets[0] = (byte) (i & 0xFF);
+		targets[1] = (byte) (i >> 8 & 0xFF);
+		targets[2] = (byte) (i >> 16 & 0xFF);
+		targets[3] = (byte) (i >> 24 & 0xFF);
+		return targets;
+	}
+	/**
+	 * byte数组中取int数值，本方法适用于(低位在前，高位在后)的顺序，和和intToBytes（）配套使用
+	 *
+	 * @param src
+	 *            byte数组
+	 * @param offset
+	 *            从数组的第offset位开始
+	 * @return int数值
+	 */
+	public static int bytesToInt(byte[] src, int offset) {
+		int value;
+		value = (int) ((src[offset] & 0xFF)
+				| ((src[offset+1] & 0xFF)<<8)
+				| ((src[offset+2] & 0xFF)<<16)
+				| ((src[offset+3] & 0xFF)<<24));
+		return value;
+	}
+
+	/**
+	 * byte数组中取int数值，本方法适用于(低位在后，高位在前)的顺序。和intToBytes2（）配套使用
+	 */
+	public static int bytesToInt2(byte[] src, int offset) {
+		int value;
+		value = (int) ( ((src[offset] & 0xFF)<<24)
+				|((src[offset+1] & 0xFF)<<16)
+				|((src[offset+2] & 0xFF)<<8)
+				|(src[offset+3] & 0xFF));
+		return value;
+	}
+	/**
+	 * byte数组中取int数值，本方法适用于(低位在前，高位在后)的顺序，和和intToBytes（）配套使用
+	 *
+	 * @param src
+	 *            byte数组
+	 * @param offset
+	 *            从数组的第offset位开始
+	 * @return int数值
+	 */
+	public static int bytes2ToInt(byte[] src, int offset) {
+		int value;
+		value = (int) ((src[offset] & 0xFF)
+				| ((src[offset+1] & 0xFF)<<8));
+		return value;
+	}
+
+	/**
+	 * 注释：short到字节数组的转换！
+	 *
+	 * @param s
+	 * @return
+	 */
+	public static byte[] shortToByte2(short number) {
+		byte[] src = new byte[2];
+		src[0] = (byte) (number & 0xFF);
+		src[1] = (byte) ((number >> 8) & 0xFF);
+		return src;
+	}
+
+	/**
+	 * 注释：字节数组到short的转换！
+	 *
+	 * @param b
+	 * @return
+	 */
+	public static short byte2ToShort(byte[] b, int offset) {
+		short s = 0;
+		short s0 = (short) (b[offset] & 0xff);// 最低位
+		short s1 = (short) (b[offset+1] & 0xff);
+		s1 <<= 8;
+		s = (short) (s0 | s1);
+		return s;
 	}
 
 }
