@@ -575,6 +575,48 @@ public class NormalDialog {
         dialog.setCanceledOnTouchOutside(true);
     }
 
+    public void showDeleteAlarmNumDialog() {
+        if (!TestAuthorityUtil.testPhone(context)) {
+            return;
+        }
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.dialog_normal, null);
+        TextView title = (TextView) view.findViewById(R.id.title_text);
+        TextView content = (TextView) view.findViewById(R.id.content_text);
+        TextView button1 = (TextView) view.findViewById(R.id.button1_text);
+        TextView button2 = (TextView) view.findViewById(R.id.button2_text);
+        title.setText(title_str);
+        content.setText(content_str);
+        button1.setText(btn1_str);
+        button2.setText(btn2_str);
+        button1.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != dialog) {
+                    dialog.dismiss();
+                }
+                onButtonOkListener.onClick();
+            }
+        });
+        button2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null == onButtonCancelListener) {
+                    if (null != dialog) {
+                        dialog.cancel();
+                    }
+                } else {
+                    onButtonCancelListener.onClick();
+                }
+            }
+        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        dialog = builder.create();
+        dialog.show();
+        dialog.setContentView(view);
+        dialog.setCanceledOnTouchOutside(true);
+    }
+
     public void showLoadingDialog(String tv) {
         View view = LayoutInflater.from(context).inflate(
                 R.layout.dialog_loading, null);

@@ -103,7 +103,7 @@ public class AlarmPushAccountActivity extends Activity {
                                 contactPassword, data.length, data);
                     }
                 });
-                dialog.showDialog();
+                dialog.showDeleteAlarmNumDialog();
             }
         });
 

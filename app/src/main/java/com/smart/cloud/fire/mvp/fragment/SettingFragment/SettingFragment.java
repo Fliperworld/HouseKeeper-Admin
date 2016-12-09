@@ -14,6 +14,7 @@ import com.hrsst.housekeeper.R;
 import com.smart.cloud.fire.base.ui.MvpFragment;
 import com.smart.cloud.fire.global.MyApp;
 import com.smart.cloud.fire.mvp.camera.AddCameraFirstActivity;
+import com.smart.cloud.fire.mvp.printScreen.PrintScreenActivity;
 import com.smart.cloud.fire.ui.AboutActivity;
 import com.smart.cloud.fire.utils.SharedPreferencesManager;
 import com.smart.cloud.fire.utils.T;
@@ -66,10 +67,10 @@ public class SettingFragment extends MvpFragment<SettingFragmentPresenter> imple
         settingUserId.setText(userID);
         settingUserCode.setText(username);
         String state = MyApp.app.getPushState();
-        if(state.equals("Online")){
+        if(state!=null&&state.equals("Online")){
             lineState.setText("在线");
         }
-        if(state.equals("Offline")){
+        if(state!=null&&state.equals("Offline")){
             lineState.setText("离线");
         }
         int privilege = MyApp.app.getPrivilege();
@@ -79,7 +80,7 @@ public class SettingFragment extends MvpFragment<SettingFragmentPresenter> imple
         }
     }
 
-    @OnClick({R.id.app_update, R.id.setting_help_about, R.id.setting_help_rela, R.id.setting_help_exit, R.id.setting_camera_relative})
+    @OnClick({R.id.app_update, R.id.setting_help_about, R.id.setting_help_rela, R.id.setting_help_exit, R.id.setting_camera_relative,R.id.setting_my_picture})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.app_update:
@@ -100,6 +101,10 @@ public class SettingFragment extends MvpFragment<SettingFragmentPresenter> imple
                 break;
             case R.id.setting_camera_relative:
                 mvpPresenter.bindDialog(mContext);
+                break;
+            case R.id.setting_my_picture:
+                Intent i = new Intent(mContext,PrintScreenActivity.class);
+                startActivity(i);
                 break;
             default:
                 break;

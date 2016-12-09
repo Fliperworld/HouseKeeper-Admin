@@ -213,6 +213,11 @@ public class MapFragment extends MvpFragment<MapFragmentPresenter> implements Ma
     }
 
     @Override
+    public void dealAlarmMsgSuccess() {
+        mvpPresenter.getAllCamera(userID, privilege + "");
+    }
+
+    @Override
     public void openCamera(Contact contact) {
         Intent monitor = new Intent();
         monitor.setClass(mContext, ApMonitorActivity.class);

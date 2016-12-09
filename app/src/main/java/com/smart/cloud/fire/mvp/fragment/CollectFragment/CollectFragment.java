@@ -166,7 +166,7 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
         if (privilege == 1) {
             typeLin.setVisibility(View.GONE);
         }
-        addFire.setVisibility(View.VISIBLE);
+        addFire.setVisibility(View.GONE);
         addFire.setImageResource(R.drawable.search);
         startTime.setOnFocusChangeListener(this);
         endTime.setOnFocusChangeListener(this);
@@ -201,7 +201,8 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
 
     }
 
-    @OnClick({R.id.add_fire, R.id.date_cancel, R.id.delete_start_time_rela, R.id.delete_end_time_rela, R.id.area_type_choice, R.id.shang_pu_type_choice, R.id.search_btn})
+    @OnClick({R.id.add_fire, R.id.date_cancel, R.id.delete_start_time_rela, R.id.delete_end_time_rela,
+            R.id.area_type_choice, R.id.shang_pu_type_choice, R.id.search_btn})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.search_btn:
@@ -265,7 +266,6 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
                         areaId = "";
                     }
                 }
-//                mvpPresenter.getAllAlarm(userID, privilege + "", page);
                 hideDatePick();
                 mArea = null;
                 mShopType = null;
@@ -519,12 +519,11 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
     }
 
     @Override
-    public void dealAlarmMsgSuccess(List<AlarmMsg.AlarmBean> alarmMessageModels) {
-//        messageModelList.clear();
-//        messageModelList.addAll(alarmMessageModels);
-//        adapter = new RefreshRecyclerAdapter(getActivity(), messageModelList, collectFragmentPresenter, userID, privilege + "");
-//        demoRecycler.setAdapter(adapter);
-//        adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
+    public void dealAlarmMsgSuccess() {
+        research = false;
+        page = "1";
+        mvpPresenter.getAllAlarm(userID, privilege + "", page,true,false);
+        mProgressBar.setVisibility(View.GONE);
     }
 
     @Override

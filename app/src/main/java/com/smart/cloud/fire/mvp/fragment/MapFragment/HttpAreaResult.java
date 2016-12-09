@@ -16,7 +16,7 @@ public class HttpAreaResult<T> {
 
     private String error;
     private int errorCode;
-    private ArrayList<Area> smoke;
+    private ArrayList<Area> area;
 
     public String getError() {
         return error;
@@ -34,11 +34,11 @@ public class HttpAreaResult<T> {
         this.errorCode = errorCode;
     }
 
-    public ArrayList<Area> getSmoke() {
-        return smoke;
+    public ArrayList<Area> getArea() {
+        return area;
     }
 
-    public void setSmoke(ArrayList<Area> smoke) {
-        this.smoke = smoke;
+    public void setArea(ArrayList<Area> area) {
+        this.area = area;
     }
 }

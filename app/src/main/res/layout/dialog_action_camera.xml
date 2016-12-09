@@ -44,13 +44,7 @@
 			android:layout_centerInParent="true"
 			android:textSize="15sp"
 			/>
-		<ImageView
-			android:layout_width="match_parent"
-			android:src="@mipmap/list_item_line"
-			android:layout_height="wrap_content"
-			android:scaleType="center"
-			android:layout_alignParentBottom="true"
-			/>
+
 	</RelativeLayout>
 	<RelativeLayout
 		android:id="@+id/cancel_alarm_relative"
@@ -59,6 +53,12 @@
 		android:layout_weight="1"
 		android:visibility="gone"
 		>
+		<ImageView
+			android:layout_width="match_parent"
+			android:src="@mipmap/list_item_line"
+			android:layout_height="wrap_content"
+			android:scaleType="center"
+			/>
 		<TextView
 			android:id="@+id/content_text"
 			android:layout_width="wrap_content"

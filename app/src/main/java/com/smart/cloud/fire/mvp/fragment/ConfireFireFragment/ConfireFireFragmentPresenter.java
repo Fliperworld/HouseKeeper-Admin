@@ -107,7 +107,7 @@ public class ConfireFireFragmentPresenter extends BasePresenter<ConfireFireFragm
             mObservable= apiStoreServer.getAreaId(userId,privilege,"").map(new Func1<HttpAreaResult,ArrayList<Object>>() {
                 @Override
                 public ArrayList<Object> call(HttpAreaResult o) {
-                    return o.getSmoke();
+                    return o.getArea();
                 }
             });
         }

@@ -19,7 +19,7 @@ public interface CollectFragmentView {
 
     void hideLoading();
 
-    void dealAlarmMsgSuccess(List<AlarmMsg.AlarmBean> alarmBeanList);
+    void dealAlarmMsgSuccess();
 
     void getShopType(ArrayList<Object> shopTypes);
 

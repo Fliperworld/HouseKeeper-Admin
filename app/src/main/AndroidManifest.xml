@@ -172,7 +172,11 @@
         <activity android:name="com.smart.cloud.fire.mvp.sdcard.SDCardActivity" />
         <activity android:name="com.smart.cloud.fire.mvp.playBack.PlayBackListActivity" />
         <activity android:name="com.smart.cloud.fire.mvp.playBack.PlayBackActivity" />
-        <activity android:name="com.smart.cloud.fire.mvp.recordProject.RecordProjectActivity"></activity>
+        <activity android:name="com.smart.cloud.fire.mvp.recordProject.RecordProjectActivity" />
+        <activity android:name="com.smart.cloud.fire.mvp.fragment.SettingFragment.MyPictureActivity" />
+        <activity android:name="com.smart.cloud.fire.mvp.Alarm.ReceiveCallAlarmActivity" />
+        <activity android:name="com.smart.cloud.fire.mvp.printScreen.PrintScreenActivity" />
+        <activity android:name="com.smart.cloud.fire.mvp.printScreen.ImageSeeActivity"></activity>
     </application>
 
 </manifest>

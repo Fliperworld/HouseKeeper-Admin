@@ -58,6 +58,25 @@ public class Camera {
     }
 
     public static class CameraBean implements Serializable {
+
+        /**
+         * areaName : 湖南永州区域
+         * cameraAddress : 中国广东省广州市天河区黄埔大道西540号
+         * cameraId : 3121638
+         * cameraName : 呵呵5
+         * cameraPwd : 123
+         * ifDealAlarm : 0
+         * latitude : 23.131675
+         * longitude : 113.350911
+         * placeType :
+         * principal1 : 李四
+         * principal1Phone : 12548548545
+         * principal2 : 卡油
+         * principal2Phone : 12545
+         * time : 1
+         */
+
+        private String areaName;
         private String cameraAddress;
         private String cameraId;
         private String cameraName;
@@ -65,11 +84,20 @@ public class Camera {
         private int ifDealAlarm;
         private String latitude;
         private String longitude;
+        private String placeType;
         private String principal1;
         private String principal1Phone;
         private String principal2;
         private String principal2Phone;
         private String time;
+
+        public String getAreaName() {
+            return areaName;
+        }
+
+        public void setAreaName(String areaName) {
+            this.areaName = areaName;
+        }
 
         public String getCameraAddress() {
             return cameraAddress;
@@ -125,6 +153,14 @@ public class Camera {
 
         public void setLongitude(String longitude) {
             this.longitude = longitude;
+        }
+
+        public String getPlaceType() {
+            return placeType;
+        }
+
+        public void setPlaceType(String placeType) {
+            this.placeType = placeType;
         }
 
         public String getPrincipal1() {

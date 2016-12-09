@@ -1,6 +1,7 @@
 package com.smart.cloud.fire.service;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.PushManager;
@@ -8,6 +9,8 @@ import com.igexin.sdk.message.GTCmdMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.global.MyApp;
+import com.smart.cloud.fire.mvp.Alarm.ReceiveCallAlarmActivity;
+import com.smart.cloud.fire.mvp.Alarm.ReceiveCallAlarmBean;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.HttpError;
 import com.smart.cloud.fire.retrofit.ApiStores;
 import com.smart.cloud.fire.retrofit.AppClient;
@@ -46,7 +49,21 @@ public class DemoIntentService extends GTIntentService {
         String msg = new String(gtTransmitMessage.getPayload());
         try {
             JSONObject dataJson = new JSONObject(msg);
-            System.out.print(dataJson);
+            ReceiveCallAlarmBean receiveCallAlarmBean = new ReceiveCallAlarmBean();
+            receiveCallAlarmBean.setAddress(dataJson.getString("address"));
+            receiveCallAlarmBean.setLatitude(dataJson.getString("latitude"));
+            receiveCallAlarmBean.setLongitude(dataJson.getString("longitude"));
+            receiveCallAlarmBean.setAlarmSerialNumber(dataJson.getString("alarmSerialNumber"));
+            receiveCallAlarmBean.setAlarmTime(dataJson.getString("alarmTime"));
+            receiveCallAlarmBean.setAreaName(dataJson.getString("areaName"));
+            receiveCallAlarmBean.setCallerId(dataJson.getString("callerId"));
+            receiveCallAlarmBean.setInfo(dataJson.getString("info"));
+            receiveCallAlarmBean.setCallerName(dataJson.getString("callerName"));
+            receiveCallAlarmBean.setCameraId(dataJson.getString("cameraId"));
+            Intent intent = new Intent(context, ReceiveCallAlarmActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("receiveCallAlarmBean",receiveCallAlarmBean);
+            startActivity(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }

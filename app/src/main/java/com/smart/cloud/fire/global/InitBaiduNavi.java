@@ -16,7 +16,7 @@ import com.baidu.navisdk.adapter.BNOuterLogUtil;
 import com.baidu.navisdk.adapter.BNRoutePlanNode;
 import com.baidu.navisdk.adapter.BNaviSettingManager;
 import com.baidu.navisdk.adapter.BaiduNaviManager;
-import com.smart.cloud.fire.mvp.fragment.MapFragment.Smoke;
+import com.smart.cloud.fire.data.CameraData;
 import com.smart.cloud.fire.ui.BNDemoGuideActivity;
 import com.smart.cloud.fire.utils.T;
 import com.smart.cloud.fire.utils.TestAuthorityUtil;
@@ -41,15 +41,15 @@ public class InitBaiduNavi {
     private double lon;
     private double toLat;
     private double toLon;
-    private Smoke normalSmoke;
+    private CameraData.CameraBean cameraBean;
     private NormalDialog mNormalDialog;
 
-    public InitBaiduNavi(Activity mActivity, Smoke normalSmoke){
+    public InitBaiduNavi(Activity mActivity, CameraData.CameraBean cameraBean){
         this.mActivity = mActivity;
         if(!TestAuthorityUtil.testLocation(mActivity.getApplicationContext())){
             return;
         }
-        this.normalSmoke = normalSmoke;
+        this.cameraBean = cameraBean;
         if(mNormalDialog==null){
             mNormalDialog = new NormalDialog(mActivity);
         }
@@ -238,8 +238,8 @@ public class InitBaiduNavi {
         BNaviSettingManager.setVoiceMode(BNaviSettingManager.VoiceMode.Veteran);
         BNaviSettingManager.setPowerSaveMode(BNaviSettingManager.PowerSaveMode.DISABLE_MODE);
         BNaviSettingManager.setRealRoadCondition(BNaviSettingManager.RealRoadCondition.NAVI_ITS_ON);
-        double latitude = Double.parseDouble(normalSmoke.getLatitude());
-        double longitude = Double.parseDouble(normalSmoke.getLongitude());
+        double latitude = Double.parseDouble(cameraBean.getLatitude());
+        double longitude = Double.parseDouble(cameraBean.getLongitude());
         GetLoad(latitude,longitude);
     }
 

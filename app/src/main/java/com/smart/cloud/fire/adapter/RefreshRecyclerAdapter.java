@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.hrsst.housekeeper.R;
 import com.jakewharton.rxbinding.view.RxView;
+import com.smart.cloud.fire.data.CameraData;
 import com.smart.cloud.fire.global.AlarmMsg;
 import com.smart.cloud.fire.global.InitBaiduNavi;
 import com.smart.cloud.fire.mvp.fragment.CollectFragment.CollectFragmentPresenter;
-import com.smart.cloud.fire.mvp.fragment.MapFragment.Smoke;
 import com.smart.cloud.fire.utils.T;
 
 import java.lang.ref.Reference;
@@ -109,18 +109,18 @@ public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             RxView.clicks(((ItemViewHolder) holder).actionNowTv).throttleFirst(2, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
-                    Smoke smoke = new Smoke();
-                    smoke.setLatitude(cameraBean.getLatitude());
-                    smoke.setLongitude(cameraBean.getLongitude());
+                    CameraData.CameraBean cameraBean1 = new CameraData.CameraBean();
+                    cameraBean1.setLongitude(cameraBean.getLongitude());
+                    cameraBean1.setLatitude(cameraBean.getLatitude());
                     Reference<Activity> reference = new WeakReference(mContext);
-                    new InitBaiduNavi(reference.get(), smoke);
+                    new InitBaiduNavi(reference.get(), cameraBean1);
                 }
             });
             //取消报警
             RxView.clicks(((ItemViewHolder) holder).dealAlarmActionTv).throttleFirst(2, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
                 @Override
                 public void call(Void aVoid) {
-
+                    collectFragmentPresenter.dealAlarm(userId,cameraBean.getCameraId());
                 }
             });
             RxView.clicks(((ItemViewHolder) holder).userSmokeMarkPhoneTv).throttleFirst(2, TimeUnit.SECONDS).subscribe(new Action1<Void>() {

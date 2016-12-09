@@ -90,10 +90,9 @@ public interface ApiStores {
                                             @Query("areaId") String areaId,@Query("page") String page,
                                             @Query("placeTypeId") String placeTypeId);
 
-    //处理报警消息
-    @GET("dealAlarm")
-    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
-    Observable<HttpError> dealAlarm(@Query("userId") String userId, @Query("smokeMac") String smokeMac);
+    @FormUrlEncoded
+    @POST("dealAlarm")
+    Observable<PostResult> dealAlarm(@Field("cameraId") String cameraId, @Field("userId") String userId);
 
     //获取单个烟感信息
     @GET("getOneSmoke")
@@ -135,11 +134,6 @@ public interface ApiStores {
     @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<HttpError> textAlarm(@Query("userId") String userId, @Query("privilege") String privilege,
                                     @Query("smokeMac") String smokeMac,@Query("info") String info);
-
-    //一键报警确认回复
-    @GET("textAlarmAck")
-    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
-    Observable<HttpError> textAlarmAck(@Query("userId") String userId, @Query("alarmSerialNumber") String alarmSerialNumber);
 
 
     @GET("getNeedLossSmoke")
@@ -244,4 +238,8 @@ public interface ApiStores {
     @POST("bindCameraSensor")
     Observable<PostResult> bindCameraSensor(@Field("defenceId") String defenceId, @Field("defenceName") String defenceName,
                                             @Field("sensorId") String sensorId, @Field("cameraId") String cameraId);
+
+    @FormUrlEncoded
+    @POST("textAlarmAck")
+    Observable<PostResult> textAlarmAck(@Field("userId") String userId, @Field("alarmSerialNumber") String alarmSerialNumber);
 }

@@ -82,8 +82,8 @@ public class ShopCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             final Camera.CameraBean cameraBean = cameraBeanList.get(position);
             ((ItemViewHolder) holder).groupTvAddress.setText(cameraBean.getCameraAddress());
             ((ItemViewHolder) holder).groupTv.setText(cameraBean.getCameraName());
-//            ((ItemViewHolder) holder).repeaterNameTv.setText(cameraBean.getPlaceType());
-//            ((ItemViewHolder) holder).repeaterMacTv.setText(cameraBean.getAreaName());
+            ((ItemViewHolder) holder).repeaterNameTv.setText(cameraBean.getPlaceType());
+            ((ItemViewHolder) holder).repeaterMacTv.setText(cameraBean.getAreaName());
             ((ItemViewHolder) holder).groupPrincipal1.setText(cameraBean.getPrincipal1());
             ((ItemViewHolder) holder).groupPhone1.setText(cameraBean.getPrincipal1Phone());
             ((ItemViewHolder) holder).groupPrincipal2.setText(cameraBean.getPrincipal2());

@@ -74,7 +74,7 @@ public class ShopInfoFragmentPresenter extends BasePresenter<ShopInfoFragmentVie
             mObservable= apiStoreServer.getAreaId(userId,privilege,"").map(new Func1<HttpAreaResult,ArrayList<Object>>() {
                 @Override
                 public ArrayList<Object> call(HttpAreaResult o) {
-                    return o.getSmoke();
+                    return o.getArea();
                 }
             });
         }

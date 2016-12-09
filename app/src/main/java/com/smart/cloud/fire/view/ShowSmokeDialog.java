@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.hrsst.housekeeper.R;
 import com.jakewharton.rxbinding.view.RxView;
-import com.smart.cloud.fire.global.InitBaiduNavi;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.Smoke;
 import com.smart.cloud.fire.utils.T;
 import com.smart.cloud.fire.utils.Utils;
@@ -59,7 +58,7 @@ public class ShowSmokeDialog {
                     @Override
                     public void call(Void aVoid) {
                         Reference<Activity> reference = new WeakReference(context);
-                        new InitBaiduNavi(reference.get(), smoke);
+//                        new InitBaiduNavi(reference.get(), smoke);
                         if (dialog != null) {
                             dialog.dismiss();
                             dialog = null;

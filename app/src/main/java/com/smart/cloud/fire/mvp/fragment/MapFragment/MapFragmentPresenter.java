@@ -1,5 +1,6 @@
 package com.smart.cloud.fire.mvp.fragment.MapFragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.smart.cloud.fire.base.presenter.BasePresenter;
@@ -7,11 +8,16 @@ import com.smart.cloud.fire.data.CameraData;
 import com.smart.cloud.fire.global.AlarmCameraInfo;
 import com.smart.cloud.fire.global.Area;
 import com.smart.cloud.fire.global.Contact;
+import com.smart.cloud.fire.global.InitBaiduNavi;
+import com.smart.cloud.fire.global.PostResult;
 import com.smart.cloud.fire.global.ShopType;
 import com.smart.cloud.fire.rxjava.ApiCallback;
 import com.smart.cloud.fire.rxjava.SubscriberCallBack;
+import com.smart.cloud.fire.utils.SharedPreferencesManager;
 import com.smart.cloud.fire.view.NormalDialog;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,7 +75,7 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
             mObservable= apiStoreServer.getAreaId(userId,privilege,"").map(new Func1<HttpAreaResult,ArrayList<Object>>() {
                 @Override
                 public ArrayList<Object> call(HttpAreaResult o) {
-                    return o.getSmoke();
+                    return o.getArea();
                 }
             });
         }
@@ -129,31 +135,22 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
         }));
     }
 
-    public void dealAlarm(String userId, String smokeMac,String privilege){
+    private void dealAlarm(String userId, String cameraId){
         mvpView.showLoading();
-        final Observable mObservable = apiStoreServer.getAllSmoke(userId,privilege,"");
-        twoSubscription(apiStoreServer.dealAlarm(userId, smokeMac), new Func1<HttpError,Observable<HttpError>>() {
+        Observable<PostResult> mObservable = apiStoreServer.dealAlarm(cameraId,userId);
+        addSubscription(mObservable,new SubscriberCallBack<>(new ApiCallback<PostResult>() {
             @Override
-            public Observable<HttpError> call(HttpError httpError) {
-                return mObservable;
-            }
-        },new SubscriberCallBack<>(new ApiCallback<HttpError>() {
-            @Override
-            public void onSuccess(HttpError model) {
-                if(model!=null){
-                    int errorCode = model.getErrorCode();
-                    if(errorCode==0){
-                        List<Smoke> smokes = model.getSmoke();
-//                        mvpView.getDataSuccess(smokes);
-                    }else{
-                        mvpView.getDataFail("无数据");
-                    }
+            public void onSuccess(PostResult model) {
+                int errorCode = model.getErrorCode();
+                if(errorCode==0){
+                    mvpView.dealAlarmMsgSuccess();
                 }
             }
+
             @Override
             public void onFailure(int code, String msg) {
-                mvpView.getDataFail("网络错误");
             }
+
             @Override
             public void onCompleted() {
                 mvpView.hideLoading();
@@ -169,7 +166,10 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
         normalDialog.setOnButtonCancelListener(new NormalDialog.OnButtonCancelListener() {//取消报警
             @Override
             public void onClick() {
-
+                String userID = SharedPreferencesManager.getInstance().getData(mapFragment.getActivity(),
+                        SharedPreferencesManager.SP_FILE_GWELL,
+                        SharedPreferencesManager.KEY_RECENTNAME);
+                dealAlarm(userID,cameraBean.getCameraId());
             }
         });
         normalDialog.setOnButtonOkListener(new NormalDialog.OnButtonOkListener() {//查看视频
@@ -181,7 +181,8 @@ public class MapFragmentPresenter extends BasePresenter<MapFragmentView> {
         normalDialog.setOnButtonDeleteListener(new NormalDialog.OnButtonDeleteListener() {//导航
             @Override
             public void onClick() {
-
+                Reference<Activity> reference = new WeakReference(mapFragment.getActivity());
+                new InitBaiduNavi(reference.get(),cameraBean);
             }
         });
     }

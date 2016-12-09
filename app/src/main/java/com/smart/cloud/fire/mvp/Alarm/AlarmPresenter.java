@@ -2,6 +2,7 @@ package com.smart.cloud.fire.mvp.Alarm;
 
 import com.smart.cloud.fire.base.presenter.BasePresenter;
 import com.smart.cloud.fire.global.AlarmCameraInfo;
+import com.smart.cloud.fire.global.PostResult;
 import com.smart.cloud.fire.rxjava.ApiCallback;
 import com.smart.cloud.fire.rxjava.SubscriberCallBack;
 
@@ -37,6 +38,25 @@ public class AlarmPresenter extends BasePresenter<AlarmView>{
         }));
     }
 
+    public void textAlarmAck(String userId,String alarmSerialNumber){
+        Observable<PostResult> observable = apiStoreServer.textAlarmAck(userId,alarmSerialNumber);
+        addSubscription(observable,new SubscriberCallBack<>(new ApiCallback<PostResult>() {
+            @Override
+            public void onSuccess(PostResult model) {
+                int errorCode = model.getErrorCode();
+                if(errorCode==0){
 
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String msg) {
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        }));
+    }
 
 }

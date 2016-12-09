@@ -28,9 +28,7 @@ public interface MapFragmentView {
 
     void getAreaTypeFail(String msg);
 
-//    void showSmokeDialog(CameraMap.CameraBean cameraBeen);
-//
-//    void showAlarmDialog(CameraMap.CameraBean cameraBeen);
+    void dealAlarmMsgSuccess();
 
     void openCamera(Contact contact);
 
