@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.GridView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.adapter.ImageBrowserAdapter;
 
 import java.io.File;

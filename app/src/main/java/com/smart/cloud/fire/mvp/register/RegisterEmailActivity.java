@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.jakewharton.rxbinding.view.RxView;
 import com.smart.cloud.fire.base.ui.MvpActivity;
 import com.smart.cloud.fire.mvp.login.LoginActivity;
@@ -40,6 +40,8 @@ public class RegisterEmailActivity extends MvpActivity<RegisterPresenter> implem
     TextView registerEmailOldUserTv;
     @Bind(R.id.mProgressBar)
     ProgressBar mProgressBar;
+    @Bind(R.id.nick_name)
+    EditText nickName;
     private Context mContext;
 
     @Override
@@ -86,7 +88,8 @@ public class RegisterEmailActivity extends MvpActivity<RegisterPresenter> implem
                         String phoneNO = registerEmailUser.getText().toString().trim();
                         String pwd = registerEmailPwd.getText().toString().trim();
                         String rePwd = registerEmailComfirePwd.getText().toString().trim();
-                        mvpPresenter.registerEmail(phoneNO, pwd, rePwd,mContext);
+                        String name = nickName.getText().toString().trim();
+                        mvpPresenter.registerEmail(phoneNO, pwd, rePwd, mContext,name);
                     }
                 });
     }

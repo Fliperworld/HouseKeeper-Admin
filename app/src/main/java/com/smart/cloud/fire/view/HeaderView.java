@@ -10,7 +10,7 @@ import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.global.NpcCommon;
 import com.smart.cloud.fire.utils.ImageUtils;
 

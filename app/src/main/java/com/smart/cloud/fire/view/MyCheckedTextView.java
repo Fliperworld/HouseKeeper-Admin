@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.CheckedTextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 
 
 /**

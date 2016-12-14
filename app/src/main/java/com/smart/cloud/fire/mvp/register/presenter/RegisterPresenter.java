@@ -64,7 +64,11 @@ public class RegisterPresenter  extends BasePresenter<RegisterView> {
                 }));
     }
 
-    public void register(final String phoneNo, final String pwd, String rePwd, final String code, final Context mContext){
+    public void register(final String phoneNo, final String pwd, String rePwd, final String code, final Context mContext, final String name){
+        if(name==null||name.length()<=0){
+            mvpView.getDataFail("用户名称不能为空");
+            return;
+        }
         MD5 md = new MD5();
         final String password = md.getMD5ofStr(pwd);
         final String rePassword = md.getMD5ofStr(rePwd);
@@ -95,7 +99,7 @@ public class RegisterPresenter  extends BasePresenter<RegisterView> {
                                 SharedPreferencesManager.getInstance().putData(mContext,
                                         SharedPreferencesManager.SP_FILE_GWELL,
                                         SharedPreferencesManager.KEY_RECENTPASS_NUMBER, userID);
-                                registerToServer(userID,"",phoneNo,pwd,"3");
+                                registerToServer(userID,name,phoneNo,pwd,"3");
                                 break;
                             case "6":
                                 mvpView.getDataFail("手机号已被注册");
@@ -148,7 +152,11 @@ public class RegisterPresenter  extends BasePresenter<RegisterView> {
         }));
     }
 
-    public void registerEmail(final String phoneNo, final String pwd, String rePwd, final Context mContext){
+    public void registerEmail(final String phoneNo, final String pwd, String rePwd, final Context mContext, final String name){
+        if(name==null||name.length()<=0){
+            mvpView.getDataFail("用户名称不能为空");
+            return;
+        }
         boolean isEmail = Utils.isEmial(phoneNo);
         if(isEmail){
             mvpView.showLoading();
@@ -176,7 +184,7 @@ public class RegisterPresenter  extends BasePresenter<RegisterView> {
                             SharedPreferencesManager.getInstance().putData(mContext,
                                     SharedPreferencesManager.SP_FILE_GWELL,
                                     SharedPreferencesManager.KEY_RECENTPASS_NUMBER, userID);
-                            registerToServer(userID,"中文","",phoneNo,3+"");
+                            registerToServer(userID,name,"",phoneNo,3+"");
                             break;
                         case "7":
                             mvpView.hideLoading();

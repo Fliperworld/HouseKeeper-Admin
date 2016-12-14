@@ -19,7 +19,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.p2p.core.BasePlayBackActivity;
 import com.p2p.core.P2PHandler;
 import com.p2p.core.P2PView;

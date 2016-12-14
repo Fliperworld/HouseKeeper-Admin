@@ -7,4 +7,5 @@ import com.smart.cloud.fire.global.AlarmCameraInfo;
  */
 public interface AlarmView {
     void getAlarmCameraResult(AlarmCameraInfo.CameraBean cameraBean);
+    void ackResult();
 }

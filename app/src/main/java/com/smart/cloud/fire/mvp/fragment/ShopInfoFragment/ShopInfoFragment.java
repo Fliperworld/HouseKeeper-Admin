@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.adapter.ShopCameraAdapter;
 import com.smart.cloud.fire.base.ui.MvpFragment;
 import com.smart.cloud.fire.global.Area;

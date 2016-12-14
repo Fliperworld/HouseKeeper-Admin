@@ -8,7 +8,7 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 
 
 /**

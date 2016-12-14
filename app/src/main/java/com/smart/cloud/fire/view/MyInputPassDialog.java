@@ -12,7 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 
 
 public class MyInputPassDialog extends Dialog implements OnClickListener {

@@ -7,7 +7,7 @@ import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 
 
 /**

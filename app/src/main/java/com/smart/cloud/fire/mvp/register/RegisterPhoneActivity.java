@@ -9,7 +9,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.jakewharton.rxbinding.view.RxView;
 import com.smart.cloud.fire.base.ui.MvpActivity;
 import com.smart.cloud.fire.mvp.login.LoginActivity;
@@ -30,6 +30,8 @@ import rx.functions.Action1;
 public class RegisterPhoneActivity extends MvpActivity<RegisterPresenter> implements RegisterView {
     @Bind(R.id.register_email_tv)
     TextView registerEmailTv;
+    @Bind(R.id.nick_name)
+    EditText nickName;
     private Context mContext;
     @Bind(R.id.register_user)
     EditText register_user;
@@ -75,7 +77,8 @@ public class RegisterPhoneActivity extends MvpActivity<RegisterPresenter> implem
                         String pwd = register_pwd.getText().toString().trim();
                         String rePwd = register_comfire_pwd.getText().toString().trim();
                         String code = register_code.getText().toString().trim();
-                        mvpPresenter.register(phoneNO, pwd, rePwd, code, mContext);
+                        String name = nickName.getText().toString().trim();
+                        mvpPresenter.register(phoneNO, pwd, rePwd, code, mContext,name);
                     }
                 });
         RxView.clicks(register_old_user_tv).throttleFirst(2, TimeUnit.SECONDS)

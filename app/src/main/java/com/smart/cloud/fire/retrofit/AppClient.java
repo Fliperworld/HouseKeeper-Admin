@@ -1,6 +1,7 @@
 package com.smart.cloud.fire.retrofit;
 
-import com.hrsst.housekeeper.BuildConfig;
+
+import com.hrsst.housekeeper.admin.BuildConfig;
 
 import java.util.concurrent.TimeUnit;
 

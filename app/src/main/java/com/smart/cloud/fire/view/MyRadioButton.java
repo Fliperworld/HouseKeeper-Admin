@@ -11,7 +11,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.RadioButton;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 
 
 public class MyRadioButton extends RadioButton {

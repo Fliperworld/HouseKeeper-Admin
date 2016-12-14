@@ -25,7 +25,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.p2p.core.P2PValue;
 import com.p2p.core.update.UpdateManager;
 import com.smart.cloud.fire.global.AppConfig;

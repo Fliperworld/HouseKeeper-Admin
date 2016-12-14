@@ -11,15 +11,15 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.hrsst.housekeeper"
+        applicationId "com.hrsst.housekeeper.admin"
         minSdkVersion 16
         targetSdkVersion 19
         versionCode 1
         versionName "1.0.0"
         manifestPlaceholders = [
-                GETUI_APP_ID    : "DHoOZzYdjI9rszGEcoeD95",
-                GETUI_APP_KEY   : "t9lpILKnapAZeKx6M4quDA",
-                GETUI_APP_SECRET: "NG0Px5mgbh89ScxMcPqaL1",
+                GETUI_APP_ID    : "TkhEb98tcg6OIurq3hWNC8",
+                GETUI_APP_KEY   : "AkNpCAwRyx5FLzpZj5DKl9",
+                GETUI_APP_SECRET: "BvJKc3EuKl72u3usWGB4S",
                 PACKAGE_NAME    : applicationId
         ]
 

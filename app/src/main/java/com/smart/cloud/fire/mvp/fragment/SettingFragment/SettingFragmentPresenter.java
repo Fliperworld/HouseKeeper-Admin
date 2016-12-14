@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.base.presenter.BasePresenter;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.HttpError;

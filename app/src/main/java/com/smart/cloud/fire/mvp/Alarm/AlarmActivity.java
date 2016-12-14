@@ -14,7 +14,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.base.ui.MvpActivity;
 import com.smart.cloud.fire.global.AlarmCameraInfo;
 import com.smart.cloud.fire.global.ConstantValues;
@@ -171,6 +171,11 @@ public class AlarmActivity extends MvpActivity<AlarmPresenter> implements AlarmV
         mContact.contactPassword = cameraBean.getCameraPwd();
         mContact.contactId = cameraId;
         alarm_msg_tv.setText(cameraBean.getCameraAddress()+"发生报警");
+    }
+
+    @Override
+    public void ackResult() {
+
     }
 
     @Override

@@ -18,7 +18,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.p2p.core.BaseMonitorActivity;
 import com.p2p.core.P2PValue;
 import com.smart.cloud.fire.data.Sensor;

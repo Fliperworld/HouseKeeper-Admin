@@ -10,7 +10,7 @@ import android.os.Vibrator;
 import android.widget.RemoteViews;
 
 import com.baidu.mapapi.SDKInitializer;
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.p2p.core.update.UpdateManager;
 import com.smart.cloud.fire.service.LocationService;
 import com.smart.cloud.fire.ui.ForwardDownActivity;

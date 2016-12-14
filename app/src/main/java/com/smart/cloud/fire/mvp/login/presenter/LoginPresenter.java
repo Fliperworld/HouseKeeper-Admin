@@ -28,6 +28,7 @@ import rx.Observable;
  * Created by Administrator on 2016/9/19.
  */
 public class LoginPresenter extends BasePresenter<LoginView> {
+    private int loginCount=0;
     public LoginPresenter(LoginView view) {
         attachView(view);
     }
@@ -77,6 +78,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                             break;
                     }
                 }else{
+                    mvpView.hideLoading();
                     switch (errorCode){
                         case "2":
                             T.showShort(context,"用户不存在");
@@ -98,7 +100,13 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
             @Override
             public void onFailure(int code, String msg) {
-                mvpView.getDataFail("网络错误，请检查网络");
+                if(loginCount<4){
+                    loginCount=loginCount+1;
+                    loginYooSee(User,Pwd,context,type);
+                }else{
+                    mvpView.hideLoading();
+                    mvpView.getDataFail("网络错误，请检查网络");
+                }
             }
 
             @Override
@@ -106,7 +114,6 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             }
         }));
     }
-
 
     private void editSharePreference(Context mContext, LoginModel object, String userId, String userPwd){
         String userID = "0"+String.valueOf((Integer.parseInt(object.getUserID())&0x7fffffff));
@@ -145,7 +152,12 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         if(Utils.isNetworkAvailable(activity)){
             String userId = SharedPreferencesManager.getInstance().getData(activity, SharedPreferencesManager.SP_FILE_GWELL, SharedPreferencesManager.KEY_RECENTPASS_NUMBER);
             String userPwd = SharedPreferencesManager.getInstance().getData(activity, SharedPreferencesManager.SP_FILE_GWELL, SharedPreferencesManager.KEY_RECENTPASS);
-            mvpView.autoLogin(userId,userPwd);
+            if(userId!=null&&userId.length()>0&&userPwd!=null&&userPwd.length()>0){
+                mvpView.autoLogin(userId,userPwd);
+            }else{
+                mvpView.autoLoginFail();
+            }
+
         }else {
             mvpView.autoLoginFail();
         }

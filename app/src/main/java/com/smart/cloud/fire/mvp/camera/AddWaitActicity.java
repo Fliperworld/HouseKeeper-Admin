@@ -11,7 +11,7 @@ import android.os.Message;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.mediatek.elian.ElianNative;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.yoosee.UDPHelper;

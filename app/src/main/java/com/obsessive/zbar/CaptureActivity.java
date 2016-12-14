@@ -18,7 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.utils.TestAuthorityUtil;
 
 import net.sourceforge.zbar.Config;

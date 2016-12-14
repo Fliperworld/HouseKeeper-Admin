@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.jakewharton.rxbinding.view.RxView;
 import com.smart.cloud.fire.data.CameraData;
 import com.smart.cloud.fire.global.AlarmMsg;
@@ -96,6 +96,8 @@ public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((ItemViewHolder) holder).userSmokeMarkPhoneTv.setText(cameraBean.getPrincipal1Phone());
             ((ItemViewHolder) holder).userSmokeMarkPrincipalTwo.setText(cameraBean.getPrincipal2());
             ((ItemViewHolder) holder).userSmokeMarkPhoneTvTwo.setText(cameraBean.getPrincipal2Phone());
+            ((ItemViewHolder) holder).repeaterNameTv.setText(cameraBean.getPlaceType());
+            ((ItemViewHolder) holder).repeaterMacTv.setText(cameraBean.getAreaName());
             if (ifDeal == 0) {
                 ((ItemViewHolder) holder).dealAlarmActionTv.setText("取消报警");
                 ((ItemViewHolder) holder).dealAlarmActionTv.setVisibility(View.VISIBLE);
@@ -166,7 +168,7 @@ public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public int getItemViewType(int position) {
         // 最后一个item设置为footerView
-        if (position + 1 == getItemCount()) {
+        if (position == getItemCount()) {
             return TYPE_FOOTER;
         } else {
             return TYPE_ITEM;
@@ -175,7 +177,7 @@ public class RefreshRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public int getItemCount() {
-        return messageModelList.size() + 1;
+        return messageModelList.size();
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素

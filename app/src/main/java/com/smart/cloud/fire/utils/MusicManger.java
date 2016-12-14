@@ -10,7 +10,7 @@ import android.media.MediaPlayer;
 import android.os.Vibrator;
 import android.util.Log;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.global.MyApp;
 
 import java.util.HashMap;

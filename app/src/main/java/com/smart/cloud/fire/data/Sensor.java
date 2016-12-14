@@ -3,7 +3,7 @@ package com.smart.cloud.fire.data;
 
 import android.util.Log;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.utils.Utils;
 

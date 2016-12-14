@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.global.Contact;
 import com.smart.cloud.fire.mvp.fragment.MapFragment.Camera;
@@ -153,7 +153,7 @@ public class ShopCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     @Override
     public int getItemViewType(int position) {
         // 最后一个item设置为footerView
-        if (position + 1 == getItemCount()) {
+        if (position == getItemCount()) {
             return TYPE_FOOTER;
         } else {
             return TYPE_ITEM;
@@ -162,7 +162,7 @@ public class ShopCameraAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public int getItemCount() {
-        return cameraBeanList.size()+1;
+        return cameraBeanList.size();
     }
 
     //自定义的ViewHolder，持有每个Item的的所有界面元素

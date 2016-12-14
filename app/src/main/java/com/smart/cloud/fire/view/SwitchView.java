@@ -12,7 +12,7 @@ import android.view.animation.LinearInterpolator;
 import android.view.animation.Transformation;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 
 
 /**

@@ -15,7 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.lib.addBar.AddBar;
 import com.p2p.core.P2PHandler;
 import com.smart.cloud.fire.base.ui.MvpActivity;

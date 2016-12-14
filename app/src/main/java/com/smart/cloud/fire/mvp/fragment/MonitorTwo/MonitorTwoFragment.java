@@ -16,7 +16,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.data.Sensor;
 import com.smart.cloud.fire.global.ConstantValues;
 import com.smart.cloud.fire.ui.ApMonitorActivity;

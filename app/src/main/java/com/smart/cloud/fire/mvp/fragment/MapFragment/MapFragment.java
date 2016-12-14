@@ -16,7 +16,7 @@ import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.overlayutil.MyOverlayManager;
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.base.ui.MvpFragment;
 import com.smart.cloud.fire.data.CameraData;
 import com.smart.cloud.fire.global.Area;

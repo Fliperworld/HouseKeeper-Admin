@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.data.Sensor;
 import com.smart.cloud.fire.global.MyApp;
 import com.smart.cloud.fire.view.SwitchView;

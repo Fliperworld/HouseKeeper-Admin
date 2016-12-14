@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.base.presenter.BasePresenter;
 import com.smart.cloud.fire.base.ui.BaseFragment;
 import com.smart.cloud.fire.global.ConstantValues;
@@ -56,6 +56,7 @@ public class MainPresenter extends BasePresenter<MainView> {
     private FragmentManager manager;
     private int clickNum = 0;
     private int clickNumBefore = 0;
+    private boolean autoCheck;
 
     public MainPresenter(MainView view) {
         attachView(view);
@@ -65,81 +66,32 @@ public class MainPresenter extends BasePresenter<MainView> {
         manager = mContext.getFragmentManager();
         mainContent.setVisibility(View.VISIBLE);
         otherFrameLayout.setVisibility(View.INVISIBLE);
-//        clickNumBefore=3;
-//        mMapFragment = new MapFragment();
-//        mTransaction = manager.beginTransaction();
-//        mTransaction.replace(R.id.main_content, mMapFragment, "mMapFragment").commit();
-//        switch (privilege){
-//            case ConstantValues.Privilege.NORMAL_MAN:
-//                LinearLayout.LayoutParams linearParams1 =(LinearLayout.LayoutParams) radioGroup.getLayoutParams(); //取控件textView当前的布局参数
-//                int h = linearParams1.height;
-//                linearParams1.height = h/2+15;// 控件的高强制设成20
-//                radioGroup.setLayoutParams(linearParams1);
-//                for(int i=0;i<5;i++){
-//                    RadioButton mRadioButton = myRadioButton.get(i);
-//                    switch (i){
-//                        case 0:
-//                            mRadioButton.setVisibility(View.VISIBLE);
-//                            mRadioButton.setChecked(true);
-//                            break;
-//                        case 1:
-//                            mRadioButton.setVisibility(View.GONE);
-//                            break;
-//                        case 2:
-//                            mRadioButton.setVisibility(View.GONE);
-//                            break;
-//                        case 3:
-//                            mRadioButton.setVisibility(View.GONE);
-//                            break;
-//                        case 4:
-//                            mRadioButton.setVisibility(View.VISIBLE);
-//                            break;
-//                    }
-//                }
-//                clickNumBefore=0;
-//                mMapFragment = new MapFragment();
-//                mTransaction = manager.beginTransaction();
-//                mTransaction.replace(R.id.main_content, mMapFragment, "mAgencyMapFragment").commit();
-//                break;
-//            case ConstantValues.Privilege.AGENCY_MAN:
-//            case ConstantValues.Privilege.POLICEMAEN:
-                LinearLayout.LayoutParams linearParams2 =(LinearLayout.LayoutParams) radioGroup.getLayoutParams(); //取控件textView当前的布局参数
-                int h1 = linearParams2.height;
-                linearParams2.height = h1/2+15;// 控件的高强制设成20
-                radioGroup.setLayoutParams(linearParams2);
-                for(int i=0;i<5;i++){
-                    RadioButton mRadioButton = myRadioButton.get(i);
-                    switch (i){
-                        case 0:
-                            mRadioButton.setVisibility(View.VISIBLE);
-                            mRadioButton.setChecked(true);
-                            break;
-                        case 1:
-                            break;
-                        case 2:
-                            mRadioButton.setVisibility(View.GONE);
-                            break;
-                        case 3:
-                            mRadioButton.setVisibility(View.GONE);
-                            break;
-                    }
+            LinearLayout.LayoutParams linearParams2 =(LinearLayout.LayoutParams) radioGroup.getLayoutParams(); //取控件textView当前的布局参数
+            int h1 = linearParams2.height;
+            linearParams2.height = h1/2+15;// 控件的高强制设成20
+            radioGroup.setLayoutParams(linearParams2);
+            for(int i=0;i<5;i++){
+                RadioButton mRadioButton = myRadioButton.get(i);
+                switch (i){
+                    case 0:
+                        mRadioButton.setVisibility(View.VISIBLE);
+                        mRadioButton.setChecked(true);
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        mRadioButton.setVisibility(View.GONE);
+                        break;
+                    case 3:
+                        mRadioButton.setVisibility(View.GONE);
+                        break;
                 }
-                clickNumBefore=0;
-                mMapFragment = new MapFragment();
-                mTransaction = manager.beginTransaction();
-                mTransaction.replace(R.id.main_content, mMapFragment, "mAgencyMapFragment").commit();
-                mvpView.showTitle(true);
-//                break;
-//            case ConstantValues.Privilege.SUPER_ADMIN:
-//            case ConstantValues.Privilege.ADMINISTATOR:
-//                clickNumBefore=3;
-//                mMapFragment = new MapFragment();
-//                mTransaction = manager.beginTransaction();
-//                mTransaction.replace(R.id.main_content, mMapFragment, "mMapFragment").commit();
-//                break;
-//            default:
-//                break;
-//        }
+            }
+            clickNumBefore=0;
+            mMapFragment = new MapFragment();
+            mTransaction = manager.beginTransaction();
+            mTransaction.replace(R.id.main_content, mMapFragment, "mAgencyMapFragment").commit();
+            mvpView.showTitle(true);
     }
 
     public void replaceFragment(int checkedId, FrameLayout otherFrameLayout,FrameLayout mainContent){
@@ -284,7 +236,7 @@ public class MainPresenter extends BasePresenter<MainView> {
                             if (result==1) {
                                 mvpView.showUpdateDialog(mUpdateXml.getMsg(),mUpdateXml.getUrl());
                             }
-                            if(result<1){
+                            if(result<1&&autoCheck==false){
                                 mvpView.showUpdateDialog(mUpdateXml.getMsg(),null);
                             }
                         } catch (Exception e) {
@@ -314,6 +266,7 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     public void updateVersion(Context mContext,boolean autoCheck){
+        this.autoCheck = autoCheck;
         long last_check_update_time = SharedPreferencesManager.getInstance().getLastAutoCheckUpdateTime(mContext);
         long now_time = System.currentTimeMillis();
         if (((now_time - last_check_update_time) > 1000 * 60 * 60 * 12&&autoCheck==true)||autoCheck==false) {

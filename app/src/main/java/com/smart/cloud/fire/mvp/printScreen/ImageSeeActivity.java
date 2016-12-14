@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.lib.imagesee.FilePagerAdapter;
 import com.lib.imagesee.GalleryViewPager;
 

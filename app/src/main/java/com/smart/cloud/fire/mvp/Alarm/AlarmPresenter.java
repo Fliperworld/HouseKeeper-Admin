@@ -45,7 +45,7 @@ public class AlarmPresenter extends BasePresenter<AlarmView>{
             public void onSuccess(PostResult model) {
                 int errorCode = model.getErrorCode();
                 if(errorCode==0){
-
+                    mvpView.ackResult();
                 }
             }
 

@@ -197,7 +197,7 @@ public interface ApiStores {
     @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<AlarmMsg> getAllAlarm(@Query("userId") String userId, @Query("privilege") String privilege, @Query("page") String page);
 
-    @GET("update_new_bees.xml")
+    @GET("update_bees_admin.xml")
     Observable<VersionXml> checkVersion();
 
     @FormUrlEncoded

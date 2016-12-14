@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.adapter.MonitorSwitchAdapter;
 import com.smart.cloud.fire.data.Sensor;
 import com.smart.cloud.fire.utils.Utils;

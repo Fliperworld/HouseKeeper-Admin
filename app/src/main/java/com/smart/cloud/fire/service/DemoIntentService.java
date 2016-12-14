@@ -81,7 +81,7 @@ public class DemoIntentService extends GTIntentService {
 
     private void goToServer(String cid, String userId){
         ApiStores apiStores = AppClient.retrofit(ConstantValues.SERVER_PUSH).create(ApiStores.class);
-        Observable observable = apiStores.bindAlias( userId,cid,"house");
+        Observable observable = apiStores.bindAlias( userId,cid,"adminHouse");
         addSubscription(observable,new SubscriberCallBack<>(new ApiCallback<HttpError>() {
             @Override
             public void onSuccess(HttpError model) {
@@ -94,7 +94,7 @@ public class DemoIntentService extends GTIntentService {
 
             @Override
             public void onCompleted() {
-                stopSelf();
+//                stopSelf();
             }
         }));
     }

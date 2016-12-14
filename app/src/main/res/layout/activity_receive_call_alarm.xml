@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/alarm_fk_img"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="250dp"
             android:background="@drawable/allarming"
             android:layout_gravity="center_horizontal"
             android:scaleType="center"
@@ -73,8 +73,16 @@
         android:textColor="@color/hj_color_text"
         android:layout_gravity="center_horizontal"
         android:textSize="16sp" />
+
     <TextView
         android:id="@+id/alarm_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center_horizontal"
+        android:textSize="12sp" />
+    <TextView
+        android:id="@+id/alarm_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"

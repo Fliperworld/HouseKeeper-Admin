@@ -9,7 +9,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
+
 
 /**
  * Created by Administrator on 2016/11/17.

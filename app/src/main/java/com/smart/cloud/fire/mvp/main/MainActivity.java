@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.igexin.sdk.PushManager;
 import com.p2p.core.P2PHandler;
 import com.smart.cloud.fire.base.ui.MvpActivity;

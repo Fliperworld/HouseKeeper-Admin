@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.mvp.printScreen.ImageSeeActivity;
 import com.smart.cloud.fire.view.MyImageView;
 import com.smart.cloud.fire.view.NormalDialog;

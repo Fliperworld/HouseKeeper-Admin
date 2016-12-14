@@ -16,8 +16,7 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
-
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 
 import java.util.LinkedList;
 import java.util.List;

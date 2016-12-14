@@ -15,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.jakewharton.rxbinding.view.RxView;
 import com.smart.cloud.fire.base.ui.MvpActivity;
 import com.smart.cloud.fire.data.CameraData;
@@ -34,7 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.functions.Action1;
 
-public class ReceiveCallAlarmActivity extends MvpActivity<AlarmPresenter> implements AlarmView{
+public class ReceiveCallAlarmActivity extends MvpActivity<AlarmPresenter> implements AlarmView {
 
     @Bind(R.id.alarm_fk_img)
     ImageView alarm_fk_img;
@@ -54,6 +54,8 @@ public class ReceiveCallAlarmActivity extends MvpActivity<AlarmPresenter> implem
     TextView cancelAlarmTv;
     @Bind(R.id.cancel_alarm)
     RelativeLayout cancelAlarm;
+    @Bind(R.id.alarm_address)
+    TextView alarmAddress;
     private ReceiveCallAlarmBean receiveCallAlarmBean;
     private Context mContext;
     private boolean isAlarm;
@@ -82,8 +84,9 @@ public class ReceiveCallAlarmActivity extends MvpActivity<AlarmPresenter> implem
     }
 
     private void init() {
-        alarmType.setText(receiveCallAlarmBean.getInfo());
-        alarmTime.setText("报警时间:"+receiveCallAlarmBean.getAlarmTime());
+        alarmType.setText(receiveCallAlarmBean.getCallerName() + receiveCallAlarmBean.getInfo());
+        alarmTime.setText("报警时间:" + receiveCallAlarmBean.getAlarmTime());
+        alarmAddress.setText("地址:"+receiveCallAlarmBean.getAddress());
         RxView.clicks(alarmLeadToBtn).throttleFirst(2, TimeUnit.SECONDS).subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
@@ -96,16 +99,16 @@ public class ReceiveCallAlarmActivity extends MvpActivity<AlarmPresenter> implem
         });
     }
 
-    @OnClick({R.id.alarm_tc_image,R.id.cancel_alarm})
-    public void onClick(View view){
-        switch (view.getId()){
+    @OnClick({R.id.alarm_tc_image, R.id.cancel_alarm})
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.alarm_tc_image:
                 finish();
                 break;
             case R.id.cancel_alarm:
                 String userNumber = SharedPreferencesManager.getInstance().getData(mContext, SharedPreferencesManager.SP_FILE_GWELL,
                         SharedPreferencesManager.KEY_RECENTPASS_NUMBER);
-                mvpPresenter.textAlarmAck(userNumber,receiveCallAlarmBean.getAlarmSerialNumber());
+                mvpPresenter.textAlarmAck(userNumber, receiveCallAlarmBean.getAlarmSerialNumber());
                 break;
         }
     }
@@ -166,16 +169,23 @@ public class ReceiveCallAlarmActivity extends MvpActivity<AlarmPresenter> implem
             mWakelock = null;
         }
     }
+
     private PowerManager.WakeLock mWakelock;
+
     private void acquireWakeLock() {
         if (mWakelock == null) {
             PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            mWakelock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK,this.getClass().getCanonicalName());
+            mWakelock = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, this.getClass().getCanonicalName());
             mWakelock.acquire();
         }
     }
 
     @Override
     public void getAlarmCameraResult(AlarmCameraInfo.CameraBean cameraBean) {
+    }
+
+    @Override
+    public void ackResult() {
+        finish();
     }
 }

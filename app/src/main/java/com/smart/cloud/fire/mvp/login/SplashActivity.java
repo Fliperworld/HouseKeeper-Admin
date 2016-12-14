@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.hrsst.housekeeper.R;
+import com.hrsst.housekeeper.admin.R;
 import com.smart.cloud.fire.base.ui.MvpActivity;
 import com.smart.cloud.fire.mvp.login.model.LoginModel;
 import com.smart.cloud.fire.mvp.login.presenter.LoginPresenter;
