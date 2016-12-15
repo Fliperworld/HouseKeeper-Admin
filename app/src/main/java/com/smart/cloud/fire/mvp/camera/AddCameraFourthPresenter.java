@@ -77,10 +77,10 @@ public class AddCameraFourthPresenter extends BasePresenter<AddCameraFourthView>
             mvpView.errorMessage("请填写摄像机密码");
             return;
         }
-//        if(areaId==null||areaId.length()==0){
-//            mvpView.errorMessage("请填选择区域");
-//            return;
-//        }
+        if(areaId==null||areaId.length()==0){
+            mvpView.errorMessage("请填选择区域");
+            return;
+        }
         mvpView.showLoading();
         Observable<PostResult> mObservable = apiStoreServer.addCamera(cameraId,cameraName,cameraPwd,cameraAddress,longitude,
                 latitude,principal1,principal1Phone,principal2,principal2Phone,

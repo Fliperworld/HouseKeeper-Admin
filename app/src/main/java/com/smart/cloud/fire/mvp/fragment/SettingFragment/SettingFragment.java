@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hrsst.housekeeper.admin.R;
@@ -32,12 +31,8 @@ public class SettingFragment extends MvpFragment<SettingFragmentPresenter> imple
     TextView settingUserId;
     @Bind(R.id.setting_user_code)
     TextView settingUserCode;
-    @Bind(R.id.setting_help_rela)
-    RelativeLayout settingHelpRela;
     @Bind(R.id.mProgressBar)
     ProgressBar mProgressBar;
-    @Bind(R.id.setting_camera_relative)
-    RelativeLayout settingCameraRelative;
     @Bind(R.id.line_state)
     TextView lineState;
     private Context mContext;
@@ -72,11 +67,6 @@ public class SettingFragment extends MvpFragment<SettingFragmentPresenter> imple
         }
         if(state!=null&&state.equals("Offline")){
             lineState.setText("离线");
-        }
-        int privilege = MyApp.app.getPrivilege();
-        if (privilege == 3) {
-            settingHelpRela.setVisibility(View.VISIBLE);
-            settingCameraRelative.setVisibility(View.VISIBLE);
         }
     }
 
