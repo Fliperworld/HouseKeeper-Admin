@@ -47,6 +47,7 @@ public class ShopInfoFragment extends MvpFragment<ShopInfoFragmentPresenter> imp
     private int lastVisibleItem;
     private Context mContext;
     private List<Camera.CameraBean> list;
+    private int loadMoreCount;
     private boolean research = false;
     private String page;
     private String userID;
@@ -106,15 +107,14 @@ public class ShopInfoFragment extends MvpFragment<ShopInfoFragmentPresenter> imp
                     }
                     return;
                 }
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 2 == shopCameraAdapter.getItemCount()) {
-                    if (list != null && list.size() >= 20 && research == false) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == shopCameraAdapter.getItemCount()) {
+                    if (loadMoreCount >= 20 && research == false) {
                         page = Integer.parseInt(page) + 1 + "";
                         mvpPresenter.getAllCamera(userID, privilege + "", page,true,true);
+                    }else{
+                        T.showShort(mContext,"已经没有更多的数据了");
                     }
-                } else{
-                    shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.NO_DATA);
                 }
-                mProgressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -139,21 +139,18 @@ public class ShopInfoFragment extends MvpFragment<ShopInfoFragmentPresenter> imp
 
     @Override
     public void getDataSuccess(List<Camera.CameraBean> cameraBeanList) {
+        loadMoreCount = cameraBeanList.size();
         list.clear();
         list.addAll(cameraBeanList);
         shopCameraAdapter = new ShopCameraAdapter(mContext, list, mShopInfoFragmentPresenter);
         recyclerView.setAdapter(shopCameraAdapter);
         swipereFreshLayout.setRefreshing(false);
-        shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.NO_DATA);
     }
 
     @Override
     public void getDataFail(String msg) {
         swipereFreshLayout.setRefreshing(false);
         T.showShort(mContext, msg);
-        if(shopCameraAdapter!=null){
-            shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.NO_DATA);
-        }
     }
 
     @Override
@@ -168,10 +165,9 @@ public class ShopInfoFragment extends MvpFragment<ShopInfoFragmentPresenter> imp
 
     @Override
     public void onLoadingMore(List<Camera.CameraBean> cameraBeanList) {
+        loadMoreCount = cameraBeanList.size();
         list.addAll(cameraBeanList);
         shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.LOADING_MORE);
-        shopCameraAdapter.addMoreItem(list);
-        shopCameraAdapter.changeMoreStatus(ShopCameraAdapter.PULLUP_LOAD_MORE);
     }
 
     @Override

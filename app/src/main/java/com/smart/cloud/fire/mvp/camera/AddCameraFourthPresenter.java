@@ -65,8 +65,7 @@ public class AddCameraFourthPresenter extends BasePresenter<AddCameraFourthView>
         }
     };
 
-    //(cameraId=1&cameraName=2&cameraPwd=3&cameraAddress=4&longitude=5&latitude=6&principal1=7&principal1Phone=8&principal2=9&principal2Phone=10&areaId=11&placeTypeId=12)
-    public void addCamera(final String userID , final String cameraId, String cameraName, String cameraPwd, String cameraAddress, String longitude,
+     public void addCamera(final String userID , final String cameraId, String cameraName, String cameraPwd, String cameraAddress, String longitude,
                           String latitude, String principal1, String principal1Phone, String principal2, String principal2Phone,
                           String areaId, String placeTypeId){
         if(longitude.length()==0||latitude.length()==0){
@@ -77,10 +76,10 @@ public class AddCameraFourthPresenter extends BasePresenter<AddCameraFourthView>
             mvpView.errorMessage("请填写摄像机密码");
             return;
         }
-        if(areaId==null||areaId.length()==0){
-            mvpView.errorMessage("请填选择区域");
-            return;
-        }
+//        if(areaId==null||areaId.length()==0){
+//            mvpView.errorMessage("请填选择区域");
+//            return;
+//        }
         mvpView.showLoading();
         Observable<PostResult> mObservable = apiStoreServer.addCamera(cameraId,cameraName,cameraPwd,cameraAddress,longitude,
                 latitude,principal1,principal1Phone,principal2,principal2Phone,

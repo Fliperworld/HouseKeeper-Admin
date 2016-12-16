@@ -108,6 +108,7 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
     private CollectFragmentPresenter collectFragmentPresenter;
     private boolean research = false;
     private List<AlarmMsg.AlarmBean> alarmBeanList;
+    private int loadMoreCount;
     boolean isDpShow = false;
     private boolean wheelScrolled = false;
     private int selected_Date;
@@ -181,14 +182,13 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
                 if(adapter==null){
                     return;
                 }
-                int count = adapter.getItemCount();
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == adapter.getItemCount()) {
-                    if (alarmBeanList != null && alarmBeanList.size() >= 20 && research == false) {
+                    if (loadMoreCount>= 20 && research == false) {
                         page = Integer.parseInt(page) + 1 + "";
                         mvpPresenter.getAllAlarm(userID, privilege + "", page,true,true);
                         mProgressBar.setVisibility(View.GONE);
                     }else{
-                        adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
+                        T.showShort(mContext,"已经没有更多的数据了");
                     }
                 }
             }
@@ -484,19 +484,16 @@ public class CollectFragment extends MvpFragment<CollectFragmentPresenter> imple
 
     @Override
     public void getDataSuccess(List<AlarmMsg.AlarmBean> alarmBeen,boolean actionType) {
-
+        loadMoreCount=alarmBeen.size();
         if (actionType) {
             alarmBeanList.addAll(alarmBeen);
             adapter.changeMoreStatus(RefreshRecyclerAdapter.LOADING_MORE);
-            adapter.addMoreItem(alarmBeen);
-            adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
         } else {
             alarmBeanList.clear();
             alarmBeanList.addAll(alarmBeen);
             adapter = new RefreshRecyclerAdapter(getActivity(), alarmBeanList, collectFragmentPresenter, userID, privilege + "");
             demoRecycler.setAdapter(adapter);
             demoSwiperefreshlayout.setRefreshing(false);
-            adapter.changeMoreStatus(RefreshRecyclerAdapter.NO_DATA);
         }
     }
 

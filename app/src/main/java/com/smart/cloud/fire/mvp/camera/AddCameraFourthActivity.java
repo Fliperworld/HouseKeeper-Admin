@@ -123,6 +123,7 @@ public class AddCameraFourthActivity extends MvpActivity<AddCameraFourthPresente
                 areaId,shopTypeId);
     }
 
+
     @OnClick({ R.id.location_image, R.id.add_fire_zjq, R.id.add_fire_type})
     public void onClick(View view) {
         switch (view.getId()) {
