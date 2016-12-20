@@ -92,6 +92,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("dealAlarm")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<PostResult> dealAlarm(@Field("cameraId") String cameraId, @Field("userId") String userId);
 
     //获取单个烟感信息
@@ -102,6 +103,7 @@ public interface ApiStores {
 
     //添加烟感
     @GET("addSmoke")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<ConfireFireModel> addSmoke(@Query("userId") String userId, @Query("smokeName") String smokeName,
                                           @Query("privilege") String privilege, @Query("smokeMac") String smokeMac,
                                           @Query("address") String address, @Query("longitude") String longitude,
@@ -172,6 +174,7 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("register")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<PostResult> registerServerIp(@Field("userId") String userId, @Field("userName") String userName
             , @Field("phone") String phone, @Field("email") String email, @Field("privilege") String pwd);
 
@@ -198,10 +201,12 @@ public interface ApiStores {
     Observable<AlarmMsg> getAllAlarm(@Query("userId") String userId, @Query("privilege") String privilege, @Query("page") String page);
 
     @GET("update_bees_admin.xml")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<VersionXml> checkVersion();
 
     @FormUrlEncoded
     @POST("addCamera")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<PostResult> addCamera(@Field("cameraId") String cameraId, @Field("cameraName") String cameraName
             , @Field("cameraPwd") String cameraPwd, @Field("cameraAddress") String cameraAddress, @Field("longitude") String longitude
             ,@Field("latitude") String latitude, @Field("principal1") String principal1, @Field("principal1Phone") String principal1Phone,
@@ -209,6 +214,7 @@ public interface ApiStores {
                                      @Field("placeTypeId") String placeTypeId);
     @FormUrlEncoded
     @POST("bindUserIdCameraId")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<PostResult> bindUserIdCameraId(@Field("userId") String userId, @Field("cameraId") String cameraId);
 
 //    managerGetAllCamera?userId=13428282520&privilege=3&page=1
@@ -219,6 +225,7 @@ public interface ApiStores {
     //    changeCameraName （cameraId=3121164&cameraName=camera_3121164)
     @FormUrlEncoded
     @POST("changeCameraName")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<PostResult> changeCameraName(@Field("cameraId") String cameraId, @Field("cameraName") String cameraName);
 
     @GET("getAllDefence")
@@ -227,19 +234,23 @@ public interface ApiStores {
 
     @FormUrlEncoded
     @POST("deleteCameraSensor")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<PostResult> deleteCameraSensor(@Field("defenceId") String defenceId, @Field("cameraId") String cameraId);
 
     @FormUrlEncoded
     @POST("changeDefenceName")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<PostResult> changeDefenceName(@Field("cameraId") String cameraId, @Field("defenceId") String defenceId,
                                              @Field("defenceName") String defenceName);
 
     @FormUrlEncoded
     @POST("bindCameraSensor")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<PostResult> bindCameraSensor(@Field("defenceId") String defenceId, @Field("defenceName") String defenceName,
                                             @Field("sensorId") String sensorId, @Field("cameraId") String cameraId);
 
     @FormUrlEncoded
     @POST("textAlarmAck")
+    @Headers("Content-Type: application/x-www-form-urlencoded;charset=utf-8")
     Observable<PostResult> textAlarmAck(@Field("userId") String userId, @Field("alarmSerialNumber") String alarmSerialNumber);
 }
